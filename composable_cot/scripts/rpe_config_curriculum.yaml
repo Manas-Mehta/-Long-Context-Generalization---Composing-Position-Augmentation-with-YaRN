@@ -1,0 +1,23 @@
+# RPE Configuration — Curriculum Learning
+# Gradually increases L across epochs instead of jumping straight to target.
+# Lets LoRA first learn the task, then progressively learn position-invariance.
+#
+# Schedule rationale (reverse_string, actual seq ~200 tokens):
+#   Epoch 1: L=256  — mild randomization, avg gap ~1.3 (close to pretrained gap of 1)
+#   Epoch 2: L=512  — moderate, avg gap ~2.5
+#   Epoch 3: L=768  — stronger, avg gap ~4
+#   Epoch 4: L=1024 — target, avg gap ~5
+#   Epoch 5: L=1024 — hold at target for consolidation
+
+rpe:
+  enabled: true
+  max_simulation_length: 1024
+  seed: null
+  training_mode: true
+  inference_mode: false
+  curriculum:
+    1: 256
+    2: 512
+    3: 768
+    4: 1024
+    5: 1024

@@ -1,0 +1,37 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+*.egg
+
+# Environment
+.env
+.DS_Store
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Testing
+.pytest_cache/
+htmlcov/
+.coverage
+
+# Model checkpoints (large, regeneratable on Lightning AI)
+composable_cot/model_ckpt/
+composable_cot/outputs/
+
+# Older outputs
+outputs/
+
+# Claude Code
+.claude/
+
+# LLaMA-Factory build artifacts
+composable_cot/LLaMA-Factory/*.egg-info/
+composable_cot/LLaMA-Factory/build/
+composable_cot/LLaMA-Factory/dist/
