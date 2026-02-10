@@ -60,21 +60,19 @@ class RandomizedPositionalEncoding:
         Raises:
             ValueError: If seq_length > max_simulation_length.
         """
-        if seq_length > self.max_simulation_length:
-            raise ValueError(
-                f"seq_length ({seq_length}) cannot exceed "
-                f"max_simulation_length ({self.max_simulation_length})"
-            )
+        # If seq_length > L, clamp up to seq_length (minimal randomization).
+        # This is needed for curriculum learning where L starts small.
+        effective_L = max(self.max_simulation_length, seq_length)
 
         # Sample without replacement using randperm on CPU (generator is CPU-bound),
         # then move to target device. This avoids device mismatch errors with CUDA.
         if self._generator is not None:
             perm = torch.randperm(
-                self.max_simulation_length,
+                effective_L,
                 generator=self._generator,
             )
         else:
-            perm = torch.randperm(self.max_simulation_length)
+            perm = torch.randperm(effective_L)
 
         # Take first seq_length elements and sort them
         positions = perm[:seq_length].sort().values
