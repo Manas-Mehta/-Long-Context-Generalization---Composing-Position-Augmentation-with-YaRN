@@ -24,6 +24,7 @@ PROJECT_DIR="${SCRATCH}/RPE"
 source activate "${SCRATCH}/conda_envs/rpe" 2>/dev/null || conda activate "${SCRATCH}/conda_envs/rpe"
 
 export PYTHONPATH="${PROJECT_DIR}:${PYTHONPATH:-}"
+export HF_HOME="${SCRATCH}/hf_cache"
 
 cd "${PROJECT_DIR}/composable_cot/LLaMA-Factory"
 

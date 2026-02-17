@@ -25,6 +25,7 @@ source activate "${SCRATCH}/conda_envs/rpe" 2>/dev/null || conda activate "${SCR
 
 export PYTHONPATH="${PROJECT_DIR}:${PYTHONPATH:-}"
 export PROJECT_ROOT="${PROJECT_DIR}"
+export HF_HOME="${SCRATCH}/hf_cache"
 
 cd "${PROJECT_DIR}"
 
