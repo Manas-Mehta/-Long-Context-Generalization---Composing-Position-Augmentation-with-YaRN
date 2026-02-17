@@ -49,25 +49,35 @@ def load_model_with_lora(
 
     Returns the merged model ready for inference (no adapter overhead).
     """
-    print(f"Loading base model: {base_model_name}")
+    import time
+    print(f"Loading tokenizer: {base_model_name}", flush=True)
+    t0 = time.time()
     tokenizer = AutoTokenizer.from_pretrained(base_model_name)
     if tokenizer.pad_token is None:
         tokenizer.pad_token = tokenizer.eos_token
         tokenizer.pad_token_id = tokenizer.eos_token_id
+    print(f"  Tokenizer loaded in {time.time()-t0:.1f}s", flush=True)
 
+    print(f"Loading base model weights: {base_model_name}", flush=True)
+    t0 = time.time()
     model = AutoModelForCausalLM.from_pretrained(
         base_model_name,
         device_map=device,
         torch_dtype=torch_dtype,
     )
+    print(f"  Base model loaded in {time.time()-t0:.1f}s", flush=True)
 
     if lora_ckpt_dir and os.path.exists(lora_ckpt_dir):
-        print(f"Loading LoRA adapter: {lora_ckpt_dir}")
+        print(f"Loading LoRA adapter: {lora_ckpt_dir}", flush=True)
+        t0 = time.time()
         model = PeftModel.from_pretrained(model, lora_ckpt_dir)
-        print("Merging LoRA weights...")
+        print(f"  LoRA loaded in {time.time()-t0:.1f}s", flush=True)
+        print("Merging LoRA weights...", flush=True)
+        t0 = time.time()
         model = model.merge_and_unload()
+        print(f"  Merge done in {time.time()-t0:.1f}s", flush=True)
     else:
-        print(f"No LoRA checkpoint found at {lora_ckpt_dir} — using base model only")
+        print(f"No LoRA checkpoint found at {lora_ckpt_dir} — using base model only", flush=True)
 
     model.eval()
     return model, tokenizer
@@ -212,9 +222,9 @@ def evaluate_test_set(
         results_by_length[length]["examples"].append(prediction_record)
 
         # Progress
-        if (i + 1) % 50 == 0 or i == 0:
+        if (i + 1) % 10 == 0 or i == 0:
             print(f"  [{i+1}/{len(test_data)}] acc so far: {total_correct}/{total_examples} "
-                  f"= {total_correct/total_examples:.3f}")
+                  f"= {total_correct/total_examples:.3f}", flush=True)
 
     # Compute per-length accuracy
     per_length = {}
