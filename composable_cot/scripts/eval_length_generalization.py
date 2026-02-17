@@ -296,6 +296,8 @@ def main():
     parser.add_argument("--torch-dtype", type=str, default="bf16",
                         choices=["bf16", "fp16", "fp32"],
                         help="Model precision")
+    parser.add_argument("--min-length", type=int, default=1,
+                        help="Minimum string length to evaluate (skip shorter examples)")
     parser.add_argument("--max-examples", type=int, default=0,
                         help="Limit number of examples (0 = all)")
     args = parser.parse_args()
@@ -311,6 +313,7 @@ def main():
     print(f"  Test file:        {args.test_file}")
     print(f"  Task type:        {args.task_type}")
     print(f"  Train max length: {args.train_max_length}")
+    print(f"  Min eval length:  {args.min_length}")
     print(f"  Max new tokens:   {args.max_new_tokens}")
     print(f"  Device:           {args.device}")
     print(f"  Precision:        {args.torch_dtype}")
@@ -325,6 +328,11 @@ def main():
     print(f"\nLoading test data from {args.test_file}...")
     with open(args.test_file) as f:
         test_data = json.load(f)
+
+    if args.min_length > 1:
+        before = len(test_data)
+        test_data = [ex for ex in test_data if ex.get("string_length", 0) >= args.min_length]
+        print(f"  Filtered to length >= {args.min_length}: {before} -> {len(test_data)} examples")
 
     if args.max_examples > 0:
         test_data = test_data[:args.max_examples]

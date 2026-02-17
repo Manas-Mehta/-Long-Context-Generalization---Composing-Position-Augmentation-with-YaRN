@@ -153,6 +153,7 @@ eval_experiment() {
 
     # max-new-tokens=2048: OOD lengths 50-100 need 600-1200+ tokens for full CoT trace.
     # Default 512 truncates before "the answer is ..." causing false 0% accuracy.
+    # min-length=35: Skip lengths 1-34 (all models score 100%, saves ~30% eval time).
     python "${SCRIPTS}/eval_length_generalization.py" \
         --base-model "Qwen/Qwen2.5-7B" \
         --lora-ckpt "${lora_dir}" \
@@ -160,6 +161,7 @@ eval_experiment() {
         --output-dir "${output_dir}" \
         --task-type reverse_string \
         --train-max-length 40 \
+        --min-length 35 \
         --max-new-tokens 2048
 
     echo "  Eval complete: ${name}"

@@ -1,8 +1,9 @@
 #!/bin/bash
 # ============================================================================
-# Medium Eval: 1 example per every length (1-100) = 100 examples
+# Medium Eval: 1 example per length (35-100) = 66 examples
+# Skips lengths 1-34 (known to be perfect for all models).
 # Runs baseline + curriculum (best RPE) first, then others if time allows.
-# ~15 min per model. Total ~30 min for 2 models, ~60 min for all 4.
+# ~10 min per model. Total ~20 min for 2 models, ~40 min for all 4.
 # ============================================================================
 
 set -euo pipefail
@@ -15,8 +16,9 @@ export PYTHONPATH="${PROJECT_ROOT}:${PYTHONPATH:-}"
 
 MEDIUM_TEST="${CCOT_ROOT}/data/reverse_string_eval/test_medium.json"
 
-# ── Create stratified test file: 1 example per every length ──────────
-echo "=== Creating medium test set (1 per length, 100 examples) ==="
+# ── Create stratified test file: 1 example per length (35-100) ───────
+MIN_LENGTH=35
+echo "=== Creating medium test set (1 per length, ${MIN_LENGTH}-100) ==="
 
 python3 -c "
 import json
@@ -30,11 +32,11 @@ for ex in data:
     by_length.setdefault(L, []).append(ex)
 
 sampled = []
-for L in range(1, 101):
+for L in range(${MIN_LENGTH}, 101):
     if L in by_length and by_length[L]:
         sampled.append(by_length[L][0])
 
-print(f'Sampled {len(sampled)} examples (lengths 1-{max(s[\"string_length\"] for s in sampled)})')
+print(f'Sampled {len(sampled)} examples (lengths ${MIN_LENGTH}-{max(s[\"string_length\"] for s in sampled)})')
 
 with open('${MEDIUM_TEST}', 'w') as f:
     json.dump(sampled, f, indent=2)
@@ -73,6 +75,7 @@ run_eval() {
         --output-dir "${out}" \
         --task-type reverse_string \
         --train-max-length 40 \
+        --min-length ${MIN_LENGTH} \
         --max-new-tokens 2048
 
     echo "  Finished: $(date)"
