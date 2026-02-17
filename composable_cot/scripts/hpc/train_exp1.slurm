@@ -21,7 +21,8 @@ SCRATCH="/scratch/${NETID}"
 PROJECT_DIR="${SCRATCH}/RPE"
 
 # Activate conda env
-source activate "${SCRATCH}/conda_envs/rpe" 2>/dev/null || conda activate "${SCRATCH}/conda_envs/rpe"
+eval "$(conda shell.bash hook)"
+conda activate "${SCRATCH}/conda_envs/rpe"
 
 export PYTHONPATH="${PROJECT_DIR}:${PYTHONPATH:-}"
 export HF_HOME="${SCRATCH}/hf_cache"
