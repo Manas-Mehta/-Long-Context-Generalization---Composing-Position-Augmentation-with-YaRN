@@ -9,6 +9,7 @@
 #SBATCH --time=03:00:00
 #SBATCH --output=slurm_logs/eval_exp2_%j.out
 #SBATCH --error=slurm_logs/eval_exp2_%j.err
+#SBATCH --requeue
 
 # ============================================================================
 # Eval Exp 2: RPE asymmetric (Q/K=32, rest=8), L=1024

@@ -9,6 +9,7 @@
 #SBATCH --time=03:00:00
 #SBATCH --output=slurm_logs/eval_exp0_%j.out
 #SBATCH --error=slurm_logs/eval_exp0_%j.err
+#SBATCH --requeue
 
 # ============================================================================
 # Eval Exp 0: Baseline (rank 16, no RPE)

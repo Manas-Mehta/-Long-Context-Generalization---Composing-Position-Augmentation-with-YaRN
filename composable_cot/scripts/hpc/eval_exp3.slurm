@@ -9,6 +9,7 @@
 #SBATCH --time=03:00:00
 #SBATCH --output=slurm_logs/eval_exp3_%j.out
 #SBATCH --error=slurm_logs/eval_exp3_%j.err
+#SBATCH --requeue
 
 # ============================================================================
 # Eval Exp 3: RPE curriculum (L: 256 -> 512 -> 768 -> 1024 -> 1024)

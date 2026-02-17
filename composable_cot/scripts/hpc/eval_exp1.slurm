@@ -9,6 +9,7 @@
 #SBATCH --time=03:00:00
 #SBATCH --output=slurm_logs/eval_exp1_%j.out
 #SBATCH --error=slurm_logs/eval_exp1_%j.err
+#SBATCH --requeue
 
 # ============================================================================
 # Eval Exp 1: RPE rank 16, L=1024
