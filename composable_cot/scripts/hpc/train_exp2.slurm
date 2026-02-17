@@ -14,7 +14,7 @@
 # Experiment 2: RPE asymmetric (Q/K=32, rest=8), L=1024
 # ============================================================================
 
-set -euo pipefail
+set -eo pipefail
 
 NETID="mm14444"
 SCRATCH="/scratch/${NETID}"

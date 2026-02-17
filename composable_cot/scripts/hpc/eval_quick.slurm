@@ -14,7 +14,7 @@
 # Quick evaluation of all 4 experiments (stratified sample, ~20 min total)
 # ============================================================================
 
-set -euo pipefail
+set -eo pipefail
 
 NETID="mm14444"
 SCRATCH="/scratch/${NETID}"

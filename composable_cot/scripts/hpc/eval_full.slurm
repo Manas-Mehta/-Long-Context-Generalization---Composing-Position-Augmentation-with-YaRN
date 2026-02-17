@@ -14,7 +14,7 @@
 # Full evaluation of all 4 experiments (1000 examples each, ~7 hours)
 # ============================================================================
 
-set -euo pipefail
+set -eo pipefail
 
 NETID="mm14444"
 SCRATCH="/scratch/${NETID}"

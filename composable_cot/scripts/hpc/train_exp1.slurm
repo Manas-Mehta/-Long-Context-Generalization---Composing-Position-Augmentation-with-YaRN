@@ -14,7 +14,7 @@
 # Experiment 1: RPE rank 16, L=1024
 # ============================================================================
 
-set -euo pipefail
+set -eo pipefail
 
 NETID="mm14444"
 SCRATCH="/scratch/${NETID}"

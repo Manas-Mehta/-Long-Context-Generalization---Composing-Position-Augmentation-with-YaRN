@@ -14,7 +14,7 @@
 # Experiment 3: RPE curriculum (L: 256 → 512 → 768 → 1024 → 1024)
 # ============================================================================
 
-set -euo pipefail
+set -eo pipefail
 
 NETID="mm14444"
 SCRATCH="/scratch/${NETID}"

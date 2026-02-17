@@ -14,7 +14,7 @@
 # Experiment 0: Baseline (LoRA rank 16, NO RPE)
 # ============================================================================
 
-set -euo pipefail
+set -eo pipefail
 
 NETID="mm14444"
 SCRATCH="/scratch/${NETID}"
