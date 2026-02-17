@@ -27,6 +27,7 @@ conda activate "${SCRATCH}/conda_envs/rpe"
 export PYTHONPATH="${PROJECT_DIR}:${PYTHONPATH:-}"
 export PROJECT_ROOT="${PROJECT_DIR}"
 export HF_HOME="${SCRATCH}/hf_cache"
+export HF_HUB_OFFLINE=1
 
 cd "${PROJECT_DIR}"
 
