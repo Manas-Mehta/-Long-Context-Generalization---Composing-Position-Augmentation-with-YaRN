@@ -33,38 +33,16 @@ def get_inv_freq(model):
 
 
 def apply_yarn_config(base_model_name, yarn_factor):
-    """Create YaRN config, feature-based detection (not version-based)."""
+    """Create YaRN config following official Qwen docs."""
     config = AutoConfig.from_pretrained(base_model_name)
-
-    import transformers
-    print(f"  transformers version: {transformers.__version__}")
-
-    # Feature-based: check if config uses rope_parameters (dict).
-    # Covers v5+ AND late v4 (4.48+) which backported rope_parameters.
-    has_rope_params = (
-        hasattr(config, "rope_parameters")
-        and isinstance(getattr(config, "rope_parameters", None), dict)
-    )
-    print(f"  has rope_parameters dict: {has_rope_params}")
-
-    if has_rope_params:
-        orig_theta = config.rope_parameters.get("rope_theta", 1000000.0)
-        config.rope_parameters = {
-            "rope_type": "yarn",
-            "rope_theta": orig_theta,
-            "factor": yarn_factor,
-            "original_max_position_embeddings": config.max_position_embeddings,
-        }
-        print(f"  [rope_parameters] {config.rope_parameters}")
-    else:
-        config.rope_scaling = {
-            "type": "yarn",
-            "factor": yarn_factor,
-            "original_max_position_embeddings": config.max_position_embeddings,
-        }
-        print(f"  [rope_scaling] {config.rope_scaling}")
-        print(f"  rope_theta: {config.rope_theta}")
-
+    # Exactly as specified by Qwen:
+    # https://huggingface.co/Qwen/Qwen2.5-7B-Instruct#processing-long-texts
+    config.rope_scaling = {
+        "type": "yarn",
+        "factor": yarn_factor,
+        "original_max_position_embeddings": config.max_position_embeddings,
+    }
+    print(f"  rope_scaling = {config.rope_scaling}")
     return config
 
 

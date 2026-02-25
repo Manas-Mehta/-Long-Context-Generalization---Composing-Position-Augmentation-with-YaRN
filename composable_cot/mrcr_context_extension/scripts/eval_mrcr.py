@@ -60,6 +60,38 @@ def grade_mrcr(response: str, answer: str, random_string_to_prepend: str) -> flo
     return float(SequenceMatcher(None, response, answer).ratio())
 
 
+def _apply_yarn_manual(model, yarn_factor, config):
+    """Manually patch rotary embedding inv_freq with YaRN scaling.
+
+    Fallback when config-based YaRN is silently ignored.
+    Implements the NTK-aware interpolation from the YaRN paper (simplified).
+    """
+    import math
+
+    rotary = getattr(model.model, "rotary_emb", None)
+    if rotary is None:
+        rotary = model.model.layers[0].self_attn.rotary_emb
+
+    dim = rotary.inv_freq.shape[0] * 2  # inv_freq has dim/2 elements
+    base = getattr(config, "rope_theta", 1000000.0)
+    original_max_pos = config.max_position_embeddings
+
+    # NTK-aware scaling: scale the base theta
+    # This is the simplified YaRN approach (NTK-by-parts is more complex)
+    scaled_base = base * (yarn_factor ** (dim / (dim - 2)))
+    inv_freq = 1.0 / (scaled_base ** (torch.arange(0, dim, 2, dtype=torch.float32) / dim))
+    inv_freq = inv_freq.to(rotary.inv_freq.device)
+
+    old_inv_freq = rotary.inv_freq.float().cpu()
+    rotary.inv_freq = torch.nn.Parameter(inv_freq, requires_grad=False)
+    new_inv_freq = rotary.inv_freq.float().cpu()
+
+    diff = (old_inv_freq - new_inv_freq).abs()
+    n_changed = (diff > 1e-8).sum().item()
+    print(f"  Manual patch: {n_changed}/{len(diff)} inv_freq dims changed", flush=True)
+    print(f"  Max diff: {diff.max().item():.6e}", flush=True)
+
+
 def load_model(
     base_model_name: str,
     lora_ckpt_dir: str = None,
@@ -86,41 +118,17 @@ def load_model(
         "torch_dtype": torch_dtype,
     }
 
-    # Apply YaRN if requested
+    # Apply YaRN if requested (follows official Qwen docs exactly)
+    # Ref: https://huggingface.co/Qwen/Qwen2.5-7B-Instruct#processing-long-texts
     if enable_yarn:
         print(f"Enabling YaRN with factor={yarn_factor}", flush=True)
         config = AutoConfig.from_pretrained(base_model_name)
-
-        # Detection: if the config has rope_parameters (dict), use the new API.
-        # This covers transformers v5+ AND late v4 (4.48+) which backported it.
-        # Setting config.rope_scaling on these versions silently overwrites
-        # rope_parameters, losing rope_theta and using wrong key format.
-        import transformers
-        print(f"  transformers version: {transformers.__version__}", flush=True)
-        has_rope_params = (
-            hasattr(config, "rope_parameters")
-            and isinstance(getattr(config, "rope_parameters", None), dict)
-        )
-
-        if has_rope_params:
-            # New-style: set rope_parameters directly, preserving rope_theta
-            orig_theta = config.rope_parameters.get("rope_theta", 1000000.0)
-            config.rope_parameters = {
-                "rope_type": "yarn",
-                "rope_theta": orig_theta,
-                "factor": yarn_factor,
-                "original_max_position_embeddings": config.max_position_embeddings,
-            }
-            print(f"  [rope_parameters] {config.rope_parameters}", flush=True)
-        else:
-            # Old-style: rope_scaling is a plain attribute, rope_theta is separate
-            config.rope_scaling = {
-                "type": "yarn",
-                "factor": yarn_factor,
-                "original_max_position_embeddings": config.max_position_embeddings,
-            }
-            print(f"  [rope_scaling] {config.rope_scaling}", flush=True)
-
+        config.rope_scaling = {
+            "type": "yarn",
+            "factor": yarn_factor,
+            "original_max_position_embeddings": config.max_position_embeddings,
+        }
+        print(f"  rope_scaling = {config.rope_scaling}", flush=True)
         model_kwargs["config"] = config
         config_desc = f"yarn_factor{yarn_factor}"
 
@@ -128,6 +136,19 @@ def load_model(
     t0 = time.time()
     model = AutoModelForCausalLM.from_pretrained(base_model_name, **model_kwargs)
     print(f"  Model loaded in {time.time()-t0:.1f}s", flush=True)
+
+    # Verify YaRN was actually applied by checking rope_type
+    if enable_yarn:
+        rotary = getattr(model.model, "rotary_emb", None)
+        if rotary is None:
+            rotary = model.model.layers[0].self_attn.rotary_emb
+        actual_rope_type = getattr(rotary, "rope_type", "unknown")
+        print(f"  Actual rope_type after loading: {actual_rope_type}", flush=True)
+
+        if actual_rope_type not in ("yarn",):
+            print(f"  WARNING: YaRN not applied via config! Patching inv_freq manually...", flush=True)
+            _apply_yarn_manual(model, yarn_factor, config)
+            print(f"  Manual YaRN patch applied.", flush=True)
 
     # Apply LoRA if provided
     if lora_ckpt_dir and os.path.exists(lora_ckpt_dir):
