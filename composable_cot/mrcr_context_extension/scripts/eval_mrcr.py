@@ -60,6 +60,77 @@ def grade_mrcr(response: str, answer: str, random_string_to_prepend: str) -> flo
     return float(SequenceMatcher(None, response, answer).ratio())
 
 
+def _diagnose_rope(model, config, enable_yarn, yarn_factor):
+    """Print detailed RoPE diagnostics to confirm YaRN is actually changing things."""
+    print("\n" + "=" * 70, flush=True)
+    print("ROPE DIAGNOSTIC", flush=True)
+    print("=" * 70, flush=True)
+
+    # Get rotary embedding from layer 0
+    rotary = getattr(model.model, "rotary_emb", None)
+    if rotary is None:
+        rotary = model.model.layers[0].self_attn.rotary_emb
+
+    # Print all relevant attributes
+    print(f"  Rotary class:           {type(rotary).__name__}", flush=True)
+    print(f"  rope_type attr:         {getattr(rotary, 'rope_type', 'N/A')}", flush=True)
+    print(f"  scaling_factor attr:    {getattr(rotary, 'scaling_factor', 'N/A')}", flush=True)
+    print(f"  attention_scaling attr: {getattr(rotary, 'attention_scaling', 'N/A')}", flush=True)
+    print(f"  max_seq_len_cached:     {getattr(rotary, 'max_seq_len_cached', 'N/A')}", flush=True)
+
+    # Check config values
+    base = getattr(config, "rope_theta", 1000000.0)
+    max_pos = getattr(config, "max_position_embeddings", "N/A")
+    print(f"  config.rope_theta:      {base}", flush=True)
+    print(f"  config.max_position_embeddings: {max_pos}", flush=True)
+    print(f"  config.rope_scaling:    {getattr(config, 'rope_scaling', 'N/A')}", flush=True)
+
+    # Check inv_freq
+    if hasattr(rotary, "inv_freq") and rotary.inv_freq is not None:
+        inv_freq = rotary.inv_freq.float().cpu()
+        dim = inv_freq.shape[0] * 2
+        print(f"\n  inv_freq shape: {inv_freq.shape} (head_dim={dim})", flush=True)
+        print(f"  inv_freq[0:5]:  {inv_freq[:5].tolist()}", flush=True)
+        print(f"  inv_freq[-5:]:  {inv_freq[-5:].tolist()}", flush=True)
+        print(f"  inv_freq mean:  {inv_freq.mean().item():.8e}", flush=True)
+        print(f"  inv_freq sum:   {inv_freq.sum().item():.8e}", flush=True)
+
+        # Compute expected VANILLA inv_freq for comparison
+        vanilla_inv = 1.0 / (base ** (torch.arange(0, dim, 2, dtype=torch.float32) / dim))
+        print(f"\n  Expected vanilla inv_freq[0:5]:  {vanilla_inv[:5].tolist()}", flush=True)
+        print(f"  Expected vanilla inv_freq[-5:]:  {vanilla_inv[-5:].tolist()}", flush=True)
+        print(f"  Expected vanilla inv_freq mean:  {vanilla_inv.mean().item():.8e}", flush=True)
+        print(f"  Expected vanilla inv_freq sum:   {vanilla_inv.sum().item():.8e}", flush=True)
+
+        # Compare
+        diff = (inv_freq - vanilla_inv).abs()
+        max_diff = diff.max().item()
+        n_different = (diff > 1e-8).sum().item()
+        print(f"\n  Diff from vanilla: max={max_diff:.6e}, n_different={n_different}/{len(diff)}", flush=True)
+
+        if n_different == 0:
+            print("  *** inv_freq IDENTICAL to vanilla -- YaRN is NOT changing frequencies! ***", flush=True)
+        else:
+            print(f"  inv_freq IS different from vanilla -- YaRN appears to modify frequencies", flush=True)
+    else:
+        print("\n  inv_freq: NOT FOUND as buffer (may be computed dynamically in forward())", flush=True)
+
+    # Run a short forward pass to get a logit fingerprint
+    print(f"\n  Running 5-token forward pass for logit fingerprint...", flush=True)
+    test_input = torch.tensor([[1, 2, 3, 4, 5]], device=model.device)
+    with torch.no_grad():
+        output = model(test_input)
+    logits = output.logits[0, -1, :].float().cpu()
+    print(f"  Logits shape:  {logits.shape}", flush=True)
+    print(f"  Logits mean:   {logits.mean().item():.6f}", flush=True)
+    print(f"  Logits std:    {logits.std().item():.6f}", flush=True)
+    print(f"  Logits[0:5]:   {logits[:5].tolist()}", flush=True)
+    top5 = logits.topk(5)
+    print(f"  Top-5 tokens:  {top5.indices.tolist()}", flush=True)
+    print(f"  Top-5 values:  {[f'{v:.4f}' for v in top5.values.tolist()]}", flush=True)
+    print("=" * 70 + "\n", flush=True)
+
+
 def _apply_yarn_manual(model, yarn_factor, config):
     """Manually patch rotary embedding inv_freq with YaRN scaling.
 
@@ -113,6 +184,7 @@ def load_model(
     print(f"  Tokenizer loaded in {time.time()-t0:.1f}s", flush=True)
 
     config_desc = "vanilla"
+    config = AutoConfig.from_pretrained(base_model_name)
     model_kwargs = {
         "device_map": device,
         "torch_dtype": torch_dtype,
@@ -122,7 +194,6 @@ def load_model(
     # Ref: https://huggingface.co/Qwen/Qwen2.5-7B-Instruct#processing-long-texts
     if enable_yarn:
         print(f"Enabling YaRN with factor={yarn_factor}", flush=True)
-        config = AutoConfig.from_pretrained(base_model_name)
         config.rope_scaling = {
             "type": "yarn",
             "factor": yarn_factor,
@@ -164,6 +235,10 @@ def load_model(
         config_desc = f"lora_{os.path.basename(lora_ckpt_dir)}"
 
     model.eval()
+
+    # Always run RoPE diagnostics so we can compare vanilla vs YaRN
+    _diagnose_rope(model, config, enable_yarn, yarn_factor)
+
     return model, tokenizer, config_desc
 
 
