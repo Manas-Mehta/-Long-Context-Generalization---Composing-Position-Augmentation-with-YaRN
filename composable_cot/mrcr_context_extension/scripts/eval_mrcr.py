@@ -190,16 +190,17 @@ def load_model(
         "torch_dtype": torch_dtype,
     }
 
-    # Apply YaRN if requested (follows official Qwen docs exactly)
-    # Ref: https://huggingface.co/Qwen/Qwen2.5-7B-Instruct#processing-long-texts
+    # Apply YaRN if requested
+    # Ref: https://huggingface.co/Qwen/Qwen2.5-32B-Instruct/discussions/5
+    # NOTE: original_max_position_embeddings is for vLLM only, not Transformers
     if enable_yarn:
         print(f"Enabling YaRN with factor={yarn_factor}", flush=True)
         config.rope_scaling = {
             "type": "yarn",
             "factor": yarn_factor,
-            "original_max_position_embeddings": config.max_position_embeddings,
         }
         print(f"  rope_scaling = {config.rope_scaling}", flush=True)
+        print(f"  max_position_embeddings = {config.max_position_embeddings}", flush=True)
         model_kwargs["config"] = config
         config_desc = f"yarn_factor{yarn_factor}"
 
@@ -208,7 +209,7 @@ def load_model(
     model = AutoModelForCausalLM.from_pretrained(base_model_name, **model_kwargs)
     print(f"  Model loaded in {time.time()-t0:.1f}s", flush=True)
 
-    # Verify YaRN was actually applied by checking rope_type
+    # Verify YaRN was actually applied by checking inv_freq values (not just rope_type)
     if enable_yarn:
         rotary = getattr(model.model, "rotary_emb", None)
         if rotary is None:
@@ -216,10 +217,20 @@ def load_model(
         actual_rope_type = getattr(rotary, "rope_type", "unknown")
         print(f"  Actual rope_type after loading: {actual_rope_type}", flush=True)
 
-        if actual_rope_type not in ("yarn",):
-            print(f"  WARNING: YaRN not applied via config! Patching inv_freq manually...", flush=True)
-            _apply_yarn_manual(model, yarn_factor, config)
-            print(f"  Manual YaRN patch applied.", flush=True)
+        # Check if inv_freq actually differs from vanilla (rope_type can lie)
+        if hasattr(rotary, "inv_freq") and rotary.inv_freq is not None:
+            dim = rotary.inv_freq.shape[0] * 2
+            base = getattr(config, "rope_theta", 1000000.0)
+            vanilla_inv = 1.0 / (base ** (torch.arange(0, dim, 2, dtype=torch.float32) / dim))
+            diff = (rotary.inv_freq.float().cpu() - vanilla_inv).abs()
+            n_changed = (diff > 1e-8).sum().item()
+            if n_changed == 0:
+                print(f"  WARNING: inv_freq identical to vanilla despite rope_type={actual_rope_type}!", flush=True)
+                print(f"  Forcing manual YaRN patch...", flush=True)
+                _apply_yarn_manual(model, yarn_factor, config)
+                print(f"  Manual YaRN patch applied.", flush=True)
+            else:
+                print(f"  inv_freq verified: {n_changed}/{len(diff)} dims differ from vanilla", flush=True)
 
     # Apply LoRA if provided
     if lora_ckpt_dir and os.path.exists(lora_ckpt_dir):
