@@ -28,6 +28,13 @@ composable_cot/outputs/
 # Older outputs
 outputs/
 
+# MRCR data (scp to HPC, not git)
+composable_cot/mrcr_context_extension/data/
+composable_cot/mrcr_context_extension/outputs/
+
+# Downloaded model weights
+qwen2.5-7b-instruct/
+
 # Claude Code
 .claude/
 
