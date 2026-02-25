@@ -75,28 +75,81 @@ The MRCR dataset (Multi-Round Coreference Resolution) is a harder successor to n
 
 ---
 
+## Experiment Design: Why YaRN+LoRA Training is Required
+
+### The problem with inference-only YaRN as a baseline
+
+Our original plan compared RPE+LoRA (trained on bin 0) against YaRN applied only at inference time (no training). This is **not a valid comparison** for the following reason:
+
+**The research question is:** "Which position encoding strategy helps LoRA adapters generalize to longer contexts?"
+
+To answer this, both methods must be applied during training under identical conditions. Comparing a trained method (RPE+LoRA) against an untrained method (inference-only YaRN) conflates two variables: (1) the position encoding strategy and (2) whether fine-tuning occurred at all. Any difference in results could be attributed to the training itself rather than the position strategy.
+
+### How YaRN training works
+
+YaRN modifies the RoPE frequency basis (`inv_freq`) at the model config level. When applied during LoRA training:
+1. Load base model with YaRN config → modified `inv_freq` is baked into the rotary embedding
+2. Attach LoRA adapter on top of the YaRN-modified model
+3. Train LoRA on bin 0 data — the adapter learns to work with the YaRN frequency basis
+4. At eval, load base model with same YaRN config + merge trained LoRA weights
+
+The LoRA weights are optimized for the modified frequency space, so they should generalize better to longer contexts where YaRN's scaling matters most.
+
+This parallels RPE exactly: RPE modifies `position_ids` (not `inv_freq`) during training, so the LoRA learns to work with varied positions. Both are position encoding strategies applied during training — the only difference is *what* they modify.
+
+### The corrected experiment matrix
+
+| # | Condition | Train on bin 0? | Position strategy at train | Position strategy at eval | Purpose |
+|---|-----------|-----------------|---------------------------|--------------------------|---------|
+| 1 | Vanilla | No | — | Normal RoPE | Base model ceiling on this task |
+| 2 | YaRN inference-only | No | — | YaRN RoPE | Free context extension (no training cost) |
+| 3 | LoRA baseline | Yes (LoRA) | Normal RoPE | Normal RoPE | Effect of fine-tuning alone |
+| 4 | **YaRN+LoRA** | Yes (LoRA) | YaRN RoPE | YaRN RoPE | **YaRN as training strategy** |
+| 5 | **RPE+LoRA** | Yes (LoRA) | Randomized position_ids | Normal RoPE | **RPE as training strategy** |
+
+**The key comparison is #4 vs #5** — same data, same LoRA rank, same compute, only the position encoding strategy differs. This is the apples-to-apples test.
+
+Conditions #1-3 are supporting baselines:
+- #1 tells us the base model's ability on this task at these lengths
+- #2 tells us how much you can get for free (no training) with frequency scaling
+- #3 isolates the effect of LoRA fine-tuning itself (no position tricks)
+
+### Why this matters for the paper
+
+Without YaRN+LoRA (#4), we could only claim "RPE+LoRA beats inference-only YaRN" — a weak claim since one method is trained and the other isn't. With #4, we can make the stronger claim: "RPE as a position encoding strategy during LoRA training outperforms/matches/underperforms YaRN as a position encoding strategy during LoRA training, under identical conditions." This is the comparison the paper needs.
+
+### Implementation note
+
+YaRN+LoRA training requires only a config change when loading the model in LLaMA-Factory's `tuner.py` — apply the version-aware YaRN config (see bug fix above) before LoRA is attached. No new code is needed beyond what we already have for the YaRN eval fix.
+
+---
+
 ## Master Checklist
 
 ### Phase 1: Environment & Data Setup
-- [ ] **1.1** Set up Qwen2.5-7B-Instruct on HPC (download model, verify inference works)
-- [ ] **1.2** Download and explore MRCR dataset (`openai/mrcr` from HuggingFace)
-- [ ] **1.3** Implement MRCR data loading, binning (by model tokenizer), and train/test splitting
-- [ ] **1.4** Implement MRCR evaluation script (grading function, per-bin aggregation)
+- [x] **1.1** Set up Qwen2.5-7B-Instruct on HPC (download model, verify inference works)
+- [x] **1.2** Download and explore MRCR dataset (`openai/mrcr` from HuggingFace)
+- [x] **1.3** Implement MRCR data loading, binning (by model tokenizer), and train/test splitting
+- [x] **1.4** Implement MRCR evaluation script (grading function, per-bin aggregation)
 
-### Phase 2: Baseline Evaluations [HIGH PRIORITY]
-- [ ] **2.1** Evaluate Qwen2.5-7B-Instruct (vanilla, no YaRN) on 4K-8K bin
-- [ ] **2.2** Evaluate Qwen2.5-7B-Instruct (vanilla, no YaRN) on 8K-16K bin
-- [ ] **2.3** Enable YaRN on Qwen2.5-7B-Instruct and evaluate on 4K-8K bin
-- [ ] **2.4** Enable YaRN on Qwen2.5-7B-Instruct and evaluate on 8K-16K bin
+### Phase 2: No-Training Baselines
+- [x] **2.1** Evaluate vanilla Qwen2.5-7B-Instruct on 4K-8K bin → **0.3887**
+- [x] **2.2** Evaluate vanilla Qwen2.5-7B-Instruct on 8K-16K bin → **0.3649**
+- [ ] **2.3** Evaluate YaRN (inference-only) on 4K-8K bin *(re-running with bug fix)*
+- [ ] **2.4** Evaluate YaRN (inference-only) on 8K-16K bin *(re-running with bug fix)*
 - [ ] **2.5** If baseline performance is high on 4K-16K, extend evaluation to 16K-32K bin
 
-### Phase 3: RPE Training & Evaluation [MEDIUM PRIORITY]
-- [ ] **3.1** Adapt RPE codebase for Qwen2.5-7B-Instruct (patching, config)
-- [ ] **3.2** Prepare MRCR 4K-8K train split for LoRA fine-tuning
-- [ ] **3.3** Train RPE + LoRA on 4K-8K train split
-- [ ] **3.4** Evaluate RPE model on 4K-8K test split (in-distribution)
-- [ ] **3.5** Evaluate RPE model on 8K-16K test split (out-of-distribution)
-- [ ] **3.6** If results warrant, evaluate on 16K-32K bin
+### Phase 3: LoRA Training & Evaluation [CORE EXPERIMENTS]
+All conditions train LoRA on bin 0 (4K-8K) train split, eval on bin 0 test + bin 1 + bin 2.
+
+- [ ] **3.1** Prepare MRCR 4K-8K train split for LLaMA-Factory LoRA fine-tuning
+- [ ] **3.2** Train **LoRA baseline** (normal RoPE, no position tricks)
+- [ ] **3.3** Evaluate LoRA baseline on bins 0/1/2
+- [ ] **3.4** Train **YaRN+LoRA** (YaRN config applied at model load before LoRA)
+- [ ] **3.5** Evaluate YaRN+LoRA on bins 0/1/2 (with YaRN at eval too)
+- [ ] **3.6** Adapt RPE codebase for Qwen2.5-7B-Instruct
+- [ ] **3.7** Train **RPE+LoRA** on 4K-8K train split
+- [ ] **3.8** Evaluate RPE+LoRA on bins 0/1/2
 
 ### Phase 4: PoSE Exploration [SIDE TASK]
 - [ ] **4.1** Implement PoSE position manipulation (chunk + skip bias)
@@ -226,38 +279,46 @@ Start with baselines because:
 
 ---
 
-### Task 2.3-2.4: YaRN Baseline
+### Task 2.3-2.4: YaRN Inference-Only Baseline
+
+**Purpose:** Measure how much context extension you get for free (no training) with YaRN frequency scaling. This is a supporting baseline, NOT the main comparison against RPE.
 
 **Subtasks:**
-1. Enable YaRN by modifying the model config at load time:
-   ```python
-   from transformers import AutoModelForCausalLM, AutoConfig
+1. Run `eval_mrcr.py` with `--enable-yarn --yarn-factor 4.0` on bins 0 and 1
+2. Compare against vanilla — any improvement shows YaRN's inference-time benefit
 
-   config = AutoConfig.from_pretrained("Qwen/Qwen2.5-7B-Instruct")
-   config.rope_scaling = {
-       "type": "yarn",
-       "factor": 4.0,
-       "original_max_position_embeddings": 32768
-   }
-   model = AutoModelForCausalLM.from_pretrained(
-       "Qwen/Qwen2.5-7B-Instruct",
-       config=config,
-       torch_dtype="auto",
-       device_map="auto"
-   )
-   ```
-2. Run same evaluation on 4K-8K and 8K-16K bins
-3. Compare against vanilla baseline
-
-**Note:** YaRN with factor=4.0 extends context to ~131K tokens. This is **without any fine-tuning** — just modifying the RoPE computation. If it works well, it's a strong baseline.
+**Note:** YaRN with factor=4.0 extends context to ~131K tokens. See bug fix section above for correct config code (version-aware for transformers v4/v5).
 
 **Caveat:** Static YaRN may slightly degrade short-context (4K-8K) performance. Watch for this.
 
-**Fallback:** YaRN is well-documented for Qwen2.5-7B-Instruct. Should work out of the box.
+---
+
+### Task 3.1: Prepare MRCR Training Data for LLaMA-Factory
+
+**Subtasks:**
+1. Convert MRCR bin 0 train split to LLaMA-Factory ShareGPT format
+2. Create training config YAML (LoRA rank 16, lr 2e-4, 3-5 epochs)
+3. This is shared across all three training conditions (LoRA baseline, YaRN+LoRA, RPE+LoRA)
 
 ---
 
-### Task 3.1: Adapt RPE Codebase for Qwen2.5-7B-Instruct
+### Task 3.4-3.5: YaRN+LoRA Training & Evaluation
+
+**Purpose:** This is the apples-to-apples comparison against RPE+LoRA. Both methods train LoRA on the same data with the same hyperparameters — only the position encoding strategy differs.
+
+**How it works:**
+1. Load base model with YaRN config applied (version-aware, see bug fix section)
+2. Attach LoRA adapter on top — the modified `inv_freq` is already baked into the rotary embedding
+3. Train LoRA on bin 0 data — the adapter learns in YaRN's modified frequency space
+4. At eval: load base model with YaRN config + merge LoRA checkpoint
+
+**Implementation:** In LLaMA-Factory's `tuner.py`, apply the YaRN config when loading the base model (before LoRA attachment). This is a config-level change — no new training code needed.
+
+**Key detail:** YaRN modifies `inv_freq` (the frequency basis of RoPE). RPE modifies `position_ids` (the input to RoPE). These are orthogonal approaches to the same problem: helping the model handle positions beyond its training range. By training both with LoRA under identical conditions, we isolate which manipulation strategy the LoRA adapter benefits from more.
+
+---
+
+### Task 3.6: Adapt RPE Codebase for Qwen2.5-7B-Instruct
 
 **Subtasks:**
 1. Verify RPE patching works on Qwen2.5-7B (our `RPEPatcher` should be model-agnostic since it patches `model.forward()` to replace `position_ids`)
@@ -396,11 +457,22 @@ def grade(response, answer, random_string_to_prepend):
 ```
 
 ### YaRN Config for Qwen2.5-7B-Instruct
+
+**BUG FIX (Feb 2025):** The original `config.rope_scaling = {...}` silently broke in transformers v5 (overwrites `rope_parameters`, loses `rope_theta=1M`, uses wrong key `"type"` vs `"rope_type"`). On v4 it was silently ignored — first eval produced scores identical to vanilla. Fix: version-aware config in `eval_mrcr.py` (v5 sets `config.rope_parameters` directly, v4 sets `config.rope_scaling`). Verified with `verify_yarn.py`: 40/64 inv_freq dimensions changed, rope_type changed from `"default"` → `"yarn"`.
+
 ```python
+# v5+:
+config.rope_parameters = {
+    "rope_type": "yarn",
+    "rope_theta": 1000000.0,  # MUST preserve Qwen's theta
+    "factor": 4.0,
+    "original_max_position_embeddings": config.max_position_embeddings,
+}
+# v4:
 config.rope_scaling = {
     "type": "yarn",
     "factor": 4.0,
-    "original_max_position_embeddings": 32768
+    "original_max_position_embeddings": config.max_position_embeddings,
 }
 ```
 

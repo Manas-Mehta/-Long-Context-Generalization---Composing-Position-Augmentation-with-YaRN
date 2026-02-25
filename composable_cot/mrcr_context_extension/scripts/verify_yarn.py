@@ -19,22 +19,35 @@ from transformers import AutoConfig, AutoModelForCausalLM, AutoTokenizer
 
 
 def get_inv_freq(model):
-    """Extract inv_freq from layer 0's rotary embedding."""
-    rotary = model.model.rotary_emb
+    """Extract inv_freq from model's rotary embedding (handles both locations)."""
+    # Try shared rotary_emb first (v5+, some late v4), then per-layer (older v4)
+    if hasattr(model.model, "rotary_emb"):
+        rotary = model.model.rotary_emb
+        print(f"  Found rotary_emb at model.model.rotary_emb")
+    else:
+        rotary = model.model.layers[0].self_attn.rotary_emb
+        print(f"  Found rotary_emb at model.model.layers[0].self_attn.rotary_emb")
     rope_type = getattr(rotary, "rope_type", "unknown")
     inv_freq = rotary.inv_freq.float().cpu().clone()
     return inv_freq, rope_type
 
 
 def apply_yarn_config(base_model_name, yarn_factor):
-    """Create YaRN config, version-aware."""
+    """Create YaRN config, feature-based detection (not version-based)."""
     config = AutoConfig.from_pretrained(base_model_name)
 
     import transformers
-    major_version = int(transformers.__version__.split(".")[0])
-    print(f"  transformers version: {transformers.__version__} (major={major_version})")
+    print(f"  transformers version: {transformers.__version__}")
 
-    if major_version >= 5:
+    # Feature-based: check if config uses rope_parameters (dict).
+    # Covers v5+ AND late v4 (4.48+) which backported rope_parameters.
+    has_rope_params = (
+        hasattr(config, "rope_parameters")
+        and isinstance(getattr(config, "rope_parameters", None), dict)
+    )
+    print(f"  has rope_parameters dict: {has_rope_params}")
+
+    if has_rope_params:
         orig_theta = config.rope_parameters.get("rope_theta", 1000000.0)
         config.rope_parameters = {
             "rope_type": "yarn",
@@ -42,15 +55,15 @@ def apply_yarn_config(base_model_name, yarn_factor):
             "factor": yarn_factor,
             "original_max_position_embeddings": config.max_position_embeddings,
         }
-        print(f"  [v5] rope_parameters: {config.rope_parameters}")
+        print(f"  [rope_parameters] {config.rope_parameters}")
     else:
         config.rope_scaling = {
             "type": "yarn",
             "factor": yarn_factor,
             "original_max_position_embeddings": config.max_position_embeddings,
         }
-        print(f"  [v4] rope_scaling: {config.rope_scaling}")
-        print(f"  [v4] rope_theta: {config.rope_theta}")
+        print(f"  [rope_scaling] {config.rope_scaling}")
+        print(f"  rope_theta: {config.rope_theta}")
 
     return config
 

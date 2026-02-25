@@ -91,14 +91,19 @@ def load_model(
         print(f"Enabling YaRN with factor={yarn_factor}", flush=True)
         config = AutoConfig.from_pretrained(base_model_name)
 
-        # Transformers v5 uses rope_parameters with "rope_type" key.
-        # Transformers v4 uses rope_scaling with "type" key.
-        # Setting config.rope_scaling in v5 overwrites rope_parameters and
-        # loses rope_theta, silently breaking YaRN. We handle both versions.
+        # Detection: if the config has rope_parameters (dict), use the new API.
+        # This covers transformers v5+ AND late v4 (4.48+) which backported it.
+        # Setting config.rope_scaling on these versions silently overwrites
+        # rope_parameters, losing rope_theta and using wrong key format.
         import transformers
-        major_version = int(transformers.__version__.split(".")[0])
-        if major_version >= 5:
-            # v5+: set rope_parameters directly, preserving rope_theta
+        print(f"  transformers version: {transformers.__version__}", flush=True)
+        has_rope_params = (
+            hasattr(config, "rope_parameters")
+            and isinstance(getattr(config, "rope_parameters", None), dict)
+        )
+
+        if has_rope_params:
+            # New-style: set rope_parameters directly, preserving rope_theta
             orig_theta = config.rope_parameters.get("rope_theta", 1000000.0)
             config.rope_parameters = {
                 "rope_type": "yarn",
@@ -106,15 +111,15 @@ def load_model(
                 "factor": yarn_factor,
                 "original_max_position_embeddings": config.max_position_embeddings,
             }
-            print(f"  [v5] rope_parameters: {config.rope_parameters}", flush=True)
+            print(f"  [rope_parameters] {config.rope_parameters}", flush=True)
         else:
-            # v4: rope_scaling is a plain attribute, rope_theta is separate
+            # Old-style: rope_scaling is a plain attribute, rope_theta is separate
             config.rope_scaling = {
                 "type": "yarn",
                 "factor": yarn_factor,
                 "original_max_position_embeddings": config.max_position_embeddings,
             }
-            print(f"  [v4] rope_scaling: {config.rope_scaling}", flush=True)
+            print(f"  [rope_scaling] {config.rope_scaling}", flush=True)
 
         model_kwargs["config"] = config
         config_desc = f"yarn_factor{yarn_factor}"
