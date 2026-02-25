@@ -1,6 +1,7 @@
 #!/bin/bash
 #SBATCH --job-name=mrcr_vanilla
 #SBATCH --account=torch_pr_219_courant
+#SBATCH --partition=h200_courant
 #SBATCH --nodes=1
 #SBATCH --ntasks-per-node=1
 #SBATCH --cpus-per-task=8
