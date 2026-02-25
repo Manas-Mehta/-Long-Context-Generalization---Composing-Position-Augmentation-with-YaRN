@@ -90,11 +90,32 @@ def load_model(
     if enable_yarn:
         print(f"Enabling YaRN with factor={yarn_factor}", flush=True)
         config = AutoConfig.from_pretrained(base_model_name)
-        config.rope_scaling = {
-            "type": "yarn",
-            "factor": yarn_factor,
-            "original_max_position_embeddings": config.max_position_embeddings,
-        }
+
+        # Transformers v5 uses rope_parameters with "rope_type" key.
+        # Transformers v4 uses rope_scaling with "type" key.
+        # Setting config.rope_scaling in v5 overwrites rope_parameters and
+        # loses rope_theta, silently breaking YaRN. We handle both versions.
+        import transformers
+        major_version = int(transformers.__version__.split(".")[0])
+        if major_version >= 5:
+            # v5+: set rope_parameters directly, preserving rope_theta
+            orig_theta = config.rope_parameters.get("rope_theta", 1000000.0)
+            config.rope_parameters = {
+                "rope_type": "yarn",
+                "rope_theta": orig_theta,
+                "factor": yarn_factor,
+                "original_max_position_embeddings": config.max_position_embeddings,
+            }
+            print(f"  [v5] rope_parameters: {config.rope_parameters}", flush=True)
+        else:
+            # v4: rope_scaling is a plain attribute, rope_theta is separate
+            config.rope_scaling = {
+                "type": "yarn",
+                "factor": yarn_factor,
+                "original_max_position_embeddings": config.max_position_embeddings,
+            }
+            print(f"  [v4] rope_scaling: {config.rope_scaling}", flush=True)
+
         model_kwargs["config"] = config
         config_desc = f"yarn_factor{yarn_factor}"
 
