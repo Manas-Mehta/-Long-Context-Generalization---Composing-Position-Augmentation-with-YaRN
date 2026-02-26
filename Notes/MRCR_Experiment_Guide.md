@@ -154,9 +154,7 @@ The eval_mrcr.py `load_model()` function handles both versions automatically.
 | 8K-16K (n=30) | **0.365** | 0.302 | -0.063 | Still within Qwen's native 32K, YaRN hurts |
 | 16K-32K (n=30) | **0.465** | 0.319 | -0.146 | Vanilla surprisingly strong here |
 | 32K-64K (n=30) | 0.165 | **0.242** | +0.077 | YaRN helps beyond 32K (native limit) |
-| 64K-128K (n=30) | OOM* | **0.114** | — | Vanilla crashed on L40S (48GB), YaRN completed on H200 (80GB) |
-
-*Vanilla 64K-128K: L40S OOM after 1 sample (score=0.000). Need to rerun on H200 for fair comparison.
+| 64K-128K (n=30) | 0.056 | **0.114** | +0.058 | Vanilla ran on H200 (originally OOM on L40S). Both very poor at 128K. |
 
 **Key observations:**
 1. **YaRN IS working** — 40/64 inv_freq dims differ, attention_factor=1.139, logits differ
@@ -172,7 +170,7 @@ The eval_mrcr.py `load_model()` function handles both versions automatically.
 ### Can we move on to Phase 3?
 
 **Yes.** Phase 2 baselines are complete:
-- Vanilla baseline established across bins 0-3 (bin 4 needs H200 rerun but isn't critical for Phase 3)
+- Vanilla baseline established across all 5 bins (bin 4 rerun on H200: 0.056)
 - YaRN confirmed working and results collected across all 5 bins
 - The degradation pattern (vanilla drops at 32K+, YaRN helps there) validates the experimental setup
 
@@ -240,7 +238,10 @@ Training stats: 60 samples / 4 effective batch = 15 steps/epoch × 5 epochs = **
 | `hpc/train_lora_yarn.slurm` | Train condition 2 (H200, 4hr) |
 | `hpc/train_lora_rpe.slurm` | Train condition 3 (H200, 4hr) |
 | `hpc/train_lora_rpe_curriculum.slurm` | Train condition 4 (H200, 4hr) |
-| `hpc/eval_all_lora.slurm` | Evaluate all 4 conditions on bins 0-2 (H200, 12hr) |
+| `hpc/eval_lora_baseline.slurm` | Eval LoRA baseline on bins 0-4 (H200, 12hr) |
+| `hpc/eval_lora_yarn.slurm` | Eval YaRN+LoRA on bins 0-4 (H200, 12hr) |
+| `hpc/eval_lora_rpe.slurm` | Eval RPE+LoRA (fixed) on bins 0-4 (H200, 12hr) |
+| `hpc/eval_lora_rpe_curriculum.slurm` | Eval RPE+LoRA (curriculum) on bins 0-4 (H200, 12hr) |
 
 ### Key functions in `train_mrcr_lora.py`
 
@@ -282,17 +283,65 @@ checkpoints/{lora_baseline,yarn_lora,rpe_lora,rpe_curriculum_lora}/
   run_config.json                  # Full training configuration
 ```
 
+### Training Results (Feb 25, 2026)
+
+All 4 conditions trained on L40S (46GB). 60 samples, 75 steps (15 steps/epoch × 5 epochs), ~21 minutes each.
+
+#### Loss Summary
+
+| Condition | Avg Train Loss | Epoch 1 Loss | Final Loss | Max Grad Norm | Time |
+|-----------|---------------|--------------|------------|---------------|------|
+| LoRA baseline | 0.0039 | 0.0052 | ~0.0 | 0.37 | 21:03 |
+| YaRN+LoRA | 0.0123 | 0.0230 | 0.0003 | 2.56 | 21:01 |
+| RPE curriculum | 0.0265 | 0.0181 | 0.0010 | 0.95 | 20:45 |
+| RPE fixed (L=32768) | 0.3669 | 1.5740 | 0.0099 | **496** | 21:14 |
+
+#### Per-Epoch Loss (end-of-epoch values)
+
+| Condition | E1 | E2 | E3 | E4 | E5 |
+|-----------|------|------|------|------|------|
+| LoRA baseline | 0.0052 | 0.0001 | 0.0001 | 0.0000 | 0.0000 |
+| YaRN+LoRA | 0.0230 | 0.0017 | 0.0006 | 0.0002 | 0.0003 |
+| RPE curriculum | 0.0181 | 0.0123 | 0.0081 | 0.0050 | 0.0010 |
+| RPE fixed | 1.5740 | 0.0611 | 0.0161 | 0.0053 | 0.0099 |
+
+#### RPE Curriculum L Schedule (confirmed from logs)
+
+| Epoch | L value | Avg position gap |
+|-------|---------|-----------------|
+| 1 | 10,240 | ~1.7 |
+| 2 | 16,384 | ~2.7 |
+| 3 | 24,576 | ~4.1 |
+| 4 | 32,768 | ~5.5 |
+| 5 | 32,768 | ~5.5 |
+
+#### Verification
+
+- **YaRN**: `rope_type: yarn`, 40/64 inv_freq dims differ from vanilla
+- **RPE fixed**: `[RPEPatcher] Patched PeftModelForCausalLM (L=32768)`, unpatched at train end
+- **RPE curriculum**: All L transitions logged correctly (10240→16384→24576→32768)
+- **All 4**: Same dataset (60 samples, 1 truncated, avg 384 answer tokens), same sample 0 verification
+
+#### Observations
+
+1. **Baseline memorizes perfectly by epoch 2** (loss→0). Expected: normal positions, in-context-window data.
+2. **YaRN starts 4× higher loss** than baseline (0.211 vs 0.048). Modified RoPE frequencies make the task harder even at training length. Converges well by epoch 3.
+3. **RPE curriculum trains smoothly** — starts moderate (L=10240 is near-sequential), ramps up gradually. Grad norms stay stable (<1.0). Final loss 0.001.
+4. **RPE fixed has severe initial disruption** — loss starts at 3.1 with grad norms up to 496. Positions from [0, 32K) for 8K sequences means avg gap ~5.5, severely disrupting attention patterns. This mirrors Phase 2 CCoT where fixed RPE was worse than curriculum.
+5. **Training loss difference matters for interpretation, not for quality.** Higher training loss with RPE is intentional — the model is learning under a harder position regime. The real test is whether this produces better length generalization at eval.
+
 ### Errors encountered and fixes
 
-*(To be filled after training runs)*
+- **No errors.** All 4 training jobs completed successfully on first run.
+- Minor cosmetic: "Final loss: None" in summary display (last HF Trainer log doesn't include per-step loss key). Actual final step loss is captured in per-step metrics.
 
-### Results
+### Eval Results
 
 *(To be filled after eval runs)*
 
 | Condition | 4K-8K | 8K-16K | 16K-32K | 32K-64K | 64K-128K | Notes |
 |-----------|-------|--------|---------|---------|----------|-------|
-| Vanilla (Phase 2) | 0.389 | 0.365 | 0.465 | 0.165 | OOM* | No training, reference |
+| Vanilla (Phase 2) | 0.389 | 0.365 | 0.465 | 0.165 | 0.056 | No training, reference |
 | YaRN inf-only (Phase 2) | 0.346 | 0.302 | 0.319 | 0.242 | 0.114 | No training, reference |
 | LoRA baseline | — | — | — | — | — | |
 | YaRN+LoRA | — | — | — | — | — | |
@@ -421,8 +470,11 @@ sbatch composable_cot/mrcr_context_extension/hpc/train_lora_yarn.slurm
 sbatch composable_cot/mrcr_context_extension/hpc/train_lora_rpe.slurm
 sbatch composable_cot/mrcr_context_extension/hpc/train_lora_rpe_curriculum.slurm
 
-# --- Phase 3: Eval (after training completes) ---
-sbatch composable_cot/mrcr_context_extension/hpc/eval_all_lora.slurm
+# --- Phase 3: Eval (after training completes, submit all 4 in parallel) ---
+sbatch composable_cot/mrcr_context_extension/hpc/eval_lora_baseline.slurm
+sbatch composable_cot/mrcr_context_extension/hpc/eval_lora_yarn.slurm
+sbatch composable_cot/mrcr_context_extension/hpc/eval_lora_rpe.slurm
+sbatch composable_cot/mrcr_context_extension/hpc/eval_lora_rpe_curriculum.slurm
 
 # Monitor
 squeue -u mm14444
@@ -439,6 +491,6 @@ cat slurm_logs/mrcr_eval_lora_*.out
 
 - Account: `torch_pr_219_courant`
 - Conda env: `/scratch/mm14444/conda_envs/rpe`
-- Partitions: `h200_courant` (80GB, needed for training + 64K+ bins), `l40s_courant` (48GB, fine for 4K-32K eval)
+- Partitions: `h200_courant` (80GB, needed for 64K+ eval), `l40s_courant` (48GB, used for training + 4K-32K eval)
 - transformers: 4.52.4
 - Model cache: `/scratch/mm14444/hf_cache` (offline mode enabled)
