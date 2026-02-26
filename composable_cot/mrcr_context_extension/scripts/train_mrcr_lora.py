@@ -490,6 +490,7 @@ def parse_args():
     parser.add_argument("--batch-size", type=int, default=1)
     parser.add_argument("--grad-accum", type=int, default=4)
     parser.add_argument("--warmup-ratio", type=float, default=0.1)
+    parser.add_argument("--max-grad-norm", type=float, default=1.0)
     parser.add_argument("--seed", type=int, default=42)
     parser.add_argument("--bf16", action="store_true", default=True)
     parser.add_argument("--no-bf16", dest="bf16", action="store_false")
@@ -596,6 +597,7 @@ def main():
         remove_unused_columns=False,
         gradient_checkpointing=args.gradient_checkpointing,
         gradient_checkpointing_kwargs={"use_reentrant": False} if args.gradient_checkpointing else None,
+        max_grad_norm=args.max_grad_norm,
         ddp_timeout=180000000,
     )
 

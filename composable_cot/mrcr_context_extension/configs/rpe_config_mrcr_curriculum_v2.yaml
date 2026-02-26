@@ -1,0 +1,32 @@
+# RPE Configuration for MRCR — Curriculum v2 (aggressive L)
+#
+# v1 topped out at L=32768 (bin 2 max). Results showed RPE curriculum
+# matched baseline at bin 2 but didn't surpass it at bins 3-4.
+#
+# v2 pushes L to 65536 (bin 3 max) to force the model to handle positions
+# well beyond training sequence length, specifically targeting bins 3-4.
+#
+# Schedule:
+#   Epoch 1: L=16384  — 2x max seq, moderate (avg gap ~2.0)
+#   Epoch 2: L=32768  — 4x max seq = bin 2 max (avg gap ~4.1)
+#   Epoch 3: L=49152  — 6x max seq, stretching (avg gap ~6.1)
+#   Epoch 4: L=65536  — 8x max seq = bin 3 max (avg gap ~8.2)
+#   Epoch 5: L=65536  — consolidation at target
+#
+# Compared to v1 (10240→16384→24576→32768→32768):
+#   - Starts higher (16384 vs 10240) — v1 showed model handles this fine
+#   - Ends much higher (65536 vs 32768) — targets bin 3 generalization
+#   - Steeper ramp — more aggressive position-invariance training
+
+rpe:
+  enabled: true
+  max_simulation_length: 65536
+  seed: null
+  training_mode: true
+  inference_mode: false
+  curriculum:
+    1: 16384
+    2: 32768
+    3: 49152
+    4: 65536
+    5: 65536

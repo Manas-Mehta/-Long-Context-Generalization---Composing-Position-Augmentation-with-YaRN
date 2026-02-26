@@ -1,0 +1,24 @@
+# RPE Configuration for MRCR — Fixed v2 (L warmup)
+#
+# v1 had gradient explosion (norm 496) at epoch 1 because L=32768 is too
+# aggressive from the start for 8K sequences (avg gap ~5.5).
+#
+# v2 fix: use curriculum to warmup L in epoch 1, then hold at target.
+#   Epoch 1: L=8192   — sequential (gap ~1.0), lets LoRA learn the task first
+#   Epoch 2-5: L=32768 — target randomization (gap ~5.5)
+#
+# This is NOT a full curriculum — it's a 1-epoch warmup to avoid gradient explosion.
+# The model spends 80% of training at the target L, vs v1's 100%.
+
+rpe:
+  enabled: true
+  max_simulation_length: 32768
+  seed: null
+  training_mode: true
+  inference_mode: false
+  curriculum:
+    1: 8192
+    2: 32768
+    3: 32768
+    4: 32768
+    5: 32768

@@ -335,22 +335,149 @@ All 4 conditions trained on L40S (46GB). 60 samples, 75 steps (15 steps/epoch ×
 - **No errors.** All 4 training jobs completed successfully on first run.
 - Minor cosmetic: "Final loss: None" in summary display (last HF Trainer log doesn't include per-step loss key). Actual final step loss is captured in per-step metrics.
 
-### Eval Results
+### Eval Results (Feb 26, 2026)
 
-*(To be filled after eval runs)*
+All 4 LoRA conditions evaluated on H200 (80GB) across all 5 bins. Each eval reloads base model + merges LoRA weights.
 
-| Condition | 4K-8K | 8K-16K | 16K-32K | 32K-64K | 64K-128K | Notes |
-|-----------|-------|--------|---------|---------|----------|-------|
-| Vanilla (Phase 2) | 0.389 | 0.365 | 0.465 | 0.165 | 0.056 | No training, reference |
-| YaRN inf-only (Phase 2) | 0.346 | 0.302 | 0.319 | 0.242 | 0.114 | No training, reference |
-| LoRA baseline | — | — | — | — | — | |
-| YaRN+LoRA | — | — | — | — | — | |
-| RPE+LoRA (fixed) | — | — | — | — | — | |
-| RPE+LoRA (curriculum) | — | — | — | — | — | |
+#### Score Table (SequenceMatcher ratio, higher = better)
+
+| Condition | 4K-8K (n=26) | 8K-16K (n=30) | 16K-32K (n=30) | 32K-64K (n=30) | 64K-128K (n=30) |
+|-----------|:---:|:---:|:---:|:---:|:---:|
+| Vanilla (Phase 2) | 0.389 | 0.365 | 0.465 | 0.165 | 0.056 |
+| YaRN inf-only (Phase 2) | 0.346 | 0.302 | 0.319 | 0.242 | 0.114 |
+| **LoRA baseline** | **0.998** | **0.966** | 0.746 | 0.545 | 0.317 |
+| **YaRN+LoRA** | 0.891 | 0.692 | 0.619 | **0.619** | **0.441** |
+| **RPE+LoRA (fixed L=32768)** | 0.636 | 0.504 | 0.503 | 0.473 | 0.265 |
+| **RPE+LoRA (curriculum)** | 0.922 | 0.691 | **0.749** | 0.563 | 0.255 |
+
+#### Perfect / Zero Scores
+
+| Condition | 4K-8K (P/Z) | 8K-16K (P/Z) | 16K-32K (P/Z) | 32K-64K (P/Z) | 64K-128K (P/Z) |
+|-----------|:---:|:---:|:---:|:---:|:---:|
+| LoRA baseline | 25/0 | 24/0 | 18/0 | 12/1 | 6/1 |
+| YaRN+LoRA | 21/0 | 17/1 | 14/2 | 12/0 | 8/3 |
+| RPE+LoRA (fixed) | 13/0 | 12/1 | 10/0 | 7/0 | 2/1 |
+| RPE+LoRA (curriculum) | 16/0 | 12/1 | 13/0 | 9/2 | 3/2 |
+
+#### Improvement vs Vanilla Baseline
+
+| Condition | 4K-8K | 8K-16K | 16K-32K | 32K-64K | 64K-128K |
+|-----------|:---:|:---:|:---:|:---:|:---:|
+| LoRA baseline | +157% | +165% | +60% | +230% | +466% |
+| YaRN+LoRA | +129% | +90% | +33% | +275% | +688% |
+| RPE+LoRA (fixed) | +64% | +38% | +8% | +187% | +373% |
+| RPE+LoRA (curriculum) | +137% | +89% | +61% | +241% | +355% |
+
+#### Degradation Slope (how fast performance drops with length)
+
+| Condition | Score at 4K-8K | Score at 64K-128K | Retention | Slope |
+|-----------|:---:|:---:|:---:|:---:|
+| Vanilla | 0.389 | 0.056 | 14.4% | -0.0833/bin |
+| LoRA baseline | 0.998 | 0.317 | 31.8% | -0.1703/bin |
+| YaRN+LoRA | 0.891 | 0.441 | **49.5%** | -0.1125/bin |
+| RPE+LoRA (fixed) | 0.636 | 0.265 | 41.7% | -0.0928/bin |
+| RPE+LoRA (curriculum) | 0.922 | 0.255 | 27.7% | -0.1668/bin |
+
+#### Eval Verification
+
+- **YaRN+LoRA**: All 5 bins show `rope_type: yarn`, `40/64 dims differ from vanilla` — CORRECT
+- **LoRA baseline**: All bins `inv_freq IDENTICAL to vanilla`, `rope_type: default` — CORRECT
+- **RPE fixed**: All bins `inv_freq IDENTICAL to vanilla`, `rope_type: default` — CORRECT (RPE is training-only)
+- **RPE curriculum**: All bins `inv_freq IDENTICAL to vanilla`, `rope_type: default` — CORRECT
+- **All conditions**: LoRA loaded from correct checkpoint paths, logit fingerprints consistent within each condition
+
+#### Key Findings
+
+1. **LoRA baseline is the surprise winner at short-to-medium contexts.** Near-perfect at bin 0 (0.998) and bin 1 (0.966), strong at bin 2 (0.746). Simply fine-tuning on the MRCR task teaches the model the *format* and *strategy* — this accounts for most of the improvement over vanilla.
+
+2. **YaRN+LoRA wins at long contexts (32K+).** Best at bin 3 (0.619) and bin 4 (0.441). YaRN's frequency modification combined with task-specific LoRA produces the best length generalization. Has the **best retention ratio** (49.5%) — performance degrades most gracefully with length.
+
+3. **RPE fixed (L=32768) underperforms across the board.** Worst at every bin. The gradient explosion during training (max grad norm 496) likely damaged the adapter. The fixed L=32768 is too aggressive — positions from [0, 32K) for 8K sequences means avg gap ~5.5, which disrupts attention patterns without the gradual adaptation that curriculum provides.
+
+4. **RPE curriculum is competitive but doesn't beat LoRA baseline.** Strong at bin 0 (0.922) and bin 2 (0.749, nearly matching baseline), but drops off at bin 4 (0.255). The curriculum scheduling helps vs fixed RPE, but the fundamentally different training regime (random positions) doesn't translate to better eval with sequential positions.
+
+5. **The gap between RPE conditions mirrors Phase 2 CCoT results**: curriculum >> fixed. Curriculum's gradual L ramp produces much better adapters than the fixed approach.
+
+6. **All LoRA conditions massively outperform no-training baselines.** Even the worst LoRA condition (RPE fixed at bin 4: 0.265) beats vanilla (0.056) by 373%. This confirms that task-specific fine-tuning is the dominant factor.
 
 ### Can we move on to Phase 4?
 
-*(To be answered after results are in)*
+**Yes, with caveats.** Phase 3 is complete and the results are clear. Key conclusions:
+- LoRA fine-tuning on bin 0 data provides massive improvements across all bins
+- YaRN+LoRA provides the best length generalization (flattest degradation curve)
+- RPE in its current form (random positions during training, sequential during eval) does not improve over standard LoRA for this task
+- Phase 4 (PoSE) may be more promising than RPE because it preserves local contiguity
+
+---
+
+## Phase 3b: RPE+YaRN Eval & Improved RPE Training
+
+*Status: Ready to run*
+
+### Goal
+
+Two investigations:
+1. **RPE + YaRN at eval**: Do RPE-trained LoRAs benefit from YaRN frequency scaling at inference? (No retraining needed — just eval existing checkpoints with `--enable-yarn`)
+2. **Better RPE training (v2)**: Fix the training instability in RPE fixed; push curriculum to more aggressive L values.
+
+### New Eval: RPE checkpoints + YaRN inference
+
+| Script | What it does |
+|--------|-------------|
+| `hpc/eval_lora_rpe_yarn.slurm` | RPE fixed checkpoint + YaRN at eval |
+| `hpc/eval_lora_rpe_curriculum_yarn.slurm` | RPE curriculum checkpoint + YaRN at eval |
+
+### v2 Training Configs
+
+| Config | L Schedule | Changes from v1 |
+|--------|-----------|-----------------|
+| `configs/rpe_config_mrcr_fixed_v2.yaml` | 8192→32768→32768→32768→32768 | 1-epoch warmup to avoid grad explosion |
+| `configs/rpe_config_mrcr_curriculum_v2.yaml` | 16384→32768→49152→65536→65536 | Targets bin 3 (64K), much more aggressive |
+
+### v2 Training Hyperparameter Changes
+
+| Param | RPE fixed v1 | RPE fixed v2 | RPE curriculum v1 | RPE curriculum v2 |
+|-------|:---:|:---:|:---:|:---:|
+| LR | 2e-4 | **1e-4** | 2e-4 | 2e-4 |
+| max_grad_norm | 1.0 | **0.5** | 1.0 | 1.0 |
+| L schedule | 32768 (constant) | **8192→32768** (warmup) | 10K→16K→24K→32K→32K | **16K→32K→49K→65K→65K** |
+| Epochs | 5 | 5 | 5 | 5 |
+
+### v2 Files
+
+| Script | Purpose |
+|--------|---------|
+| `hpc/train_lora_rpe_v2.slurm` | Train RPE fixed v2 |
+| `hpc/train_lora_rpe_curriculum_v2.slurm` | Train RPE curriculum v2 |
+| `hpc/eval_lora_rpe_v2.slurm` | Eval RPE fixed v2 on bins 0-4 |
+| `hpc/eval_lora_rpe_curriculum_v2.slurm` | Eval RPE curriculum v2 on bins 0-4 |
+
+### Commands
+
+```bash
+# --- Phase 3b: YaRN eval on existing RPE checkpoints (submit now) ---
+sbatch composable_cot/mrcr_context_extension/hpc/eval_lora_rpe_yarn.slurm
+sbatch composable_cot/mrcr_context_extension/hpc/eval_lora_rpe_curriculum_yarn.slurm
+
+# --- Phase 3b: v2 training (submit now, eval after training completes) ---
+sbatch composable_cot/mrcr_context_extension/hpc/train_lora_rpe_v2.slurm
+sbatch composable_cot/mrcr_context_extension/hpc/train_lora_rpe_curriculum_v2.slurm
+
+# --- Phase 3b: v2 eval (submit after training completes) ---
+sbatch composable_cot/mrcr_context_extension/hpc/eval_lora_rpe_v2.slurm
+sbatch composable_cot/mrcr_context_extension/hpc/eval_lora_rpe_curriculum_v2.slurm
+```
+
+### Eval Results
+
+*(To be filled after runs complete)*
+
+| Condition | 4K-8K | 8K-16K | 16K-32K | 32K-64K | 64K-128K |
+|-----------|:---:|:---:|:---:|:---:|:---:|
+| RPE fixed + YaRN eval | — | — | — | — | — |
+| RPE curriculum + YaRN eval | — | — | — | — | — |
+| RPE fixed v2 | — | — | — | — | — |
+| RPE curriculum v2 | — | — | — | — | — |
 
 ---
 
