@@ -58,8 +58,10 @@ from transformers import (
 )
 
 # Ensure project root is importable (for rpe/ and composable_cot/)
+# Script is at: RPE/composable_cot/mrcr_context_extension/scripts/train_mrcr_lora.py
+# Project root:  RPE/  (3 levels up from scripts/)
 _SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
-_PROJECT_ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(_SCRIPT_DIR))))
+_PROJECT_ROOT = os.path.dirname(os.path.dirname(os.path.dirname(_SCRIPT_DIR)))
 if _PROJECT_ROOT not in sys.path:
     sys.path.insert(0, _PROJECT_ROOT)
 

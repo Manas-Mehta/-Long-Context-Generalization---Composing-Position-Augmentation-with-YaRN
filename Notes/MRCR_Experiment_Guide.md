@@ -290,14 +290,14 @@ checkpoints/{lora_baseline,yarn_lora,rpe_lora,rpe_curriculum_lora}/
 
 *(To be filled after eval runs)*
 
-| Condition | 4K-8K | 8K-16K | 16K-32K | Notes |
-|-----------|-------|--------|---------|-------|
-| Vanilla (Phase 2) | 0.389 | 0.365 | 0.465 | No training, reference |
-| YaRN inf-only (Phase 2) | 0.346 | 0.302 | 0.319 | No training, reference |
-| LoRA baseline | — | — | — | |
-| YaRN+LoRA | — | — | — | |
-| RPE+LoRA (fixed) | — | — | — | |
-| RPE+LoRA (curriculum) | — | — | — | |
+| Condition | 4K-8K | 8K-16K | 16K-32K | 32K-64K | 64K-128K | Notes |
+|-----------|-------|--------|---------|---------|----------|-------|
+| Vanilla (Phase 2) | 0.389 | 0.365 | 0.465 | 0.165 | OOM* | No training, reference |
+| YaRN inf-only (Phase 2) | 0.346 | 0.302 | 0.319 | 0.242 | 0.114 | No training, reference |
+| LoRA baseline | — | — | — | — | — | |
+| YaRN+LoRA | — | — | — | — | — | |
+| RPE+LoRA (fixed) | — | — | — | — | — | |
+| RPE+LoRA (curriculum) | — | — | — | — | — | |
 
 ### Can we move on to Phase 4?
 

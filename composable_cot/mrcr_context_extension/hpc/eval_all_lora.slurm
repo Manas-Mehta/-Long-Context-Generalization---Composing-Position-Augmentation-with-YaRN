@@ -7,13 +7,13 @@
 #SBATCH --cpus-per-task=8
 #SBATCH --mem=64G
 #SBATCH --gres=gpu:1
-#SBATCH --time=12:00:00
+#SBATCH --time=24:00:00
 #SBATCH --output=slurm_logs/mrcr_eval_lora_%j.out
 #SBATCH --error=slurm_logs/mrcr_eval_lora_%j.err
 #SBATCH --requeue
 
 # ============================================================================
-# Phase 3 — Evaluate ALL 4 LoRA conditions on bins 0, 1, 2
+# Phase 3 — Evaluate ALL 4 LoRA conditions on bins 0-4
 #
 # Conditions:
 #   1. lora_baseline     — normal RoPE
@@ -21,8 +21,8 @@
 #   3. rpe_lora          — RPE-trained LoRA (eval with standard positions)
 #   4. rpe_curriculum_lora — RPE curriculum LoRA (eval with standard positions)
 #
-# Each condition x 3 bins = 12 eval runs total.
-# Estimated time: ~10h (bins 0: ~20min, 1: ~40min, 2: ~90min per condition)
+# Each condition x 5 bins = 20 eval runs total.
+# Estimated time: ~16h (bins 0: ~20min, 1: ~40min, 2: ~90min, 3: ~2h, 4: ~3h per cond)
 # ============================================================================
 
 set -eo pipefail
@@ -41,14 +41,14 @@ export HF_HUB_OFFLINE=1
 
 cd "${PROJECT_DIR}"
 
-echo "=== MRCR Phase 3: LoRA Evaluation (all conditions, bins 0-2) ==="
+echo "=== MRCR Phase 3: LoRA Evaluation (all conditions, bins 0-4) ==="
 echo "  Job ID:    ${SLURM_JOB_ID}"
 echo "  Node:      $(hostname)"
 echo "  GPU:       $(nvidia-smi --query-gpu=name,memory.total --format=csv,noheader 2>/dev/null || echo 'N/A')"
 echo "  Timestamp: $(date)"
 echo ""
 
-BINS=("bin0_4K-8K" "bin1_8K-16K" "bin2_16K-32K")
+BINS=("bin0_4K-8K" "bin1_8K-16K" "bin2_16K-32K" "bin3_32K-64K" "bin4_64K-128K")
 BASE_MODEL="Qwen/Qwen2.5-7B-Instruct"
 EVAL_SCRIPT="${MRCR_DIR}/scripts/eval_mrcr.py"
 
@@ -122,8 +122,8 @@ echo ""
 # Print summary table
 echo "=== RESULTS SUMMARY ==="
 echo ""
-printf "%-25s %8s %8s %8s\n" "Condition" "4K-8K" "8K-16K" "16K-32K"
-printf "%-25s %8s %8s %8s\n" "-------------------------" "--------" "--------" "--------"
+printf "%-25s %8s %8s %8s %8s %8s\n" "Condition" "4K-8K" "8K-16K" "16K-32K" "32K-64K" "64K-128K"
+printf "%-25s %8s %8s %8s %8s %8s\n" "-------------------------" "--------" "--------" "--------" "--------" "--------"
 
 for COND in "lora_baseline" "yarn_lora" "rpe_lora" "rpe_curriculum_lora"; do
     SCORES=""
