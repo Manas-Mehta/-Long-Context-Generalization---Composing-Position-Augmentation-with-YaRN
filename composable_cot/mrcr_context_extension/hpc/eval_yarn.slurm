@@ -39,6 +39,47 @@ echo "  GPU:       $(nvidia-smi --query-gpu=name --format=csv,noheader 2>/dev/nu
 echo "  Timestamp: $(date)"
 echo ""
 
+# --- Pre-flight: verify YaRN math works before expensive model load ---
+echo "=== Pre-flight: YaRN sanity check ==="
+python -c "
+import transformers
+print(f'transformers version: {transformers.__version__}')
+
+import torch
+from transformers import AutoConfig
+from transformers.modeling_rope_utils import ROPE_INIT_FUNCTIONS
+
+config = AutoConfig.from_pretrained('Qwen/Qwen2.5-7B-Instruct')
+rope_theta = getattr(config, 'rope_theta', None)
+if rope_theta is None and hasattr(config, 'rope_parameters'):
+    rope_theta = config.rope_parameters.get('rope_theta', 10000.0)
+print(f'rope_theta: {rope_theta}')
+print(f'max_position_embeddings: {config.max_position_embeddings}')
+
+# Compute vanilla inv_freq
+head_dim = getattr(config, 'head_dim', config.hidden_size // config.num_attention_heads)
+inv_v = 1.0 / (rope_theta ** (torch.arange(0, head_dim, 2, dtype=torch.float32) / head_dim))
+
+# Set YaRN config (version-agnostic)
+if hasattr(config, 'rope_parameters') and isinstance(config.rope_parameters, dict):
+    config.rope_parameters.update({'type': 'yarn', 'rope_type': 'yarn', 'factor': 4.0})
+else:
+    config.rope_scaling = {'type': 'yarn', 'factor': 4.0}
+if hasattr(config, 'standardize_rope_params'):
+    config.standardize_rope_params()
+
+inv_y, attn = ROPE_INIT_FUNCTIONS['yarn'](config, device='cpu')
+n_changed = ((inv_v - inv_y).abs() > 1e-8).sum().item()
+print(f'YaRN dims changed: {n_changed}/{len(inv_v)}')
+print(f'attention_factor: {attn}')
+if n_changed > 0:
+    print('PRE-FLIGHT PASSED: YaRN math produces different frequencies')
+else:
+    print('PRE-FLIGHT FAILED: YaRN frequencies identical to vanilla!')
+    exit(1)
+"
+echo ""
+
 # --- Bin 0: 4K-8K ---
 echo "=== Evaluating on 4K-8K bin ==="
 python composable_cot/mrcr_context_extension/scripts/eval_mrcr.py \

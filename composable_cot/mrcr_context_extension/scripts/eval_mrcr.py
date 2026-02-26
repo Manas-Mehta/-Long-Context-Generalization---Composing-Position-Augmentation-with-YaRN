@@ -78,8 +78,12 @@ def _diagnose_rope(model, config, enable_yarn, yarn_factor):
     print(f"  attention_scaling attr: {getattr(rotary, 'attention_scaling', 'N/A')}", flush=True)
     print(f"  max_seq_len_cached:     {getattr(rotary, 'max_seq_len_cached', 'N/A')}", flush=True)
 
-    # Check config values
-    base = getattr(config, "rope_theta", 1000000.0)
+    # Check config values (rope_theta may be in rope_parameters dict in v5.0+)
+    base = None
+    if hasattr(config, "rope_parameters") and isinstance(config.rope_parameters, dict):
+        base = config.rope_parameters.get("rope_theta")
+    if base is None:
+        base = getattr(config, "rope_theta", 1000000.0)
     max_pos = getattr(config, "max_position_embeddings", "N/A")
     print(f"  config.rope_theta:      {base}", flush=True)
     print(f"  config.max_position_embeddings: {max_pos}", flush=True)
@@ -144,7 +148,11 @@ def _apply_yarn_manual(model, yarn_factor, config):
         rotary = model.model.layers[0].self_attn.rotary_emb
 
     dim = rotary.inv_freq.shape[0] * 2  # inv_freq has dim/2 elements
-    base = getattr(config, "rope_theta", 1000000.0)
+    base = None
+    if hasattr(config, "rope_parameters") and isinstance(config.rope_parameters, dict):
+        base = config.rope_parameters.get("rope_theta")
+    if base is None:
+        base = getattr(config, "rope_theta", 1000000.0)
     original_max_pos = config.max_position_embeddings
 
     # NTK-aware scaling: scale the base theta
@@ -192,14 +200,33 @@ def load_model(
 
     # Apply YaRN if requested
     # Ref: https://huggingface.co/Qwen/Qwen2.5-32B-Instruct/discussions/5
-    # NOTE: original_max_position_embeddings is for vLLM only, not Transformers
+    # CRITICAL: In transformers 5.0+, rope_theta lives inside rope_parameters dict.
+    # Using config.rope_scaling = {...} REPLACES the dict and loses rope_theta.
+    # Must use .update() instead to preserve rope_theta.
+    # See Notes/MRCR_YaRN_Verification.md for full details.
     if enable_yarn:
         print(f"Enabling YaRN with factor={yarn_factor}", flush=True)
-        config.rope_scaling = {
-            "type": "yarn",
-            "factor": yarn_factor,
-        }
-        print(f"  rope_scaling = {config.rope_scaling}", flush=True)
+        # Read rope_theta before it could get lost
+        rope_theta = None
+        if hasattr(config, "rope_parameters") and isinstance(config.rope_parameters, dict):
+            rope_theta = config.rope_parameters.get("rope_theta")
+        if rope_theta is None:
+            rope_theta = getattr(config, "rope_theta", 1000000.0)
+
+        # Use update() to preserve rope_theta (works in transformers 5.0+)
+        if hasattr(config, "rope_parameters") and isinstance(config.rope_parameters, dict):
+            config.rope_parameters.update({
+                "type": "yarn",
+                "rope_type": "yarn",
+                "factor": yarn_factor,
+            })
+            if config.rope_parameters.get("rope_theta") is None:
+                config.rope_parameters["rope_theta"] = rope_theta
+        else:
+            # Fallback for older transformers where rope_theta is standalone
+            config.rope_scaling = {"type": "yarn", "factor": yarn_factor}
+
+        print(f"  rope_parameters = {getattr(config, 'rope_parameters', config.rope_scaling)}", flush=True)
         print(f"  max_position_embeddings = {config.max_position_embeddings}", flush=True)
         model_kwargs["config"] = config
         config_desc = f"yarn_factor{yarn_factor}"
@@ -220,7 +247,12 @@ def load_model(
         # Check if inv_freq actually differs from vanilla (rope_type can lie)
         if hasattr(rotary, "inv_freq") and rotary.inv_freq is not None:
             dim = rotary.inv_freq.shape[0] * 2
-            base = getattr(config, "rope_theta", 1000000.0)
+            # Get rope_theta from wherever it lives (v5.0+ vs older)
+            base = None
+            if hasattr(config, "rope_parameters") and isinstance(config.rope_parameters, dict):
+                base = config.rope_parameters.get("rope_theta")
+            if base is None:
+                base = getattr(config, "rope_theta", 1000000.0)
             vanilla_inv = 1.0 / (base ** (torch.arange(0, dim, 2, dtype=torch.float32) / dim))
             diff = (rotary.inv_freq.float().cpu() - vanilla_inv).abs()
             n_changed = (diff > 1e-8).sum().item()

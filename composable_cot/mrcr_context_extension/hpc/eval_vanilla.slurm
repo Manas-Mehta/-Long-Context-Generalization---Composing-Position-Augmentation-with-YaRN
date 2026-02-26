@@ -37,6 +37,7 @@ echo "  Job ID:    ${SLURM_JOB_ID}"
 echo "  Node:      $(hostname)"
 echo "  GPU:       $(nvidia-smi --query-gpu=name --format=csv,noheader 2>/dev/null || echo 'N/A')"
 echo "  Timestamp: $(date)"
+python -c "import transformers; print(f'  transformers: {transformers.__version__}')"
 echo ""
 
 # --- Bin 0: 4K-8K ---
