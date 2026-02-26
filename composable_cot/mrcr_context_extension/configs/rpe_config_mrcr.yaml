@@ -1,0 +1,12 @@
+# RPE Configuration for MRCR — Fixed L=32768
+#
+# Training on bin 0 (4K-8K tokens), targeting generalization to bin 2 (16K-32K).
+# L = 32768 = 4x max training sequence length = bin 2 upper boundary.
+# With training sequences of ~6K tokens, avg position gap = 32768/6000 ≈ 5.5.
+
+rpe:
+  enabled: true
+  max_simulation_length: 32768
+  seed: null
+  training_mode: true
+  inference_mode: false

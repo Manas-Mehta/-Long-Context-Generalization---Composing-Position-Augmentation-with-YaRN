@@ -1,601 +1,444 @@
-# MRCR Context Extension Experiment — Complete Guide
-
-This document explains everything about the MRCR experiment: what the data looks like, how it flows through the pipeline, what the baselines do, and how evaluation works. Written so you can confidently explain any part of it.
+# MRCR Context Extension Experiment
 
 ---
 
-## Table of Contents
-1. [What is MRCR?](#1-what-is-mrcr)
-2. [What Does the Data Look Like?](#2-what-does-the-data-look-like)
-3. [Data Pipeline Walkthrough](#3-data-pipeline-walkthrough)
-4. [How the Vanilla Baseline Works](#4-how-the-vanilla-baseline-works)
-5. [How YaRN Works](#5-how-yarn-works)
-6. [The Evaluation Pipeline End-to-End](#6-the-evaluation-pipeline-end-to-end)
-7. [Folder Structure](#7-folder-structure)
-8. [Code Reference (Functions)](#8-code-reference)
-9. [HPC Submission Workflow](#9-hpc-submission-workflow)
-10. [Phase 3+: RPE and PoSE (to be added)](#10-phase-3-rpe-and-pose)
+## Plan & Status
+
+### Research Question
+Does RPE (Randomized Positional Encodings) help LoRA adapters generalize to longer contexts on real NLP tasks (MRCR), and how does it compare to YaRN?
+
+### Experiment Matrix
+
+| # | Condition | Train? | Position strategy | Purpose |
+|---|-----------|--------|-------------------|---------|
+| 1 | Vanilla | No | Normal RoPE | Base model ceiling |
+| 2 | YaRN inference-only | No | YaRN RoPE | Free context extension |
+| 3 | LoRA baseline | Yes | Normal RoPE | Effect of fine-tuning alone |
+| 4 | YaRN+LoRA | Yes | YaRN RoPE | YaRN as training strategy |
+| 5 | RPE+LoRA (fixed L) | Yes | Randomized position_ids (L=32768) | RPE as training strategy |
+| 6 | RPE+LoRA (curriculum) | Yes | RPE with increasing L per epoch | Curriculum RPE (best in Phase 2 CCoT) |
+
+Key comparison: **#4 vs #5 vs #6** — same data, same LoRA rank, only position strategy differs.
+
+### Phase Checklist
+
+- [x] **Phase 1:** Environment & Data Setup
+- [x] **Phase 2:** No-Training Baselines (Vanilla + YaRN inference-only) — **COMPLETE**
+- [ ] **Phase 3:** LoRA Training & Evaluation (4 conditions) — **IN PROGRESS**
+- [ ] **Phase 4:** PoSE Exploration (side task)
+- [ ] **Phase 5:** Analysis & Reporting
 
 ---
 
-## 1. What is MRCR?
+## Phase 1: Environment & Data Setup
 
-MRCR stands for **Multi-Round Coreference Resolution**. It's a benchmark created by OpenAI to test whether language models can retrieve specific information buried in very long conversations.
+### What we did
+Set up Qwen2.5-7B-Instruct on NYU Torch HPC, downloaded MRCR dataset, built data pipeline.
 
-### The classic "Needle in a Haystack" (NIAH)
+### Files
 
-The original NIAH test works like this:
-- Stuff a long document with random text (the "haystack")
-- Insert one specific fact somewhere in the middle (the "needle"), e.g., "The secret code is 7492"
-- Ask the model: "What is the secret code?"
-- If the model can find and return "7492", it passes
+| File | Purpose |
+|------|---------|
+| `scripts/prepare_data.py` | Downloads MRCR from HuggingFace, tokenizes with Qwen tokenizer, bins by token count, creates 70/30 train/test splits per bin |
+| `hpc/prepare_data.slurm` | SLURM job for data preparation |
 
-**Problem:** Modern models have basically solved basic NIAH. They can find a single needle easily.
+### Key functions in `prepare_data.py`
 
-### MRCR: The harder version
+| Function | What it does |
+|----------|-------------|
+| `get_bin_index(token_count)` | Maps token count to bin index (0=4K-8K, 1=8K-16K, etc.) |
+| `get_bin_label(bin_index)` | Converts bin index to label string |
+| `tokenize_prompt(prompt_json, tokenizer)` | Parses MRCR prompt JSON, applies Qwen chat template, returns token count |
+| `main()` | Orchestrates: load tokenizer -> download dataset -> filter 2-needle -> tokenize + bin -> split -> save |
 
-MRCR makes it harder by:
-1. **Multiple needles**: Instead of 1 needle, there are 2, 4, or 8 similar-looking entities scattered through the conversation
-2. **Coreference**: The needles share the same topic/format but have different content. For example, there might be 3 different poems about tapirs, each in a different style. The model must identify the *correct* one
-3. **Multi-turn conversation**: The haystack is a realistic multi-turn chat conversation, not just random text
-
-**Example scenario (simplified):**
-> A 6000-token conversation where 2 different writing samples appear:
-> - At position 1500: A poem about ocean waves in haiku format
-> - At position 4200: A poem about ocean waves in sonnet format
->
-> Question: "Please reproduce the poem about ocean waves that was written in sonnet format"
->
-> The model must find and reproduce the sonnet (not the haiku).
-
-### Why we picked MRCR
-
-- It tests **long-context retrieval** — the model must attend across thousands of tokens to find the right needle
-- It has **built-in length binning** — samples range from 4K to 1M tokens, so we can test at different context lengths
-- It's **harder than NIAH** — so even good models will show degradation at longer contexts, giving us room to measure improvement from RPE
-
----
-
-## 2. What Does the Data Look Like?
-
-Each MRCR sample has these fields:
-
-| Field | What it is | Example |
-|-------|-----------|---------|
-| `prompt` | A JSON string containing a list of chat messages. This is the full multi-turn conversation with the needle(s) buried inside, ending with the question. | `'[{"role":"user","content":"Hi!"}, {"role":"assistant","content":"Hello!..."}, ... {"role":"user","content":"Please reproduce the poem..."}]'` |
-| `answer` | The expected response. Starts with a random string prefix, followed by the actual needle content. | `"xK7mQ9z... O Ocean, thy waves crash upon the shore / With thunderous..."` |
-| `random_string_to_prepend` | A unique random string the model must output before the answer. Prevents guessing. | `"xK7mQ9z"` |
-| `n_needles` | How many confounding entities are in the conversation (2, 4, or 8) | `2` |
-| `n_chars` | Length of the needle content | `150` |
-
-### Concrete example of a prompt (abbreviated)
-
-```json
-[
-  {"role": "user", "content": "Hello, I'd like to have a conversation about various topics."},
-  {"role": "assistant", "content": "Sure! I'd love to chat about anything..."},
-
-  ... hundreds of conversation turns about random topics ...
-
-  {"role": "assistant", "content": "Here's a poem I wrote about tapirs:\n\nIn the jungle deep and green\nThe tapir walks, a gentle scene\nWith snout so long and eyes so bright\nA creature of the fading light"},
-
-  ... more conversation turns ...
-
-  {"role": "assistant", "content": "Here's another poem about tapirs:\n\nO noble tapir, beast of ancient days\nThrough emerald forests thou dost gently graze\nThy prehensile snout, a trunk divine\nBeneath the canopy of twisted vine"},
-
-  ... more conversation turns ...
-
-  {"role": "user", "content": "Can you please repeat the second poem about tapirs, the one in a more formal style? Please start your response with: xK7mQ9z"}
-]
-```
-
-**Expected answer:**
-```
-xK7mQ9zO noble tapir, beast of ancient days
-Through emerald forests thou dost gently graze
-Thy prehensile snout, a trunk divine
-Beneath the canopy of twisted vine
-```
-
-The model must:
-1. Find the correct poem among 2+ similar poems in a ~6000 token conversation
-2. Prepend the exact random string `xK7mQ9z`
-3. Reproduce the poem verbatim
-
-### The bins
-
-Samples are grouped by total token count:
-
-| Bin | Token range | Context length | Our role |
-|-----|------------|---------------|----------|
-| Bin 0 | 4,096 - 8,192 | ~2-4 pages | **Train RPE here** (Phase 3), Eval here (Phase 2) |
-| Bin 1 | 8,192 - 16,384 | ~4-8 pages | **OOD eval** — LoRA hasn't seen these lengths |
-| Bin 2 | 16,384 - 32,768 | ~8-16 pages | Extended eval if needed |
-| Bin 3+ | 32K - 1M | Very long | Beyond Qwen's native 32K context window |
-
----
-
-## 3. Data Pipeline Walkthrough
-
-### What `prepare_data.py` does, step by step
-
-**Step 1: Load the tokenizer**
-```python
-tokenizer = AutoTokenizer.from_pretrained("Qwen/Qwen2.5-7B-Instruct")
-```
-We need Qwen's tokenizer because different tokenizers produce different token counts for the same text. GPT-4's tokenizer might say a sample is 5000 tokens, but Qwen's might say 6200. We bin by what our model actually sees.
-
-**Step 2: Download MRCR from HuggingFace**
-```python
-ds = load_dataset("openai/mrcr", split="train")  # ~2400 samples total
-```
-
-**Step 3: Filter by needle count**
-We start with 2-needle only (simplest). This gives us ~800 samples.
-
-**Step 4: Tokenize and bin each sample**
-
-For each sample, we take the `prompt` field (which is a JSON string of messages), apply Qwen's chat template (which adds special tokens like `<|im_start|>user\n...<|im_end|>`), and count the tokens:
-
-```python
-# What the raw prompt looks like:
-prompt_json = '[{"role":"user","content":"Hi"}, {"role":"assistant","content":"Hello!"}]'
-
-# Parse it:
-messages = json.loads(prompt_json)
-# Result: [{"role":"user","content":"Hi"}, {"role":"assistant","content":"Hello!"}]
-
-# Apply Qwen's chat template:
-text = tokenizer.apply_chat_template(messages, tokenize=False, add_generation_prompt=True)
-# Result: "<|im_start|>system\nYou are a helpful assistant.<|im_end|>\n<|im_start|>user\nHi<|im_end|>\n<|im_start|>assistant\nHello!<|im_end|>\n<|im_start|>assistant\n"
-
-# Count tokens:
-token_ids = tokenizer.encode(text)
-token_count = len(token_ids)  # e.g., 5832
-```
-
-Then we assign this sample to a bin based on `token_count`:
-- 5832 tokens → falls in [4096, 8192] → Bin 0 ("4K-8K")
-
-**Step 5: Create train/test splits**
-
-Within each bin, we shuffle and split 70/30:
-- Bin 0 (4K-8K): say 100 samples → 70 train, 30 test
-- Bin 1 (8K-16K): say 100 samples → 70 train, 30 test
-
-The **train** set is reserved for Phase 3 (RPE+LoRA fine-tuning).
-The **test** set is used for all evaluations (Phase 2 baselines + Phase 3 RPE).
-
-**Step 6: Save to disk**
+### Data structure
 
 ```
 data/
-├── bin0_4K-8K/
-│   ├── train.json    # 70 samples for RPE training (Phase 3)
-│   └── test.json     # 30 samples for evaluation
-├── bin1_8K-16K/
+├── bin0_4K-8K/     (26 test, ~70 train samples)
 │   ├── train.json
 │   └── test.json
-└── metadata.json     # Records tokenizer, split ratio, bin info
+├── bin1_8K-16K/    (30 test)
+├── bin2_16K-32K/   (30 test)
+├── bin3_32K-64K/   (30 test)
+├── bin4_64K-128K/  (30 test)
+└── metadata.json
 ```
+
+### What is MRCR?
+
+MRCR (Multi-Round Coreference Resolution) is a harder version of Needle-in-a-Haystack. Multiple similar-looking entities (2, 4, or 8 "needles") are scattered through a long multi-turn conversation. The model must find and reproduce the correct one verbatim, prepended with a random string.
+
+**Grading:** `SequenceMatcher.ratio()` between model output and expected answer (after stripping random prefix). Score 0.0-1.0. Returns 0.0 if the random prefix is missing.
 
 ---
 
-## 4. How the Vanilla Baseline Works
+## Phase 2: No-Training Baselines
 
-The vanilla baseline is the simplest experiment: load Qwen2.5-7B-Instruct as-is (no modifications) and see how well it handles MRCR at different context lengths.
+### What we did
+Evaluated vanilla Qwen2.5-7B-Instruct and YaRN (inference-only, factor=4.0) on all 5 bins (4K-128K). No LoRA training — just base model inference.
 
-### What happens under the hood
+### Files
 
-**Step 1: Load the model**
-```python
-model = AutoModelForCausalLM.from_pretrained(
-    "Qwen/Qwen2.5-7B-Instruct",
-    device_map="cuda",           # Put on GPU
-    torch_dtype=torch.bfloat16,  # 16-bit precision to fit in memory
-)
-model.eval()  # Inference mode — no gradient computation
-```
+| File | Purpose |
+|------|---------|
+| `scripts/eval_mrcr.py` | Core evaluation script. Supports vanilla, YaRN, and LoRA modes. Loads model, runs inference, grades with MRCR metric, saves results. |
+| `hpc/eval_vanilla.slurm` | SLURM job: vanilla eval on all 5 bins |
+| `hpc/eval_yarn.slurm` | SLURM job: YaRN eval on all 5 bins, includes pre-flight sanity check |
+| `scripts/test_yarn_fresh.py` | Local YaRN verification script (two-phase: math test + model test) |
+| `scripts/verify_yarn.py` | Earlier YaRN diagnostic script (superseded by test_yarn_fresh.py) |
 
-This loads Qwen2.5-7B with its pretrained weights. The model has 7.6 billion parameters, uses **RoPE** (Rotary Position Embeddings), and was pretrained with a 32K context window.
+### Key functions in `eval_mrcr.py`
 
-**Step 2: For each test sample, format the input**
+| Function | What it does |
+|----------|-------------|
+| `grade_mrcr(response, answer, prefix)` | Official MRCR grading: checks prefix -> strips it -> SequenceMatcher ratio |
+| `load_model(base_model, lora_ckpt, enable_yarn, ...)` | Loads model in vanilla/YaRN/LoRA mode. Version-agnostic YaRN config. Verifies inv_freq differs from vanilla. Falls back to manual patch if needed. |
+| `_diagnose_rope(model, config, ...)` | Prints detailed RoPE diagnostics: rotary class, rope_type, inv_freq comparison, logit fingerprint |
+| `_apply_yarn_manual(model, factor, config)` | Fallback: manually patches inv_freq with NTK-aware scaling if config-based YaRN silently fails |
+| `evaluate_mrcr(model, tokenizer, test_data, ...)` | Main eval loop: parse messages -> chat template -> generate -> grade -> aggregate per-bin |
 
-```python
-# Parse the MRCR prompt into a message list
-messages = json.loads(sample["prompt"])
-# [{"role":"user","content":"Hi!"}, {"role":"assistant","content":"..."},  ...]
+### Errors encountered and fixes
 
-# Apply Qwen's chat template (adds special tokens)
-text = tokenizer.apply_chat_template(messages, tokenize=False, add_generation_prompt=True)
+#### The YaRN bug saga
 
-# Tokenize into IDs the model understands
-input_ids = tokenizer.encode(text, return_tensors="pt").to("cuda")
-# Shape: [1, ~6000]  (batch_size=1, seq_len=~6000 for a 4K-8K sample)
-```
+**Problem:** YaRN produced scores identical to vanilla. Despite `rope_type: yarn` being set correctly, `inv_freq` was identical to vanilla — YaRN was not actually modifying the RoPE frequencies.
 
-**Step 3: Generate a response**
+**Root cause (transformers 4.52.4 on HPC):** Our earlier configs included `original_max_position_embeddings` in the `rope_scaling` dict, which is a **vLLM-only parameter**. In transformers 4.52.4, this caused the YaRN computation to silently produce wrong results. The correct config for HF transformers is simply `{"type": "yarn", "factor": 4.0}` — `original_max_position_embeddings` defaults to `max_position_embeddings` automatically.
 
-```python
-output_ids = model.generate(
-    input_ids,
-    max_new_tokens=2048,    # Allow up to 2048 new tokens
-    do_sample=False,        # Greedy decoding: always pick the most likely next token
-    pad_token_id=tokenizer.eos_token_id,
-)
-```
+**Root cause (transformers 5.0.0 locally):** A separate bug. In v5.0.0, `rope_theta` moved from a standalone config attribute into the `rope_parameters` dict. Doing `config.rope_scaling = {"type": "yarn", "factor": 4.0}` **replaces the entire dict**, losing `rope_theta` (becomes `None`). Fix: use `config.rope_parameters.update({...})` instead of assignment.
 
-The model processes all ~6000 input tokens through its 28 transformer layers, then autoregressively generates new tokens one at a time until it hits `max_new_tokens` or produces an end-of-sequence token.
+**Fix timeline:**
+1. Added `_diagnose_rope()` to print inv_freq comparison with vanilla
+2. Discovered `inv_freq IDENTICAL to vanilla` on HPC despite rope_type="yarn"
+3. Found HuggingFace discussion confirming `original_max_position_embeddings` is vLLM-only
+4. Removed it, added inv_freq-based verification (don't trust rope_type attribute)
+5. Added manual fallback (`_apply_yarn_manual`) that patches inv_freq directly if config-based YaRN fails
+6. For transformers 5.0+: use `config.rope_parameters.update()` to preserve `rope_theta`
+7. Added pre-flight sanity check in SLURM that verifies YaRN math BEFORE model load
 
-**What the model "sees" internally:**
+**Verification:** After fixes, confirmed on HPC:
+- Pre-flight: `YaRN dims changed: 40/64`, `attention_factor: 1.139`
+- Model diagnostic: `inv_freq verified: 40/64 dims differ from vanilla`
+- Logit fingerprint differs from vanilla
 
-At each layer, the model uses **self-attention** to let each token attend to all previous tokens. For a 6000-token input, this means:
-- Token at position 5999 can attend to tokens at positions 0, 1, 2, ..., 5998
-- The attention weights determine how much each previous token contributes to the current token's representation
-- To find the needle (say at position 4200), the model needs the attention at the final position to "look back" at position 4200 and weight it highly
+Full details: [MRCR_YaRN_Verification.md](MRCR_YaRN_Verification.md)
 
-**Where position encoding comes in:**
+**References:**
+- https://huggingface.co/Qwen/Qwen2.5-32B-Instruct/discussions/5
+- https://github.com/huggingface/transformers/issues/33783
 
-Each position gets a **RoPE** (Rotary Position Embedding) encoding:
-```
-Position 0:    cos(0 × θ), sin(0 × θ)     applied to Q and K vectors
-Position 1:    cos(1 × θ), sin(1 × θ)
-Position 2:    cos(2 × θ), sin(2 × θ)
-...
-Position 5999: cos(5999 × θ), sin(5999 × θ)
-```
-
-These rotations encode **relative distance** between tokens in the attention computation. Two tokens 5 positions apart will have a consistent rotational relationship regardless of where they appear in the sequence. This is why RoPE-based models can handle variable-length inputs (up to their trained context window).
-
-**Step 4: Decode and grade**
+#### Version-specific YaRN config
 
 ```python
-# Extract only the newly generated tokens
-response = tokenizer.decode(output_ids[0, prompt_len:], skip_special_tokens=True)
-
-# Grade using official metric
-score = grade_mrcr(response, sample["answer"], sample["random_string_to_prepend"])
-```
-
-### What we expect from vanilla baseline
-
-- **4K-8K bin**: Should perform reasonably well. 6000 tokens is well within Qwen's 32K context window. The model has been pretrained on contexts this long.
-- **8K-16K bin**: Might start degrading. Not because of position encoding limits (still within 32K), but because the task gets harder — more text to search through, more distractors, harder to maintain attention on the needle.
-
-This baseline tells us: **how hard is MRCR at each context length for this model?**
-
----
-
-## 5. How YaRN Works
-
-YaRN (Yet another RoPE extensioN) is a method to extend a model's effective context window **without any training**. It works by modifying how RoPE computes position encodings.
-
-### The problem YaRN solves
-
-Qwen2.5-7B was pretrained with `max_position_embeddings = 32768`. This means RoPE's rotary frequencies were calibrated for positions 0 to 32767. If you feed the model a 50,000-token input, positions 32768-49999 get RoPE values the model has never seen during pretraining. The attention mechanism breaks down — it produces garbage.
-
-### How RoPE normally works
-
-RoPE assigns each dimension pair `d` of the Q and K vectors a rotation frequency:
-
-```
-θ_d = base^(-2d / dim)
-```
-
-For Qwen2.5-7B: `base = 1,000,000`, `dim = 128`.
-
-At position `pos`, the rotation applied is:
-```
-rotation_angle = pos × θ_d
-```
-
-**Low-frequency dimensions** (large d): slow rotation. One full rotation (2π) takes many positions. These capture long-range patterns.
-
-**High-frequency dimensions** (small d): fast rotation. These capture local, nearby-token patterns.
-
-### What YaRN changes
-
-Instead of naively compressing all positions (which breaks high-frequency dimensions), YaRN treats different dimensions differently:
-
-**High-frequency dimensions** (fast rotation, local patterns):
-→ Fully **interpolated** (divide frequency by scale factor)
-→ These are most sensitive to compression, so we compress them gently
-
-**Low-frequency dimensions** (slow rotation, global patterns):
-→ Left **unchanged** (extrapolated)
-→ These can naturally handle larger positions without modification
-
-**Middle dimensions:**
-→ **Blended** between interpolation and extrapolation using a smooth ramp function
-
-Additionally, YaRN applies **attention temperature scaling** to prevent attention distributions from becoming too sharp after the frequency modification:
-```
-attention = softmax(QK^T / (t × sqrt(d)))
-```
-where `t` adjusts based on the scaling factor.
-
-### How we enable it (zero training)
-
-```python
-config = AutoConfig.from_pretrained("Qwen/Qwen2.5-7B-Instruct")
-
-# Inject YaRN configuration
-config.rope_scaling = {
+# transformers 5.0+ (rope_theta inside rope_parameters dict):
+config.rope_parameters.update({
     "type": "yarn",
-    "factor": 4.0,                            # 4x extension
-    "original_max_position_embeddings": 32768, # Original training context
-}
+    "rope_type": "yarn",
+    "factor": 4.0,
+})
 
-# Load model with modified config
-model = AutoModelForCausalLM.from_pretrained("Qwen/Qwen2.5-7B-Instruct", config=config, ...)
+# transformers 4.52.x (rope_theta is standalone attribute):
+config.rope_scaling = {"type": "yarn", "factor": 4.0}
 ```
 
-That's it. The model weights are completely unchanged. Only the RoPE frequency computation is modified at model load time. HuggingFace's transformers library handles this internally — it reads the `rope_scaling` config and adjusts the `inv_freq` tensor used in RoPE computations.
+The eval_mrcr.py `load_model()` function handles both versions automatically.
 
-### What changes at inference
+### Results
 
-With `factor=4.0`:
-- Original context window: 32K
-- New effective context: ~131K (32K × 4)
-- The model can now process inputs up to ~131K tokens
+**HPC run:** Feb 25, 2026. Vanilla on L40S, YaRN on H200. transformers 4.52.4.
 
-**For our 4K-16K experiments:** YaRN is actually overkill — Qwen already handles 32K natively. But we test it anyway because:
-1. It might improve attention quality even within the native range
-2. It establishes a baseline for longer bins (32K+) that we might test later
-3. **It might slightly hurt 4K-8K performance** — since YaRN compresses all positions even when the input is short (static scaling). This is worth measuring.
+| Bin | Vanilla | YaRN (factor=4.0) | Delta | Notes |
+|-----|---------|-------------------|-------|-------|
+| 4K-8K (n=26) | **0.389** | 0.346 | -0.043 | YaRN slightly hurts (expected — static scaling on short context) |
+| 8K-16K (n=30) | **0.365** | 0.302 | -0.063 | Still within Qwen's native 32K, YaRN hurts |
+| 16K-32K (n=30) | **0.465** | 0.319 | -0.146 | Vanilla surprisingly strong here |
+| 32K-64K (n=30) | 0.165 | **0.242** | +0.077 | YaRN helps beyond 32K (native limit) |
+| 64K-128K (n=30) | OOM* | **0.114** | — | Vanilla crashed on L40S (48GB), YaRN completed on H200 (80GB) |
 
-### YaRN vs RPE — The key conceptual difference
+*Vanilla 64K-128K: L40S OOM after 1 sample (score=0.000). Need to rerun on H200 for fair comparison.
 
-| | What it changes | When it's applied | Training needed? |
+**Key observations:**
+1. **YaRN IS working** — 40/64 inv_freq dims differ, attention_factor=1.139, logits differ
+2. **YaRN hurts at short context** (4K-32K): -4% to -15%. Expected — static YaRN compresses frequencies even when not needed
+3. **YaRN helps at 32K-64K**: +0.077 absolute improvement. This is beyond Qwen's native 32K window where vanilla RoPE starts breaking
+4. **Vanilla is surprisingly strong at 16K-32K** (0.465) — better than at shorter bins. This could be variance (only 30 samples) or the particular needle placement patterns in this bin
+5. **Both methods degrade significantly at 64K+**: Even with YaRN, 0.114 is poor. Inference-only YaRN without fine-tuning has limits
+
+**Outputs saved to:** `outputs/{vanilla,yarn}_{4K-8K,8K-16K,16K-32K,32K-64K,64K-128K}/`
+- `eval_results.json` — summary metrics
+- `predictions.json` — per-sample scores, response previews, token counts, generation times
+
+### Can we move on to Phase 3?
+
+**Yes.** Phase 2 baselines are complete:
+- Vanilla baseline established across bins 0-3 (bin 4 needs H200 rerun but isn't critical for Phase 3)
+- YaRN confirmed working and results collected across all 5 bins
+- The degradation pattern (vanilla drops at 32K+, YaRN helps there) validates the experimental setup
+
+Phase 3 trains LoRA on bin 0 (4K-8K) and evaluates on bins 0-2 (4K-32K). The key question: does RPE+LoRA or YaRN+LoRA help the adapter generalize to bins 1-2 (8K-32K)?
+
+---
+
+## Phase 3: LoRA Training & Evaluation
+
+*Status: IN PROGRESS*
+
+### What we are doing
+Train LoRA adapters (rank 16) on bin 0 (4K-8K, 60 samples) under 4 conditions. Evaluate each on bins 0, 1, 2 to measure length generalization.
+
+### 4 Conditions
+
+| # | Condition | What changes during training | What changes during eval |
+|---|-----------|------------------------------|--------------------------|
+| 1 | **LoRA baseline** | Nothing — standard positions | `--lora-ckpt` only |
+| 2 | **YaRN+LoRA** | YaRN modifies inv_freq before LoRA trains | `--enable-yarn --lora-ckpt` |
+| 3 | **RPE+LoRA (fixed L=32768)** | RPE randomizes position_ids from [0, 32768) | `--lora-ckpt` only (standard positions) |
+| 4 | **RPE+LoRA (curriculum)** | RPE L increases: 10240→16384→24576→32768→32768 | `--lora-ckpt` only (standard positions) |
+
+### Key comparison
+YaRN modifies `inv_freq` (frequency basis). RPE modifies `position_ids` (input to RoPE). Both are applied during LoRA training so the adapter learns in the modified position space. The comparison isolates which manipulation helps LoRA generalize better.
+
+### Why NOT LLaMA-Factory?
+MRCR samples are multi-turn conversations (10+ messages, 4K-8K tokens) that don't fit LLaMA-Factory's Alpaca format. Also need YaRN injection at model load time. Wrote standalone `train_mrcr_lora.py` using HuggingFace Trainer + PEFT directly.
+
+### RPE L value rationale
+- Training on bin 0 (max 8192 tokens), targeting generalization to bin 2 (max 32768 tokens)
+- **Fixed L=32768**: Positions sampled from [0, 32768) during training on 4K-8K sequences
+  - Average gap: 32768/6000 ≈ 5.5 between consecutive sampled positions
+- **Curriculum**: Start near-sequential (L=10240, gap ~1.3), ramp to target (L=32768, gap ~4.1)
+  - Mirrors Phase 2 CCoT curriculum that beat all other conditions (+75% length extension)
+
+### Hyperparameters
+
+| Parameter | Value | Rationale |
+|-----------|-------|-----------|
+| LoRA rank | 16 | Same as best Phase 2 CCoT config |
+| LoRA alpha | 32 | 2× rank (standard) |
+| LoRA dropout | 0.1 | Regularization |
+| Target modules | q,k,v,o,up,down,gate_proj | All projection matrices |
+| Learning rate | 2e-4 | Standard for LoRA |
+| LR scheduler | cosine | Smooth decay |
+| Warmup ratio | 0.1 | ~8 warmup steps |
+| Epochs | 5 | Short training (60 samples) |
+| Batch size | 1 × 4 grad_accum = 4 effective | Memory-limited (8K tokens/sample) |
+| Max seq len | 8192 | Bin 0 upper bound |
+| Precision | bf16 | Standard for Qwen2.5 |
+| Gradient checkpointing | Yes | Required for 8K sequences |
+| Seed | 42 | Reproducibility |
+
+Training stats: 60 samples / 4 effective batch = 15 steps/epoch × 5 epochs = **75 total steps**.
+
+### Files
+
+| File | Purpose |
+|------|---------|
+| `scripts/train_mrcr_lora.py` | Main training script. Loads model (optional YaRN), attaches LoRA, optional RPE callback. Includes MRCRDataset (chat template + loss masking), TrainingProgressCallback (per-step timing/GPU/ETA), saves metrics JSON + loss plot. |
+| `configs/rpe_config_mrcr.yaml` | RPE fixed L=32768 |
+| `configs/rpe_config_mrcr_curriculum.yaml` | RPE curriculum: 10240→16384→24576→32768→32768 |
+| `hpc/train_lora_baseline.slurm` | Train condition 1 (H200, 4hr) |
+| `hpc/train_lora_yarn.slurm` | Train condition 2 (H200, 4hr) |
+| `hpc/train_lora_rpe.slurm` | Train condition 3 (H200, 4hr) |
+| `hpc/train_lora_rpe_curriculum.slurm` | Train condition 4 (H200, 4hr) |
+| `hpc/eval_all_lora.slurm` | Evaluate all 4 conditions on bins 0-2 (H200, 12hr) |
+
+### Key functions in `train_mrcr_lora.py`
+
+| Function/Class | What it does |
+|----------------|-------------|
+| `MRCRDataset` | Parses multi-turn messages → applies Qwen chat template → tokenizes → creates labels with -100 mask on prompt tokens (only train on answer) |
+| `load_model_for_training()` | Loads base model with optional YaRN (version-agnostic), attaches LoRA via PEFT, enables gradient checkpointing |
+| `_verify_yarn()` | Checks inv_freq differs from vanilla after model load; falls back to manual patch if needed |
+| `TrainingProgressCallback` | Prints per-step: step/total, epoch, loss, LR, GPU memory, elapsed, ETA. Saves training_metrics.json and training_loss.png at end. |
+
+### How to run (on HPC)
+
+```bash
+ssh mm14444@login.torch.hpc.nyu.edu
+cd /scratch/mm14444/RPE
+git pull
+mkdir -p slurm_logs
+
+# Submit all 4 training jobs in parallel
+sbatch composable_cot/mrcr_context_extension/hpc/train_lora_baseline.slurm
+sbatch composable_cot/mrcr_context_extension/hpc/train_lora_yarn.slurm
+sbatch composable_cot/mrcr_context_extension/hpc/train_lora_rpe.slurm
+sbatch composable_cot/mrcr_context_extension/hpc/train_lora_rpe_curriculum.slurm
+
+# Monitor
+squeue -u mm14444
+
+# After all training completes, submit eval
+sbatch composable_cot/mrcr_context_extension/hpc/eval_all_lora.slurm
+```
+
+### Checkpoint structure
+
+```
+checkpoints/{lora_baseline,yarn_lora,rpe_lora,rpe_curriculum_lora}/
+  checkpoint-{15,30,45,60,75}/   # LoRA weights per epoch (~50MB each)
+  training_metrics.json            # Per-step loss, lr, timing
+  training_loss.png                # Loss curve plot
+  run_config.json                  # Full training configuration
+```
+
+### Errors encountered and fixes
+
+*(To be filled after training runs)*
+
+### Results
+
+*(To be filled after eval runs)*
+
+| Condition | 4K-8K | 8K-16K | 16K-32K | Notes |
+|-----------|-------|--------|---------|-------|
+| Vanilla (Phase 2) | 0.389 | 0.365 | 0.465 | No training, reference |
+| YaRN inf-only (Phase 2) | 0.346 | 0.302 | 0.319 | No training, reference |
+| LoRA baseline | — | — | — | |
+| YaRN+LoRA | — | — | — | |
+| RPE+LoRA (fixed) | — | — | — | |
+| RPE+LoRA (curriculum) | — | — | — | |
+
+### Can we move on to Phase 4?
+
+*(To be answered after results are in)*
+
+---
+
+## Phase 4: PoSE Exploration
+
+*Status: Not started*
+
+PoSE (Positional Skip-wisE) preserves local contiguity within chunks but introduces gaps between chunks. May be better suited for context extension than RPE's fully random positions.
+
+---
+
+## Phase 5: Analysis & Reporting
+
+*Status: Not started*
+
+---
+
+## Background
+
+### What is MRCR?
+
+Each sample has:
+- `prompt`: JSON string of multi-turn chat messages with needle(s) buried inside
+- `answer`: Expected response (random prefix + needle content)
+- `random_string_to_prepend`: Unique random string the model must output first
+- `n_needles`: Number of confounding entities (2, 4, or 8)
+
+The model must find the correct needle among similar-looking entities and reproduce it verbatim, prepended with the random string.
+
+### How vanilla baseline works
+
+1. Load Qwen2.5-7B-Instruct as-is
+2. For each sample: parse messages -> apply chat template -> tokenize -> model.generate() -> decode -> grade
+3. Standard RoPE applied: `rotation_angle = pos * theta_d` where `theta_d = base^(-2d/dim)`, base=1M, dim=128
+4. Works within the native 32K context window; degrades beyond
+
+### How YaRN works
+
+YaRN modifies RoPE frequencies to extend context beyond the training window:
+- **High-frequency dims** (local patterns): fully interpolated (divide by factor)
+- **Low-frequency dims** (global patterns): left unchanged (extrapolation)
+- **Middle dims**: smooth blend via linear ramp
+- **Attention temperature**: scaled by `0.1 * ln(factor) + 1.0`
+
+For Qwen2.5-7B with factor=4.0: 40/64 dims modified, attention_factor=1.139, effective context extended to ~131K tokens.
+
+### YaRN vs RPE
+
+| | What it changes | When applied | Training needed? |
 |---|---|---|---|
-| **YaRN** | The RoPE frequency basis (`inv_freq`) — how the model *interprets* positions | Always (inference time) | No |
-| **RPE** | The position IDs fed to RoPE — *which* positions the model sees | Only during LoRA training | Yes (LoRA fine-tuning) |
+| **YaRN** | RoPE frequency basis (`inv_freq`) | Always (inference) | No |
+| **RPE** | Position IDs fed to RoPE | Only during LoRA training | Yes |
 
-YaRN says: "Let me recalibrate the ruler so it can measure longer distances."
-RPE says: "Let me train you with a scrambled ruler so you learn to handle any ruler."
+YaRN = "recalibrate the ruler to measure longer distances"
+RPE = "train with a scrambled ruler so you handle any ruler"
 
-They operate at different levels, which is why combining them is interesting — they're not mutually exclusive.
-
----
-
-## 6. The Evaluation Pipeline End-to-End
-
-Here's exactly what happens when you run `eval_mrcr.py`:
-
-### Step 1: Load the model (one of three modes)
-
-```
-Mode A (Vanilla):   Load Qwen2.5-7B-Instruct as-is
-Mode B (YaRN):      Load Qwen2.5-7B-Instruct with rope_scaling config injected
-Mode C (LoRA):      Load Qwen2.5-7B-Instruct + LoRA adapter, merge weights
-```
-
-All three produce a single merged model in eval mode. At inference time, there's no behavioral difference in how generation works — only the internal weights/config differ.
-
-### Step 2: Load test data
-
-```python
-with open("data/bin0_4K-8K/test.json") as f:
-    test_data = json.load(f)
-# test_data = [{"prompt": "...", "answer": "...", "random_string_to_prepend": "...", ...}, ...]
-```
-
-### Step 3: For each test sample
-
-```
-┌─────────────────────────────────────────────────────────────────┐
-│ Sample: {"prompt": "[{...messages...}]", "answer": "xK7...",   │
-│          "random_string_to_prepend": "xK7"}                     │
-└──────────────────────────┬──────────────────────────────────────┘
-                           │
-                    ┌──────▼──────┐
-                    │ Parse JSON  │  json.loads(sample["prompt"])
-                    │ messages    │  → [{"role":"user","content":"..."},
-                    └──────┬──────┘     {"role":"assistant","content":"..."}]
-                           │
-                    ┌──────▼──────┐
-                    │ Apply chat  │  tokenizer.apply_chat_template(messages)
-                    │ template    │  → "<|im_start|>user\n...<|im_end|>\n..."
-                    └──────┬──────┘
-                           │
-                    ┌──────▼──────┐
-                    │ Tokenize    │  tokenizer.encode(text)
-                    │             │  → tensor([151644, 872, 198, ...])
-                    └──────┬──────┘    shape: [1, ~6000]
-                           │
-                    ┌──────▼──────┐
-                    │ model       │  Forward pass through 28 transformer layers
-                    │ .generate() │  RoPE applied at each layer to Q and K
-                    │             │  Greedy decoding: pick argmax at each step
-                    └──────┬──────┘  Generates until EOS or max_new_tokens
-                           │
-                    ┌──────▼──────┐
-                    │ Decode      │  tokenizer.decode(generated_ids)
-                    │ response    │  → "xK7O noble tapir, beast of ancient..."
-                    └──────┬──────┘
-                           │
-                    ┌──────▼──────┐
-                    │ Grade       │  grade_mrcr(response, answer, prefix)
-                    │             │
-                    │ 1. Starts   │  response.startswith("xK7")? → Yes
-                    │    with     │
-                    │    prefix?  │
-                    │             │
-                    │ 2. Strip    │  response = "O noble tapir..."
-                    │    prefix   │  answer   = "O noble tapir..."
-                    │             │
-                    │ 3. Compute  │  SequenceMatcher(response, answer)
-                    │    ratio    │  → 0.95  (95% similar)
-                    └──────┬──────┘
-                           │
-                    ┌──────▼──────┐
-                    │ Record:     │  {"score": 0.95, "bin": "4K-8K",
-                    │ prediction  │   "gen_time": 12.3, "tokens": 5832}
-                    └─────────────┘
-```
-
-### Step 4: Aggregate results
-
-After processing all test samples:
-```python
-per_bin = {
-    "4K-8K": {"mean_score": 0.82, "num_samples": 30, "num_perfect": 18, "num_zero": 3},
-    "8K-16K": {"mean_score": 0.65, "num_samples": 30, "num_perfect": 10, "num_zero": 8},
-}
-overall_score = 0.735  # Mean across all samples
-```
-
-### Step 5: Save results
-
-Two files:
-- `eval_results.json` — Summary: config, overall score, per-bin breakdown
-- `predictions.json` — Per-sample: score, response preview, token count, generation time
-
-### Grading deep-dive
-
-The `grade_mrcr` function uses Python's `difflib.SequenceMatcher`:
-
-```python
-from difflib import SequenceMatcher
-
-# Example 1: Perfect match
-response = "xK7O noble tapir, beast of ancient days"
-answer   = "xK7O noble tapir, beast of ancient days"
-# Strip prefix "xK7" from both → identical → score = 1.0
-
-# Example 2: Close but not perfect
-response = "xK7O noble tapir, beast of ancient day"   # Missing final "s"
-answer   = "xK7O noble tapir, beast of ancient days"
-# After stripping → SequenceMatcher ratio ≈ 0.97
-
-# Example 3: Wrong needle retrieved
-response = "xK7In the jungle deep and green, the tapir walks..."  # Wrong poem!
-answer   = "xK7O noble tapir, beast of ancient days..."
-# After stripping → very different text → score ≈ 0.3
-
-# Example 4: Missing prefix
-response = "O noble tapir, beast of ancient days"  # Forgot "xK7"!
-answer   = "xK7O noble tapir, beast of ancient days"
-# response.startswith("xK7") → False → score = 0.0
-```
-
-Why SequenceMatcher? The expected answer can be a full paragraph. Exact match would be too harsh — a single missing space would score 0. SequenceMatcher gives partial credit proportional to how much of the text was reproduced correctly.
+They're orthogonal — combining them is possible.
 
 ---
 
-## 7. Folder Structure
+## Folder Structure
 
 ```
 composable_cot/mrcr_context_extension/
-├── scripts/                    # All Python scripts
-│   ├── prepare_data.py         # Phase 1: Download, tokenize, bin, split MRCR data
-│   └── eval_mrcr.py            # Phase 2+3: Inference + grading (vanilla/YaRN/LoRA)
-├── hpc/                        # SLURM job scripts for NYU Torch HPC
-│   ├── prepare_data.slurm      # Phase 1: Data prep job
-│   ├── eval_vanilla.slurm      # Phase 2: Vanilla baseline eval
-│   └── eval_yarn.slurm         # Phase 2: YaRN baseline eval
-├── data/                       # Generated by prepare_data.py
-│   ├── bin0_4K-8K/
-│   │   ├── train.json          # Reserved for Phase 3 RPE+LoRA training
-│   │   └── test.json           # Used for all evaluations
-│   ├── bin1_8K-16K/
-│   │   ├── train.json
-│   │   └── test.json
-│   ├── bin2_16K-32K/
+├── scripts/
+│   ├── prepare_data.py          # Phase 1: data pipeline
+│   ├── eval_mrcr.py             # Phase 2+3: evaluation (vanilla/YaRN/LoRA)
+│   ├── train_mrcr_lora.py       # Phase 3: LoRA training (standalone, HF Trainer + PEFT)
+│   ├── test_yarn_fresh.py       # YaRN verification (local, two-phase test)
+│   ├── test_yarn_local.py       # Earlier YaRN test (superseded)
+│   └── verify_yarn.py           # Earlier YaRN diagnostic (superseded)
+├── configs/
+│   ├── rpe_config_mrcr.yaml           # Phase 3: RPE fixed L=32768
+│   └── rpe_config_mrcr_curriculum.yaml # Phase 3: RPE curriculum L schedule
+├── hpc/
+│   ├── prepare_data.slurm             # Phase 1: data prep job
+│   ├── eval_vanilla.slurm             # Phase 2: vanilla baseline (all 5 bins)
+│   ├── eval_yarn.slurm                # Phase 2: YaRN baseline (all 5 bins)
+│   ├── train_lora_baseline.slurm      # Phase 3: train condition 1
+│   ├── train_lora_yarn.slurm          # Phase 3: train condition 2
+│   ├── train_lora_rpe.slurm           # Phase 3: train condition 3
+│   ├── train_lora_rpe_curriculum.slurm # Phase 3: train condition 4
+│   └── eval_all_lora.slurm            # Phase 3: eval all conditions on bins 0-2
+├── data/                        # Generated by prepare_data.py
+│   ├── bin{0-4}_{range}/
 │   │   ├── train.json
 │   │   └── test.json
 │   └── metadata.json
-├── outputs/                    # Generated by eval_mrcr.py
-│   ├── vanilla_4K-8K/
-│   │   ├── eval_results.json   # Summary metrics
-│   │   └── predictions.json    # Per-sample details
-│   ├── vanilla_8K-16K/
-│   ├── yarn_4K-8K/
-│   ├── yarn_8K-16K/
-│   └── ...
-├── configs/                    # Phase 3: RPE/training configs (to be added)
-└── checkpoints/                # Phase 3: LoRA checkpoints (to be added)
+├── outputs/                     # Generated by eval_mrcr.py
+│   ├── {vanilla,yarn}_{range}/           # Phase 2 results
+│   └── {condition}_{range}/              # Phase 3 results (after eval)
+├── checkpoints/                 # Phase 3: LoRA checkpoints
+│   ├── lora_baseline/
+│   ├── yarn_lora/
+│   ├── rpe_lora/
+│   └── rpe_curriculum_lora/
+└── slurm_logs/                  # SLURM job outputs
 ```
 
 ---
 
-## 8. Code Reference
-
-### `scripts/prepare_data.py`
-
-| Function | What it does |
-|----------|-------------|
-| `get_bin_index(token_count)` | Maps a token count to a bin index. E.g., 5832 → 0 (4K-8K). Returns -1 if below 4096. |
-| `get_bin_label(bin_index)` | Converts bin index to label: 0 → "4K-8K", 1 → "8K-16K", etc. |
-| `tokenize_prompt(prompt_json, tokenizer)` | Takes the raw `prompt` JSON string → parses into messages → applies chat template → tokenizes → returns token count. |
-| `main()` | Orchestrates everything: load tokenizer → download dataset → filter by needle count → tokenize + bin each sample → split train/test per bin → save. |
-
-### `scripts/eval_mrcr.py`
-
-| Function | What it does |
-|----------|-------------|
-| `grade_mrcr(response, answer, random_string_to_prepend)` | Official MRCR grading. Checks random prefix → strips it from both strings → returns SequenceMatcher ratio (0.0-1.0). |
-| `load_model(base_model_name, lora_ckpt_dir, enable_yarn, yarn_factor, ...)` | Loads model in one of three modes: vanilla (as-is), YaRN (inject rope_scaling config), or LoRA (load + merge adapter). Returns (model, tokenizer, description). |
-| `evaluate_mrcr(model, tokenizer, test_data, max_new_tokens)` | Main loop: for each sample → parse messages → chat template → tokenize → generate → decode → grade → aggregate per-bin scores. |
-| `main()` | CLI entrypoint: parse args → load model → load test data → run eval → print summary → save results. |
-
----
-
-## 9. HPC Submission Workflow
+## HPC Reference
 
 ```bash
-# 1. SSH into HPC
 ssh mm14444@login.torch.hpc.nyu.edu
-
-# 2. Go to project and pull latest code
 cd /scratch/mm14444/RPE
 git pull
-
-# 3. Ensure slurm_logs directory exists
 mkdir -p slurm_logs
 
-# 4. Phase 1: Prepare data (downloads MRCR — needs internet)
-sbatch composable_cot/mrcr_context_extension/hpc/prepare_data.slurm
-
-# 5. Monitor job
-squeue -u mm14444
-# When it finishes, check output:
-cat slurm_logs/mrcr_prep_*.out
-
-# 6. Verify data was created
-ls composable_cot/mrcr_context_extension/data/
-# Should see: bin0_4K-8K/  bin1_8K-16K/  bin2_16K-32K/  metadata.json
-
-# 7. Phase 2: Submit both baselines (can run in parallel)
+# --- Phase 2: Baselines ---
 sbatch composable_cot/mrcr_context_extension/hpc/eval_vanilla.slurm
 sbatch composable_cot/mrcr_context_extension/hpc/eval_yarn.slurm
 
-# 8. Monitor
+# --- Phase 3: Training (submit all 4 in parallel) ---
+sbatch composable_cot/mrcr_context_extension/hpc/train_lora_baseline.slurm
+sbatch composable_cot/mrcr_context_extension/hpc/train_lora_yarn.slurm
+sbatch composable_cot/mrcr_context_extension/hpc/train_lora_rpe.slurm
+sbatch composable_cot/mrcr_context_extension/hpc/train_lora_rpe_curriculum.slurm
+
+# --- Phase 3: Eval (after training completes) ---
+sbatch composable_cot/mrcr_context_extension/hpc/eval_all_lora.slurm
+
+# Monitor
 squeue -u mm14444
 
-# 9. Check results when done
-cat composable_cot/mrcr_context_extension/outputs/vanilla_4K-8K/eval_results.json
-cat composable_cot/mrcr_context_extension/outputs/yarn_4K-8K/eval_results.json
-cat composable_cot/mrcr_context_extension/outputs/vanilla_8K-16K/eval_results.json
-cat composable_cot/mrcr_context_extension/outputs/yarn_8K-16K/eval_results.json
+# Check training logs
+cat slurm_logs/mrcr_lora_base_*.out
+cat slurm_logs/mrcr_lora_yarn_*.out
+cat slurm_logs/mrcr_lora_rpe_*.out
+cat slurm_logs/mrcr_lora_rpe_cur_*.out
+
+# Check eval results
+cat slurm_logs/mrcr_eval_lora_*.out
 ```
 
----
-
-## 10. Phase 3+: RPE and PoSE
-
-*Scripts to be added after Phase 2 baselines are collected.*
-
-### RPE (Phase 3)
-
-Uses the existing RPE infrastructure from Phase 2:
-- `rpe/core.py` — Generates sorted random positions from [0, L)
-- `rpe/patching.py` — Monkey-patches model.forward() to replace position_ids
-- `composable_cot/scripts/rpe_llamafactory_patch.py` — TrainerCallback for LLaMA-Factory
-- Triggered via `RPE_CONFIG_PATH` environment variable
-
-**What we'll do:** LoRA fine-tune Qwen2.5-7B-Instruct on the 4K-8K train set with RPE enabled (L=16384). Then evaluate on 4K-8K test (in-distribution) and 8K-16K test (out-of-distribution). Compare against vanilla and YaRN baselines.
-
-### PoSE (Phase 4)
-
-Will mirror RPE's structure but use structured chunk+skip-bias position manipulation instead of fully random positions.
+- Account: `torch_pr_219_courant`
+- Conda env: `/scratch/mm14444/conda_envs/rpe`
+- Partitions: `h200_courant` (80GB, needed for training + 64K+ bins), `l40s_courant` (48GB, fine for 4K-32K eval)
+- transformers: 4.52.4
+- Model cache: `/scratch/mm14444/hf_cache` (offline mode enabled)
