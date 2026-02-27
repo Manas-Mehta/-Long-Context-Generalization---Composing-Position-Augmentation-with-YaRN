@@ -1,0 +1,25 @@
+# PoSE Configuration for MRCR — Curriculum Learning
+#
+# Matches RPE curriculum config schedule for fair comparison.
+# Gradually increases target_length from near-sequential to target.
+#
+# Schedule (same as RPE curriculum v1):
+#   Epoch 1: target_length=10240  — small skip, near-sequential
+#   Epoch 2: target_length=16384  — mild randomization
+#   Epoch 3: target_length=24576  — moderate skip
+#   Epoch 4: target_length=32768  — target (bin 2 max)
+#   Epoch 5: target_length=32768  — consolidation
+#
+# This mirrors the RPE curriculum exactly so we can isolate the effect
+# of PoSE's 2-chunk structure vs RPE's fully-random positions.
+
+pose:
+  enabled: true
+  target_length: 32768
+  seed: null
+  curriculum:
+    1: 10240
+    2: 16384
+    3: 24576
+    4: 32768
+    5: 32768

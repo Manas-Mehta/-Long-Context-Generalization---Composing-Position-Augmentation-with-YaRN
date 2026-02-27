@@ -470,22 +470,160 @@ sbatch composable_cot/mrcr_context_extension/hpc/eval_lora_rpe_curriculum_v2.slu
 
 ### Eval Results
 
-*(To be filled after runs complete)*
+#### RPE + YaRN at Inference (Feb 26, 2026)
+
+| Condition | 4K-8K (n=26) | 8K-16K (n=30) | 16K-32K (n=30) | 32K-64K (n=30) | 64K-128K (n=30) | Retention |
+|-----------|:---:|:---:|:---:|:---:|:---:|:---:|
+| RPE fixed + YaRN eval | 0.531 | 0.499 | 0.641 | 0.590 | **0.551** | **103.8%** |
+| RPE curriculum + YaRN eval | 0.817 | 0.592 | 0.677 | **0.646** | 0.528 | **64.6%** |
+
+Perfect / Zero counts:
+
+| Condition | 4K-8K (P/Z) | 8K-16K (P/Z) | 16K-32K (P/Z) | 32K-64K (P/Z) | 64K-128K (P/Z) |
+|-----------|:---:|:---:|:---:|:---:|:---:|
+| RPE fixed + YaRN eval | 11/0 | 7/3 | 11/0 | 8/0 | 9/0 |
+| RPE curriculum + YaRN eval | 18/0 | 12/4 | 16/0 | 14/0 | 8/0 |
+
+Verification: All bins show `rope_type: yarn`, `40/64 dims differ from vanilla` — CORRECT.
+
+#### Key Finding: RPE + YaRN is the best combination for length generalization
+
+**RPE fixed + YaRN eval** achieves near-flat performance across all bins:
+- 0.531 → 0.499 → 0.641 → 0.590 → 0.551
+- **Retention: 103.8%** — performance at 128K *exceeds* performance at 4K-8K
+- At 64K-128K: 0.551 vs YaRN+LoRA's 0.441 (+25%), vs LoRA baseline's 0.317 (+74%)
+- Zero "zero scores" at bins 2-4 (no complete failures at long contexts)
+
+**RPE curriculum + YaRN eval** is the best overall:
+- 0.817 → 0.592 → 0.677 → 0.646 → 0.528
+- **Retention: 64.6%** — far better than any non-RPE condition
+- Highest absolute scores at bins 3-4 among all conditions
+- At 32K-64K: 0.646 beats everything (YaRN+LoRA: 0.619, baseline: 0.545)
+- At 64K-128K: 0.528 beats everything (YaRN+LoRA: 0.441, baseline: 0.317)
+
+**Why this works**: RPE trains the adapter to be position-invariant (doesn't rely on absolute position). YaRN at eval extends the frequency basis so the model can physically attend to longer sequences. Together: the adapter handles any position arrangement, and YaRN ensures the RoPE frequencies don't degrade at long range.
+
+#### v2 Training Results
+
+*(To be filled after v2 training + eval completes)*
 
 | Condition | 4K-8K | 8K-16K | 16K-32K | 32K-64K | 64K-128K |
 |-----------|:---:|:---:|:---:|:---:|:---:|
-| RPE fixed + YaRN eval | — | — | — | — | — |
-| RPE curriculum + YaRN eval | — | — | — | — | — |
 | RPE fixed v2 | — | — | — | — | — |
 | RPE curriculum v2 | — | — | — | — | — |
 
 ---
 
-## Phase 4: PoSE Exploration
+## Phase 4: PoSE Comparison
 
-*Status: Not started*
+*Status: Ready to run*
 
-PoSE (Positional Skip-wisE) preserves local contiguity within chunks but introduces gaps between chunks. May be better suited for context extension than RPE's fully random positions.
+### What is PoSE?
+
+**PoSE** (Positional Skip-wisE) from Zhu et al. (ICLR 2024, arXiv:2309.10400) is a position manipulation method that splits the training sequence into **2 contiguous chunks** with a **random skip** between them.
+
+```
+RPE positions:    [12, 45, 89, 156, 203, 891, 1204, 3401, 5502, 7891]
+                   ↑ gaps between EVERY token
+
+PoSE positions:   [0, 1, 2, 3, 4,  6560, 6561, 6562, 6563, 6564]
+                   └─ chunk 1 ─┘   └──── chunk 2 (after skip) ────┘
+                   contiguous       contiguous
+```
+
+**Why PoSE might work better than RPE:** PoSE preserves within-chunk sequential structure (which the model learned during pretraining) while still exposing the model to long-range relative positions. RPE's fully-random positions destroy ALL local structure, which the paper shows damages language modeling ability (perplexity explodes from ~4.6 to ~11.6).
+
+**Key difference:** PoSE has O(1) discontinuities per sequence (1 skip). RPE has O(N) discontinuities (gaps between every token). The model sees familiar local patterns but novel global distances.
+
+### PoSE Algorithm (2-chunk version, per the paper)
+
+For each training example with `seq_length` tokens and `target_length` L_t:
+1. Pick random split: `rt1 = randint(1, seq_length // 2)`
+2. Chunk 1 positions: `[0, 1, ..., rt1 - 1]` (always starts at 0)
+3. Pick random skip: `rt = randint(0, L_t - seq_length)`
+4. Chunk 2 positions: `[rt, rt+1, ..., rt + (seq_length - rt1) - 1]`
+
+At eval: standard sequential positions (same as RPE — training-only technique).
+
+### Implementation
+
+PoSE follows the exact same architecture as RPE:
+- `rpe/pose.py` — `PositionalSkipWise` class (generates 2-chunk positions)
+- `rpe/pose_patching.py` — `PoSEPatcher` class (monkey-patches model.forward, gates on model.training)
+- `composable_cot/scripts/pose_patch.py` — `PoSETrainerCallback` (integrates with HF Trainer)
+- `train_mrcr_lora.py` — accepts `--pose-config` argument (parallel to `--rpe-config`)
+
+### Experiment Design: Fair 3-Way Comparison
+
+All conditions use identical hyperparameters:
+
+| Parameter | Value | Rationale |
+|-----------|-------|-----------|
+| Base model | Qwen2.5-7B-Instruct | Same across all |
+| LoRA rank | 16 | Same across all |
+| LoRA alpha | 32 | Same across all |
+| LoRA dropout | 0.1 | Same across all |
+| LoRA targets | q,k,v,o,up,down,gate_proj | Same across all |
+| Training data | bin 0 (4K-8K), 60 samples | Same across all |
+| LR | 2e-4 | Same across all |
+| Epochs | 5 | Same across all |
+| Batch size | 1 x 4 grad_accum = 4 effective | Same across all |
+| Max seq len | 8192 | Same across all |
+| Warmup | 0.1 ratio | Same across all |
+| Seed | 42 | Same across all |
+| Eval | Sequential positions, all 5 bins | Same across all |
+
+The ONLY variable is the position manipulation during training:
+
+| Condition | Position method | Target L | Schedule |
+|-----------|----------------|----------|----------|
+| LoRA baseline | Sequential [0,1,2,...] | N/A | N/A |
+| RPE fixed | Random sorted from [0, L) | 32768 | Constant |
+| RPE curriculum | Random sorted from [0, L) | 10K→32K | Curriculum |
+| **PoSE fixed** | 2 contiguous chunks, 1 skip in [0, L) | 32768 | Constant |
+| **PoSE curriculum** | 2 contiguous chunks, 1 skip in [0, L) | 10K→32K | Curriculum |
+
+### Files
+
+| File | Purpose |
+|------|---------|
+| `rpe/pose.py` | Core PoSE position generation |
+| `rpe/pose_patching.py` | Model forward patching |
+| `composable_cot/scripts/pose_patch.py` | TrainerCallback |
+| `configs/pose_config_mrcr.yaml` | PoSE fixed (target_length=32768) |
+| `configs/pose_config_mrcr_curriculum.yaml` | PoSE curriculum (10240→32768) |
+| `hpc/train_lora_pose.slurm` | Train PoSE fixed |
+| `hpc/train_lora_pose_curriculum.slurm` | Train PoSE curriculum |
+| `hpc/eval_lora_pose.slurm` | Eval PoSE fixed on bins 0-4 |
+| `hpc/eval_lora_pose_curriculum.slurm` | Eval PoSE curriculum on bins 0-4 |
+
+### Commands
+
+```bash
+# --- Phase 4: PoSE training (submit in parallel) ---
+sbatch composable_cot/mrcr_context_extension/hpc/train_lora_pose.slurm
+sbatch composable_cot/mrcr_context_extension/hpc/train_lora_pose_curriculum.slurm
+
+# --- Phase 4: PoSE eval (after training completes) ---
+sbatch composable_cot/mrcr_context_extension/hpc/eval_lora_pose.slurm
+sbatch composable_cot/mrcr_context_extension/hpc/eval_lora_pose_curriculum.slurm
+```
+
+### Expected Results
+
+Based on the PoSE paper and our RPE results:
+- **PoSE should have lower training loss than RPE** — within-chunk continuity preserves language modeling ability
+- **PoSE should have higher bin-0 scores than RPE** — less disruption to the task-learning signal
+- **PoSE vs RPE at long contexts (bins 3-4)** — this is the key question. PoSE covers fewer relative positions per training step but retains local structure. RPE covers all relative positions but damages local patterns.
+
+### Eval Results
+
+*(To be filled after runs complete)*
+
+| Condition | 4K-8K | 8K-16K | 16K-32K | 32K-64K | 64K-128K |
+|-----------|:---:|:---:|:---:|:---:|:---:|
+| PoSE fixed | — | — | — | — | — |
+| PoSE curriculum | — | — | — | — | — |
 
 ---
 

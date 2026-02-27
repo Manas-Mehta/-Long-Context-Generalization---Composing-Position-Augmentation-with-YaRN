@@ -1,0 +1,21 @@
+# PoSE Configuration for MRCR — Fixed target_length=32768
+#
+# Matches RPE fixed config (L=32768) for fair comparison.
+# Training on bin 0 (4K-8K tokens), targeting generalization to bin 2 (16K-32K).
+#
+# PoSE splits each sequence into 2 contiguous chunks with a random skip
+# between them. Positions within each chunk are sequential (preserving
+# local structure), but the gap between chunks covers long-range distances.
+#
+# With target_length=32768 and seq_length~6K:
+#   - Chunk 1: [0, 1, ..., ~3000]
+#   - Gap: random offset up to ~26768
+#   - Chunk 2: [offset, offset+1, ..., offset+~3000]
+#
+# Key difference from RPE: RPE has gaps between EVERY token.
+# PoSE has ONE gap between two contiguous blocks.
+
+pose:
+  enabled: true
+  target_length: 32768
+  seed: null

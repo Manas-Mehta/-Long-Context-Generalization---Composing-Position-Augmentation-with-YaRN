@@ -1,11 +1,13 @@
 #!/usr/bin/env python
 """Train LoRA adapters on MRCR (Multi-Round Coreference Resolution).
 
-Supports four conditions:
-  1. LoRA baseline:       Normal RoPE, no position tricks
-  2. YaRN+LoRA:           YaRN applied at model load (factor=4.0)
-  3. RPE+LoRA (fixed):    RPE with fixed L during training
+Supports six conditions:
+  1. LoRA baseline:         Normal RoPE, no position tricks
+  2. YaRN+LoRA:             YaRN applied at model load (factor=4.0)
+  3. RPE+LoRA (fixed):      RPE with fixed L during training
   4. RPE+LoRA (curriculum): RPE with increasing L per epoch
+  5. PoSE+LoRA (fixed):     PoSE with fixed target_length during training
+  6. PoSE+LoRA (curriculum): PoSE with increasing target_length per epoch
 
 Uses HuggingFace Trainer + PEFT directly (not LLaMA-Factory) because:
   - MRCR has multi-turn conversations (10+ messages, 4K-8K tokens)
@@ -472,6 +474,10 @@ def parse_args():
     parser.add_argument("--rpe-config", type=str, default=None,
                         help="Path to RPE YAML config (enables RPE during training)")
 
+    # PoSE
+    parser.add_argument("--pose-config", type=str, default=None,
+                        help="Path to PoSE YAML config (enables PoSE during training)")
+
     # LoRA
     parser.add_argument("--lora-rank", type=int, default=16)
     parser.add_argument("--lora-alpha", type=int, default=32)
@@ -510,6 +516,7 @@ def main():
     print(f"  Base model:       {args.base_model}", flush=True)
     print(f"  YaRN enabled:     {args.enable_yarn} (factor={args.yarn_factor})", flush=True)
     print(f"  RPE config:       {args.rpe_config or '(none)'}", flush=True)
+    print(f"  PoSE config:      {args.pose_config or '(none)'}", flush=True)
     print(f"  LoRA:             rank={args.lora_rank}, alpha={args.lora_alpha}, dropout={args.lora_dropout}", flush=True)
     print(f"  Train file:       {args.train_file}", flush=True)
     print(f"  Output dir:       {args.output_dir}", flush=True)
@@ -523,7 +530,11 @@ def main():
     print(f"  Timestamp:        {datetime.now().isoformat()}", flush=True)
 
     # Determine condition name
-    if args.rpe_config and "curriculum" in args.rpe_config:
+    if args.pose_config and "curriculum" in args.pose_config:
+        condition = "pose_curriculum_lora"
+    elif args.pose_config:
+        condition = "pose_lora"
+    elif args.rpe_config and "curriculum" in args.rpe_config:
         condition = "rpe_curriculum_lora"
     elif args.rpe_config:
         condition = "rpe_lora"
@@ -568,6 +579,13 @@ def main():
         rpe_callback = RPETrainerCallback(args.rpe_config)
         callbacks.append(rpe_callback)
         print(f"\n  RPE callback loaded from config: {args.rpe_config}", flush=True)
+
+    # PoSE callback
+    if args.pose_config:
+        from composable_cot.scripts.pose_patch import PoSETrainerCallback
+        pose_callback = PoSETrainerCallback(args.pose_config)
+        callbacks.append(pose_callback)
+        print(f"\n  PoSE callback loaded from config: {args.pose_config}", flush=True)
 
     # --- Data collator ---
     data_collator = DataCollatorForSeq2Seq(
@@ -626,6 +644,7 @@ def main():
         "enable_yarn": args.enable_yarn,
         "yarn_factor": args.yarn_factor,
         "rpe_config": args.rpe_config,
+        "pose_config": args.pose_config,
         "lora_rank": args.lora_rank,
         "lora_alpha": args.lora_alpha,
         "lora_dropout": args.lora_dropout,
