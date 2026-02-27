@@ -1,0 +1,17 @@
+# RPE Configuration for MRCR — Curriculum to L=16384
+#
+# L sweep: curriculum ramping to L=16384.
+# Schedule: start near-sequential, ramp to 2x max training seq.
+
+rpe:
+  enabled: true
+  max_simulation_length: 16384
+  seed: null
+  training_mode: true
+  inference_mode: false
+  curriculum:
+    1: 8192
+    2: 10240
+    3: 12288
+    4: 16384
+    5: 16384

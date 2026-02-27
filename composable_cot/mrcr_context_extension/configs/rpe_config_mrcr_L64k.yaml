@@ -1,0 +1,12 @@
+# RPE Configuration for MRCR — Fixed L=65536
+#
+# L sweep experiment: L=65536 (8x max training seq).
+# Targets bin 3 (32K-64K). More aggressive randomization.
+# With training sequences of ~6K tokens, avg position gap = 65536/6000 ≈ 10.9.
+
+rpe:
+  enabled: true
+  max_simulation_length: 65536
+  seed: null
+  training_mode: true
+  inference_mode: false

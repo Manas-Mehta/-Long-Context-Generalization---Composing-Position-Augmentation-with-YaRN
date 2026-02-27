@@ -503,14 +503,37 @@ Verification: All bins show `rope_type: yarn`, `40/64 dims differ from vanilla` 
 
 **Why this works**: RPE trains the adapter to be position-invariant (doesn't rely on absolute position). YaRN at eval extends the frequency basis so the model can physically attend to longer sequences. Together: the adapter handles any position arrangement, and YaRN ensures the RoPE frequencies don't degrade at long range.
 
-#### v2 Training Results
+#### v2 Eval Results (Feb 26, 2026)
 
-*(To be filled after v2 training + eval completes)*
+| Condition | 4K-8K (n=26) | 8K-16K (n=30) | 16K-32K (n=30) | 32K-64K (n=30) | 64K-128K (n=30) | Retention |
+|-----------|:---:|:---:|:---:|:---:|:---:|:---:|
+| RPE fixed v1 | 0.636 | 0.504 | 0.503 | 0.473 | 0.265 | 41.7% |
+| **RPE fixed v2** | **0.744** | 0.506 | **0.654** | 0.446 | 0.247 | 33.2% |
+| RPE curriculum v1 | **0.922** | **0.691** | **0.749** | **0.563** | **0.255** | 27.7% |
+| RPE curriculum v2 | 0.891 | 0.628 | 0.560 | 0.251 | 0.169 | 19.0% |
 
-| Condition | 4K-8K | 8K-16K | 16K-32K | 32K-64K | 64K-128K |
+Perfect / Zero counts:
+
+| Condition | 4K-8K (P/Z) | 8K-16K (P/Z) | 16K-32K (P/Z) | 32K-64K (P/Z) | 64K-128K (P/Z) |
 |-----------|:---:|:---:|:---:|:---:|:---:|
-| RPE fixed v2 | — | — | — | — | — |
-| RPE curriculum v2 | — | — | — | — | — |
+| RPE fixed v2 | 12/0 | 12/1 | 15/0 | 6/1 | 4/4 |
+| RPE curriculum v2 | 8/0 | 10/1 | 7/0 | 1/3 | 1/7 |
+
+#### v2 Analysis
+
+**RPE fixed v2 (L warmup + LR 1e-4 + grad clip 0.5):**
+- bin 0 improved significantly: 0.744 vs v1's 0.636 (+17%) — warmup prevented gradient explosion
+- bin 2 improved substantially: 0.654 vs v1's 0.503 (+30%)
+- bins 3-4 slightly worse than v1 — lower LR may have underfit at long range
+- Overall: the warmup fixed the training instability problem, but didn't translate to better long-context results
+
+**RPE curriculum v2 (aggressive L: 16K→65K):**
+- Worse than v1 across the board, especially at bins 3-4 (0.251 vs 0.563, 0.169 vs 0.255)
+- 7 zero-scores at bin 4 — severe degradation
+- The more aggressive L schedule (reaching 65K) appears to have damaged the adapter
+- v1's gentler schedule (topping at 32K) was the better design
+
+**Conclusion:** v2 changes did not improve over v1. The original RPE curriculum v1 remains the best RPE-only condition. The key finding from Phase 3b stands: RPE + YaRN at eval is where the real gains are.
 
 ---
 
