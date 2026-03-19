@@ -1,0 +1,14 @@
+# PoSE Configuration for MRCR — Fixed target_length=16384
+#
+# Smaller target_length than the default 32K config.
+# Used by Group E (Y2-P16, Y4-P16).
+#
+# With target_length=16384 and seq_length~6K:
+#   - Chunk 1: [0, 1, ..., ~3000]
+#   - Gap: random offset up to ~10384
+#   - Chunk 2: [offset, offset+1, ..., offset+~3000]
+
+pose:
+  enabled: true
+  target_length: 16384
+  seed: null

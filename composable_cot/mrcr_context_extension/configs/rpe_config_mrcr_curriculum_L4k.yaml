@@ -1,0 +1,18 @@
+# RPE Configuration for MRCR — Curriculum to L=4096
+#
+# L sweep: curriculum ramping to L=4096.
+# Schedule: start near-sequential, ramp to 0.5x max training seq.
+# Used by Group A (R-c4) and Group C (Y2-Rc4, Y4-Rc4).
+
+rpe:
+  enabled: true
+  max_simulation_length: 4096
+  seed: null
+  training_mode: true
+  inference_mode: false
+  curriculum:
+    1: 2048
+    2: 3072
+    3: 3584
+    4: 4096
+    5: 4096
