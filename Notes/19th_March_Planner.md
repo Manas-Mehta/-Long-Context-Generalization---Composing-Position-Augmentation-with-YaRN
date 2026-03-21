@@ -232,6 +232,78 @@ If Comp-Y2-R128 beats Pure-Y4 at bins 3-4 (32K-128K), the narrative is:
 
 Eval: 2 models × 3 modes = 6 eval runs. Everything else reuses existing Phase 5/6 models.
 
+### Experiment 3 Results (March 20, 2026)
+
+Training: Both Comp-Y2-R128 and Comp-Y3-R128 trained on bin 0 (4K-8K), LoRA rank 16, 5 epochs.
+Eval: Each model evaluated in 3 modes (no YaRN, matching YaRN, YaRN f=4). Baseline = existing RPE cur L=128K + YaRN f=4 at eval.
+
+#### Comp-Y2-R128 (YaRN f=2 trained + RPE L=128K)
+
+| Eval mode | 4K-8K | 8K-16K | 16K-32K | 32K-64K | 64K-128K |
+|-----------|-------|--------|---------|---------|----------|
+| No YaRN | 0.958 | 0.634 | 0.713 | 0.526 | 0.212 |
+| YaRN f=2 (matching) | 0.993 | 0.693 | 0.618 | 0.592 | 0.427 |
+| YaRN f=4 (scaled-up) | 0.916 | 0.658 | 0.808 | 0.641 | 0.499 |
+
+#### Comp-Y3-R128 (YaRN f=3 trained + RPE L=128K)
+
+| Eval mode | 4K-8K | 8K-16K | 16K-32K | 32K-64K | 64K-128K |
+|-----------|-------|--------|---------|---------|----------|
+| No YaRN | 0.854 | 0.572 | 0.547 | 0.558 | 0.233 |
+| YaRN f=3 (matching) | 0.963 | 0.625 | 0.743 | 0.737 | 0.493 |
+| YaRN f=4 (scaled-up) | 0.927 | 0.594 | 0.744 | 0.618 | 0.502 |
+
+#### Baseline: Pure-R128 + YaRN f=4 at eval (no YaRN during training)
+
+| Eval mode | 4K-8K | 8K-16K | 16K-32K | 32K-64K | 64K-128K |
+|-----------|-------|--------|---------|---------|----------|
+| YaRN f=4 | 0.783 | 0.599 | 0.731 | 0.585 | 0.537 |
+
+#### Prior baselines (from Phase 3-5, for reference)
+
+| Condition | 4K-8K | 8K-16K | 16K-32K | 32K-64K | 64K-128K |
+|-----------|-------|--------|---------|---------|----------|
+| Pure-Y4 (YaRN f=4 train+eval) | 0.891 | 0.692 | 0.619 | 0.619 | 0.441 |
+| RPE cur L=128K (no YaRN) | 0.889 | 0.573 | 0.678 | 0.606 | 0.334 |
+| RPE cur L=16K (no YaRN) | 0.924 | 0.939 | 0.874 | 0.688 | 0.330 |
+
+#### Analysis
+
+**Head-to-head at bin 4 (64K-128K) — the main question:**
+
+| Condition | Bin 4 | Bin 0 |
+|-----------|-------|-------|
+| Pure-R128 + YaRN f=4 eval (no YaRN train) | **0.537** | 0.783 | 
+| Comp-Y3-R128 + f=4 eval | 0.502 | 0.927 | 
+| Comp-Y2-R128 + f=4 eval | 0.499 | 0.916 | 
+| Comp-Y3-R128 + f=3 matching | 0.493 | 0.963 | 
+| Pure-Y4 (train+eval) | 0.441 | 0.891 | 49.5% |
+| Comp-Y2-R128 + f=2 matching | 0.427 | **0.993** | 
+| RPE cur L=128K (no YaRN at all) | 0.334 | 0.889 | 
+
+**Finding 1: Compositional models beat Pure-Y4, but NOT the eval-only baseline.**
+Comp-Y2-R128 + f=4 gets 0.499 at bin 4 vs Pure-Y4's 0.441 — a clear win (+0.058). But the simplest approach — just training RPE L=128K without any YaRN, then slapping YaRN f=4 on at eval — scores 0.537, beating everything. Training with YaRN active actually hurts bin 4 by ~0.04 compared to not training with it.
+
+**Finding 2: Training with YaRN improves short-context scores dramatically.**
+The baseline (no YaRN train) gets only 0.783 at bin 0. The compositional models get 0.916-0.993. So there's a clear tradeoff: YaRN during training helps bins 0-2 but slightly hurts bin 4. The models trained with YaRN learn better short-context behavior but become slightly less flexible at extreme extrapolation.
+
+**Finding 3: Comp-Y3 with matching f=3 has the highest bin 3 score we've ever seen (0.737).**
+This beats every prior condition at the 32K-64K range. The matching-factor eval seems to be a sweet spot for Comp-Y3 specifically — better than scaling up to f=4 at bin 3 (0.737 vs 0.618). But this advantage disappears at bin 4 where f=4 takes over (0.502 > 0.493).
+
+**Finding 4: No YaRN eval reveals what RPE actually learned.**
+Without YaRN, Comp-Y2 scores 0.958/0.634/0.713/0.526/0.212. That bin 0 of 0.958 is near-perfect — the model learned the task well. But bin 4 collapses to 0.212, confirming that RPE alone (even trained with YaRN frequencies) can't reach 128K. YaRN at eval is still essential for the longest contexts.
+
+**Finding 5: Train-low eval-high works.**
+Comp-Y2 (trained f=2) + eval f=4 gets 0.808 at bin 2, beating Pure-Y4's 0.619 and even the baseline's 0.731. This validates the practical deployment story: train cheaply at f=2, scale up at inference.
+
+**Bottom line for the compositional hypothesis:**
+Mixed. The compositional approach (small YaRN + RPE beyond window) beats monolithic YaRN (Pure-Y4) as hoped. But it doesn't beat the even simpler strategy of training RPE without YaRN and adding YaRN at eval time. The "compositional" benefit comes from RPE + eval-time YaRN, not from training with YaRN.
+
+**What this means for Phase 6:**
+The Phase 6 experiments (YaRN active during training + RPE/PoSE) may show a similar pattern — YaRN during training helps short context but slightly hurts the longest extrapolation. The key comparison will be Y4-Rc16 vs existing RPE cur L=16K + YaRN eval. If the same pattern holds, eval-only YaRN remains the best strategy, and Phase 6's value shifts to understanding WHY training with YaRN hurts extrapolation.
+
+---
+
 ### Follow-up (if Experiment 3 succeeds): 8x extension
 
 If compositional extension works at 4x, test at 8x (32K → 256K):
@@ -274,14 +346,57 @@ This is a research direction, not an immediate experiment. Park it.
 
 ---
 
-## Today's Action Plan
+## Phase 6 Status Tracker (updated March 20, 2026)
 
-1. **Write RPE configs** for new L values (L=4K, L=8K, and large-L curriculum schedules for window-matching and beyond-window)
-2. **Verify training script** supports `--yarn-factor` + `--rpe-config` simultaneously (may need a small code change)
-3. **Write 20 SLURM training scripts** (Phase 6: 18 + Expt 3: 2)
-4. **Write ~50 SLURM eval scripts** (template them)
-5. **Submit training jobs** in batches of 3 parallel
-6. **Wait for results**, then analyze with a SIMPLE, clear table (lesson from professor's feedback)
+### Training Status
+
+| # | ID | Checkpoint | Status |
+|---|-----|-----------|--------|
+| 1 | R-c4 | rpe_cur_L4k | DONE |
+| 2 | R-c8 | rpe_cur_L8k | DONE |
+| 3 | Y2 | yarn2 | QUEUED |
+| 4 | Y3 | yarn3 | QUEUED |
+| 5 | Y2-Rc4 | y2_rpe_cur_L4k | DONE |
+| 6 | Y2-Rc8 | y2_rpe_cur_L8k | DONE |
+| 7 | Y2-Rc16 | y2_rpe_cur_L16k | DONE |
+| 8 | Y4-Rc4 | y4_rpe_cur_L4k | DONE |
+| 9 | Y4-Rc8 | y4_rpe_cur_L8k | QUEUED |
+| 10 | Y4-Rc16 | y4_rpe_cur_L16k | QUEUED |
+| 11 | Y2-Rc32 | y2_rpe_cur_L32k | DONE |
+| 12 | Y2-Rc64 | y2_rpe_cur_L64k | DONE |
+| 13 | Y4-Rc64 | y4_rpe_cur_L64k | QUEUED |
+| 14 | Y4-Rc128 | y4_rpe_cur_L128k | QUEUED |
+| 15 | Y2-P16 | y2_pose_16k | DONE |
+| 16 | Y2-P32 | y2_pose_32k | DONE |
+| 17 | Y4-P16 | y4_pose_16k | QUEUED |
+| 18 | Y4-P32 | y4_pose_32k | QUEUED |
+
+### Eval Status
+
+27 eval jobs submitted for the 10 completed models. Script: `phase6/hpc/submit_all_evals.sh`
+
+| Model | no YaRN | YaRN f=2 | YaRN f=4 |
+|-------|---------|----------|----------|
+| rpe_cur_L4k | SUBMITTED | — | SUBMITTED |
+| rpe_cur_L8k | SUBMITTED | — | SUBMITTED |
+| y2_rpe_cur_L4k | SUBMITTED | SUBMITTED | SUBMITTED |
+| y2_rpe_cur_L8k | SUBMITTED | SUBMITTED | SUBMITTED |
+| y2_rpe_cur_L16k | SUBMITTED | SUBMITTED | SUBMITTED |
+| y2_rpe_cur_L32k | SUBMITTED | SUBMITTED | SUBMITTED |
+| y2_rpe_cur_L64k | SUBMITTED | SUBMITTED | SUBMITTED |
+| y2_pose_16k | SUBMITTED | SUBMITTED | SUBMITTED |
+| y2_pose_32k | SUBMITTED | SUBMITTED | SUBMITTED |
+| y4_rpe_cur_L4k | SUBMITTED | — | SUBMITTED |
+
+### Pending Evals (after remaining training completes)
+
+yarn2, yarn3, y4_rpe_cur_L8k, y4_rpe_cur_L16k, y4_rpe_cur_L64k, y4_rpe_cur_L128k, y4_pose_16k, y4_pose_32k
+
+### Key comparison to watch
+
+**Does RPE help YaRN?** → Y4-Rc16 (YaRN f=4 + RPE L=16K) vs Pure-Y4 (0.441 at bin 4)
+**Does training with YaRN help RPE?** → Y2-Rc16 + f=4 eval vs RPE cur L=16K + f=4 eval-only (no prior result for this!)
+**Best L for YaRN+RPE?** → Compare L=4K vs 8K vs 16K vs 32K vs 64K (Y2 series)
 
 ---
 
