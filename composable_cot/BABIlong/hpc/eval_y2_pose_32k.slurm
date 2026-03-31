@@ -1,7 +1,7 @@
 #!/bin/bash
 #SBATCH --job-name=eval_y2_pose32
 #SBATCH --account=torch_pr_219_courant
-#SBATCH --partition=l40s_courant
+#SBATCH --partition=h200_courant
 #SBATCH --nodes=1
 #SBATCH --ntasks-per-node=1
 #SBATCH --cpus-per-task=8
@@ -42,12 +42,13 @@ echo "  Timestamp: $(date)"
 echo ""
 
 python ${BABILONG_DIR}/scripts/eval_babilong.py \
-    --checkpoint-dir "${BABILONG_DIR}/checkpoints/y2_pose_32k" \
+    --checkpoint-dir "${PROJECT_DIR}/${BABILONG_DIR}/checkpoints/y2_pose_32k/checkpoint-5000" \
     --base-model     "Qwen/Qwen2.5-7B-Instruct" \
     --enable-yarn    --yarn-factor 4.0 \
     --eval-dir       "${BABILONG_DIR}/data/eval" \
     --output-dir     "${BABILONG_DIR}/results/y2_pose_32k" \
     --condition      "y2_pose_32k" \
+    --max-samples    100 \
     --max-seq-len    131072 \
     --max-new-tokens 10
 
