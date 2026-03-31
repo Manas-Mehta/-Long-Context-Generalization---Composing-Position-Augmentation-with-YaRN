@@ -613,12 +613,31 @@ class MidTrainingEvalCallback(TrainerCallback):
                     out[0][input_ids.shape[1]:], skip_special_tokens=True
                 ).strip().lower()
                 target = sample.get("answer", "").strip().lower()
-                if self._grade(response, target, messages[0]["content"]):
+                # Extract just the question sentence for grading, NOT the full
+                # context. Passing the full context would cause all 6 room-name
+                # labels to be excluded (they appear throughout the book text),
+                # making accuracy read as ~0% on long bins.
+                question_only = self._extract_question(messages[0]["content"])
+                if self._grade(response, target, question_only):
                     correct += 1
             except Exception:
                 continue
 
         return correct / len(subset) if subset else 0.0
+
+    @staticmethod
+    def _extract_question(user_content: str) -> str:
+        """Extract just the question sentence from the full user message.
+
+        User message format: "{system_prompt}\\n\\n{context}\\nQuestion: {q}\\nAnswer with only one word."
+        We extract only the "Question: ..." part for use in grading.
+        This prevents room-name labels that appear in the book-text context
+        from being incorrectly excluded by the grading function.
+        """
+        idx = user_content.rfind("Question:")
+        if idx == -1:
+            return user_content  # fallback: use full content (safe, just conservative)
+        return user_content[idx:]
 
     def _grade(self, response: str, target: str, question: str) -> bool:
         """Official BABILong grading: closed-vocabulary label detection."""

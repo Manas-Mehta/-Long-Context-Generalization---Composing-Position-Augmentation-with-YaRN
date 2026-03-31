@@ -95,6 +95,7 @@ def sample_to_training_format(sample: dict, bin_label: str, tokenizer) -> dict:
     return {
         "messages":    messages,
         "answer":      assistant_content,
+        "question":    sample["question"].strip(),  # raw question for grading
         "bin":         bin_label,
         "token_count": token_count,
     }
