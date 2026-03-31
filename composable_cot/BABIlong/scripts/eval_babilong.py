@@ -183,7 +183,6 @@ def load_model(
     model = AutoModelForCausalLM.from_pretrained(
         base_model,
         device_map=device_map,
-        attn_implementation="flash_attention_2" if not no_cuda else "eager",
         **model_kwargs,
     )
     print(f"  Base model loaded in {time.time()-t0:.1f}s")
@@ -262,8 +261,6 @@ def eval_bin(
                     input_ids,
                     max_new_tokens=max_new_tokens,
                     do_sample=False,
-                    temperature=None,
-                    top_p=None,
                     pad_token_id=tokenizer.eos_token_id,
                 )
             prediction = tokenizer.decode(
