@@ -76,22 +76,21 @@ if _PROJECT_ROOT not in sys.path:
 
 
 # ---------------------------------------------------------------------------
-# QA3 Prompt Template (official BABILong format)
+# QA3 Prompt Template
+#
+# Kept minimal and close to the official BABILong evaluation format.
+# We do NOT include reasoning hints (e.g. "objects move with the person")
+# because those would leak the solution strategy, confounding the comparison
+# between position encoding methods. The prompt is a constant across all 6
+# conditions — it should not be a variable.
 # ---------------------------------------------------------------------------
 
 QA3_SYSTEM_PROMPT = (
-    "I will give you a long passage with facts about the locations of objects "
+    "I will give you a passage with facts about the locations of objects "
     "hidden among irrelevant text, followed by a question. "
-    "Objects move with the person who is carrying them. "
-    "If a person picks up an object and then travels to a new location, "
-    "the object is now in that new location. "
-    "If a person drops or leaves an object, it stays in that location. "
-    "To answer the question, trace the chain of events: "
-    "find who had the object, track where they moved, "
-    "and determine the final location.\n\n"
-    "Your answer must be a single word — one of: "
-    "bathroom, bedroom, garden, hallway, kitchen, office.\n"
-    "Do not write anything else."
+    "Answer the question based only on the information in the passage.\n\n"
+    "Your answer must be exactly one word — one of: "
+    "bathroom, bedroom, garden, hallway, kitchen, office."
 )
 
 QA3_LABELS = ["bathroom", "bedroom", "garden", "hallway", "kitchen", "office"]
