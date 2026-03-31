@@ -78,19 +78,38 @@ if _PROJECT_ROOT not in sys.path:
 # ---------------------------------------------------------------------------
 # QA3 Prompt Template
 #
-# Kept minimal and close to the official BABILong evaluation format.
-# We do NOT include reasoning hints (e.g. "objects move with the person")
-# because those would leak the solution strategy, confounding the comparison
-# between position encoding methods. The prompt is a constant across all 6
-# conditions — it should not be a variable.
+# Follows the official BABILong prompt structure from:
+#   https://github.com/booydar/babilong/blob/main/babilong/prompts.py
+#
+# Official structure:
+#   {instruction} + {examples} + {post_prompt} + <context>{context}</context> + Question: {q}
+#
+# We use:
+#   - Official QA3 instruction text (verbatim from DEFAULT_PROMPTS['qa3'])
+#   - Official <context> tags around the document
+#   - NO few-shot examples: official examples show sentence-format answers
+#     ("Before the kitchen the apple was in the bathroom.") but our training
+#     labels are single words ("bathroom"). Including them would create a
+#     train/label inconsistency. Fine-tuning does not need few-shot examples.
+#   - Post-prompt changed to single-word format to match training labels.
 # ---------------------------------------------------------------------------
 
-QA3_SYSTEM_PROMPT = (
-    "I will give you a passage with facts about the locations of objects "
-    "hidden among irrelevant text, followed by a question. "
-    "Answer the question based only on the information in the passage.\n\n"
+# Source: DEFAULT_PROMPTS['qa3']['instruction'] in babilong/prompts.py
+QA3_INSTRUCTION = (
+    "I give you context with the facts about locations and actions of different persons "
+    "hidden in some random text and a question. "
+    "You need to answer the question based only on the information from the facts.\n"
+    "If a person got an item in the first location and travelled to the second location "
+    "the item is also in the second location. "
+    "If a person dropped an item in the first location and moved to the second location "
+    "the item remains in the first location."
+)
+
+# Changed from official sentence format to single-word format to match training labels.
+QA3_POST_PROMPT = (
     "Your answer must be exactly one word — one of: "
-    "bathroom, bedroom, garden, hallway, kitchen, office."
+    "bathroom, bedroom, garden, hallway, kitchen, office. "
+    "Do not write anything else."
 )
 
 QA3_LABELS = ["bathroom", "bedroom", "garden", "hallway", "kitchen", "office"]
@@ -99,30 +118,46 @@ QA3_LABELS = ["bathroom", "bedroom", "garden", "hallway", "kitchen", "office"]
 def build_messages(sample: dict) -> list[dict]:
     """Build chat messages for a BABILong QA3 sample.
 
-    Combines the system prompt + context (input field) + question into
-    a single user message. The assistant message is the answer.
+    Follows the official BABILong prompt structure (babilong/prompts.py):
+        {instruction}
 
-    Args:
-        sample: Dict with keys 'messages' (pre-formatted) or raw
-                'input', 'question', 'answer' fields.
+        <context>
+        {context}
+        </context>
 
-    Returns:
-        List of dicts: [{"role": "user", "content": ...},
-                        {"role": "assistant", "content": ...}]
+        Question: {question}
+        {post_prompt}
+
+    The context is extracted from the pre-formatted user message in our
+    JSON files. The raw question is read from the 'question' field saved
+    by prepare_babilong.py.
     """
-    # Our prepare_babilong.py already created the messages list.
-    # The user message is: "{input}\nQuestion: {question}\nAnswer with only one word."
-    # We prepend the system prompt to improve reasoning guidance.
     if "messages" in sample:
         user_content = sample["messages"][0]["content"]
         answer = sample["answer"]
+        question_text = sample.get("question", "").strip()
     else:
-        # Raw format fallback
+        # Raw HuggingFace format fallback
         user_content = f"{sample['input'].strip()}\nQuestion: {sample['question'].strip()}"
         answer = sample["target"].strip().lower()
+        question_text = sample["question"].strip()
 
-    # Prepend system prompt to the user message
-    full_user_content = f"{QA3_SYSTEM_PROMPT}\n\n{user_content}"
+    # Extract just the context (everything before "\nQuestion:").
+    # Prepared format: "{input}\nQuestion: {question}\nAnswer with only one word."
+    parts = user_content.rsplit("\nQuestion:", 1)
+    context = parts[0].strip() if len(parts) > 1 else user_content.strip()
+
+    # If 'question' field wasn't saved (old data format), fall back to parsing.
+    if not question_text:
+        if len(parts) > 1:
+            question_text = parts[1].replace("\nAnswer with only one word.", "").strip()
+
+    full_user_content = (
+        f"{QA3_INSTRUCTION}\n\n"
+        f"<context>\n{context}\n</context>\n\n"
+        f"Question: {question_text}\n"
+        f"{QA3_POST_PROMPT}"
+    )
 
     return [
         {"role": "user",      "content": full_user_content},
@@ -640,8 +675,18 @@ class MidTrainingEvalCallback(TrainerCallback):
         return user_content[idx:]
 
     def _grade(self, response: str, target: str, question: str) -> bool:
-        """Official BABILong grading: closed-vocabulary label detection."""
-        response = response.split(".")[0].lower()
+        """Official BABILong grading: closed-vocabulary label detection.
+
+        preprocess_output and compare_answers logic taken verbatim from:
+          https://github.com/booydar/babilong/blob/main/babilong/metrics.py
+        """
+        # preprocess_output — exact match to official metrics.py
+        response = response.lower()
+        response = response.split('.')[0]
+        response = response.split('<context>')[0]
+        response = response.split('<example>')[0]
+        response = response.split('Question')[0]   # matches official (capital Q, post-lowercase)
+
         question = question.lower()
         labels   = set(QA3_LABELS)
 
