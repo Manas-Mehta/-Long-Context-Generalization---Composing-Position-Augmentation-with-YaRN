@@ -7,15 +7,14 @@
 #SBATCH --cpus-per-task=8
 #SBATCH --mem=64G
 #SBATCH --gres=gpu:1
-#SBATCH --time=24:00:00
+#SBATCH --time=36:00:00
 #SBATCH --output=composable_cot/BABIlong/slurm_logs/train_y2_base_%j.out
 #SBATCH --error=composable_cot/BABIlong/slurm_logs/train_y2_base_%j.err
 #SBATCH --requeue
 
 # ============================================================================
 # BABILong — Condition 2: Y2-base
-# YaRN f=2 during training, f=4 at eval. Standard context extension baseline.
-# No RPE, no PoSE. Everything else is measured against this.
+# YaRN f=2 during training, f=4 at eval.
 # ============================================================================
 
 set -eo pipefail
@@ -31,6 +30,7 @@ conda activate "${SCRATCH}/conda_envs/rpe"
 export PYTHONPATH="${PROJECT_DIR}:${PYTHONPATH:-}"
 export HF_HOME="${SCRATCH}/hf_cache"
 export HF_HUB_OFFLINE=1
+
 mkdir -p "${PROJECT_DIR}/${BABILONG_DIR}/slurm_logs"
 
 cd "${PROJECT_DIR}"
@@ -58,3 +58,18 @@ python ${BABILONG_DIR}/scripts/train_babilong_lora.py \
 
 echo ""
 echo "=== Y2-base training complete: $(date) ==="
+echo ""
+echo "=== Starting eval: y2_base (YaRN f=4 at eval) ==="
+
+python ${BABILONG_DIR}/scripts/eval_babilong.py \
+    --checkpoint-dir "${BABILONG_DIR}/checkpoints/y2_base" \
+    --base-model     "Qwen/Qwen2.5-7B-Instruct" \
+    --enable-yarn    --yarn-factor 4.0 \
+    --eval-dir       "${BABILONG_DIR}/data/eval" \
+    --output-dir     "${BABILONG_DIR}/results/y2_base" \
+    --condition      "y2_base" \
+    --max-seq-len    131072 \
+    --max-new-tokens 10
+
+echo ""
+echo "=== y2_base DONE (train + eval): $(date) ==="

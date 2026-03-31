@@ -7,7 +7,7 @@
 #SBATCH --cpus-per-task=8
 #SBATCH --mem=64G
 #SBATCH --gres=gpu:1
-#SBATCH --time=24:00:00
+#SBATCH --time=36:00:00
 #SBATCH --output=composable_cot/BABIlong/slurm_logs/train_y2_pose_32k_%j.out
 #SBATCH --error=composable_cot/BABIlong/slurm_logs/train_y2_pose_32k_%j.err
 #SBATCH --requeue
@@ -15,8 +15,6 @@
 # ============================================================================
 # BABILong — Condition 4: Y2-P32
 # YaRN f=2 + PoSE target_length=32768.
-# PoSE splits each sequence into 2 chunks with a random position gap up to 32K.
-# Different mechanism from RPE (1 gap per sample vs N random positions).
 # ============================================================================
 
 set -eo pipefail
@@ -32,6 +30,7 @@ conda activate "${SCRATCH}/conda_envs/rpe"
 export PYTHONPATH="${PROJECT_DIR}:${PYTHONPATH:-}"
 export HF_HOME="${SCRATCH}/hf_cache"
 export HF_HUB_OFFLINE=1
+
 mkdir -p "${PROJECT_DIR}/${BABILONG_DIR}/slurm_logs"
 
 cd "${PROJECT_DIR}"
@@ -60,3 +59,18 @@ python ${BABILONG_DIR}/scripts/train_babilong_lora.py \
 
 echo ""
 echo "=== Y2-P32 training complete: $(date) ==="
+echo ""
+echo "=== Starting eval: y2_pose_32k (YaRN f=4 at eval) ==="
+
+python ${BABILONG_DIR}/scripts/eval_babilong.py \
+    --checkpoint-dir "${BABILONG_DIR}/checkpoints/y2_pose_32k" \
+    --base-model     "Qwen/Qwen2.5-7B-Instruct" \
+    --enable-yarn    --yarn-factor 4.0 \
+    --eval-dir       "${BABILONG_DIR}/data/eval" \
+    --output-dir     "${BABILONG_DIR}/results/y2_pose_32k" \
+    --condition      "y2_pose_32k" \
+    --max-seq-len    131072 \
+    --max-new-tokens 10
+
+echo ""
+echo "=== y2_pose_32k DONE (train + eval): $(date) ==="

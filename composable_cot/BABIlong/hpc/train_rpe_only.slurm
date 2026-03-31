@@ -7,16 +7,14 @@
 #SBATCH --cpus-per-task=8
 #SBATCH --mem=64G
 #SBATCH --gres=gpu:1
-#SBATCH --time=24:00:00
+#SBATCH --time=36:00:00
 #SBATCH --output=composable_cot/BABIlong/slurm_logs/train_rpe_only_%j.out
 #SBATCH --error=composable_cot/BABIlong/slurm_logs/train_rpe_only_%j.err
 #SBATCH --requeue
 
 # ============================================================================
 # BABILong — Condition 5: RPE-only
-# RPE curriculum L=16K only. No YaRN — default RoPE frequencies.
-# Ablation: how much of the Y2-Rc16 gain comes from RPE alone vs YaRN?
-# Expected: weaker than Y2-Rc16 at 64K-128K (no frequency extension).
+# RPE curriculum L=16K only. No YaRN.
 # ============================================================================
 
 set -eo pipefail
@@ -32,6 +30,7 @@ conda activate "${SCRATCH}/conda_envs/rpe"
 export PYTHONPATH="${PROJECT_DIR}:${PYTHONPATH:-}"
 export HF_HOME="${SCRATCH}/hf_cache"
 export HF_HUB_OFFLINE=1
+
 mkdir -p "${PROJECT_DIR}/${BABILONG_DIR}/slurm_logs"
 
 cd "${PROJECT_DIR}"
@@ -59,3 +58,17 @@ python ${BABILONG_DIR}/scripts/train_babilong_lora.py \
 
 echo ""
 echo "=== RPE-only training complete: $(date) ==="
+echo ""
+echo "=== Starting eval: rpe_only (vanilla RoPE at eval) ==="
+
+python ${BABILONG_DIR}/scripts/eval_babilong.py \
+    --checkpoint-dir "${BABILONG_DIR}/checkpoints/rpe_only" \
+    --base-model     "Qwen/Qwen2.5-7B-Instruct" \
+    --eval-dir       "${BABILONG_DIR}/data/eval" \
+    --output-dir     "${BABILONG_DIR}/results/rpe_only" \
+    --condition      "rpe_only" \
+    --max-seq-len    131072 \
+    --max-new-tokens 10
+
+echo ""
+echo "=== rpe_only DONE (train + eval): $(date) ==="

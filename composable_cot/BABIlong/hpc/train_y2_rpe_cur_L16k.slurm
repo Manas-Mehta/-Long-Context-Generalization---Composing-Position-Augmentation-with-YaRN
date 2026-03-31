@@ -7,7 +7,7 @@
 #SBATCH --cpus-per-task=8
 #SBATCH --mem=64G
 #SBATCH --gres=gpu:1
-#SBATCH --time=24:00:00
+#SBATCH --time=36:00:00
 #SBATCH --output=composable_cot/BABIlong/slurm_logs/train_y2_rpe_cur_L16k_%j.out
 #SBATCH --error=composable_cot/BABIlong/slurm_logs/train_y2_rpe_cur_L16k_%j.err
 #SBATCH --requeue
@@ -15,8 +15,6 @@
 # ============================================================================
 # BABILong — Condition 3: Y2-Rc16
 # YaRN f=2 + RPE curriculum (epoch 1: L=8192, epoch 2: L=12288, epoch 3: L=16384)
-# Best combo from MRCR Phase 6. RPE randomizes position IDs to eliminate recency
-# bias; YaRN extends the frequency range for OOD context lengths.
 # ============================================================================
 
 set -eo pipefail
@@ -32,6 +30,7 @@ conda activate "${SCRATCH}/conda_envs/rpe"
 export PYTHONPATH="${PROJECT_DIR}:${PYTHONPATH:-}"
 export HF_HOME="${SCRATCH}/hf_cache"
 export HF_HUB_OFFLINE=1
+
 mkdir -p "${PROJECT_DIR}/${BABILONG_DIR}/slurm_logs"
 
 cd "${PROJECT_DIR}"
@@ -60,3 +59,18 @@ python ${BABILONG_DIR}/scripts/train_babilong_lora.py \
 
 echo ""
 echo "=== Y2-Rc16 training complete: $(date) ==="
+echo ""
+echo "=== Starting eval: y2_rpe_cur_L16k (YaRN f=4 at eval) ==="
+
+python ${BABILONG_DIR}/scripts/eval_babilong.py \
+    --checkpoint-dir "${BABILONG_DIR}/checkpoints/y2_rpe_cur_L16k" \
+    --base-model     "Qwen/Qwen2.5-7B-Instruct" \
+    --enable-yarn    --yarn-factor 4.0 \
+    --eval-dir       "${BABILONG_DIR}/data/eval" \
+    --output-dir     "${BABILONG_DIR}/results/y2_rpe_cur_L16k" \
+    --condition      "y2_rpe_cur_L16k" \
+    --max-seq-len    131072 \
+    --max-new-tokens 10
+
+echo ""
+echo "=== y2_rpe_cur_L16k DONE (train + eval): $(date) ==="

@@ -7,7 +7,7 @@
 #SBATCH --cpus-per-task=8
 #SBATCH --mem=64G
 #SBATCH --gres=gpu:1
-#SBATCH --time=24:00:00
+#SBATCH --time=36:00:00
 #SBATCH --output=composable_cot/BABIlong/slurm_logs/train_lora_base_%j.out
 #SBATCH --error=composable_cot/BABIlong/slurm_logs/train_lora_base_%j.err
 #SBATCH --requeue
@@ -31,6 +31,7 @@ conda activate "${SCRATCH}/conda_envs/rpe"
 export PYTHONPATH="${PROJECT_DIR}:${PYTHONPATH:-}"
 export HF_HOME="${SCRATCH}/hf_cache"
 export HF_HUB_OFFLINE=1
+
 mkdir -p "${PROJECT_DIR}/${BABILONG_DIR}/slurm_logs"
 
 cd "${PROJECT_DIR}"
@@ -57,3 +58,17 @@ python ${BABILONG_DIR}/scripts/train_babilong_lora.py \
 
 echo ""
 echo "=== LoRA-base training complete: $(date) ==="
+echo ""
+echo "=== Starting eval: lora_base ==="
+
+python ${BABILONG_DIR}/scripts/eval_babilong.py \
+    --checkpoint-dir "${BABILONG_DIR}/checkpoints/lora_base" \
+    --base-model     "Qwen/Qwen2.5-7B-Instruct" \
+    --eval-dir       "${BABILONG_DIR}/data/eval" \
+    --output-dir     "${BABILONG_DIR}/results/lora_base" \
+    --condition      "lora_base" \
+    --max-seq-len    131072 \
+    --max-new-tokens 10
+
+echo ""
+echo "=== lora_base DONE (train + eval): $(date) ==="
