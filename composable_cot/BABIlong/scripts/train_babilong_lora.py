@@ -648,11 +648,15 @@ class MidTrainingEvalCallback(TrainerCallback):
                     out[0][input_ids.shape[1]:], skip_special_tokens=True
                 ).strip().lower()
                 target = sample.get("answer", "").strip().lower()
-                # Extract just the question sentence for grading, NOT the full
-                # context. Passing the full context would cause all 6 room-name
-                # labels to be excluded (they appear throughout the book text),
-                # making accuracy read as ~0% on long bins.
-                question_only = self._extract_question(messages[0]["content"])
+                # Pass only the question sentence to _grade(), NOT the full context
+                # or the post_prompt (which lists all 6 labels — passing it would
+                # exclude all valid answers, making accuracy permanently 0%).
+                # Prefer the raw 'question' field saved by prepare_babilong.py;
+                # fall back to parsing from the message content.
+                question_only = (
+                    sample.get("question", "").strip()
+                    or self._extract_question(messages[0]["content"])
+                )
                 if self._grade(response, target, question_only):
                     correct += 1
             except Exception:
@@ -662,17 +666,23 @@ class MidTrainingEvalCallback(TrainerCallback):
 
     @staticmethod
     def _extract_question(user_content: str) -> str:
-        """Extract just the question sentence from the full user message.
+        """Extract just the question line from the full user message.
 
-        User message format: "{system_prompt}\\n\\n{context}\\nQuestion: {q}\\nAnswer with only one word."
-        We extract only the "Question: ..." part for use in grading.
-        This prevents room-name labels that appear in the book-text context
-        from being incorrectly excluded by the grading function.
+        IMPORTANT: must extract ONLY the question sentence, not the post_prompt.
+        Our post_prompt lists all 6 labels — passing it to _grade() would cause
+        all labels to be excluded, making accuracy permanently 0%.
+
+        We take only the text from "Question:" up to the first newline.
+        e.g.  "Question: Where was the football before the garden?"
         """
         idx = user_content.rfind("Question:")
         if idx == -1:
-            return user_content  # fallback: use full content (safe, just conservative)
-        return user_content[idx:]
+            return ""
+        question_line = user_content[idx:]
+        newline_idx = question_line.find("\n")
+        if newline_idx != -1:
+            question_line = question_line[:newline_idx]
+        return question_line  # "Question: Where was the football before the garden?"
 
     def _grade(self, response: str, target: str, question: str) -> bool:
         """Official BABILong grading: closed-vocabulary label detection.
