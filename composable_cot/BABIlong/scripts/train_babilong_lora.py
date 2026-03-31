@@ -759,8 +759,7 @@ def parse_args():
     p.add_argument("--eval-every",    type=int, default=500, help="Mid-training eval interval (steps)")
     p.add_argument("--eval-samples",  type=int, default=200, help="Samples per bin in mid-training eval")
     p.add_argument("--grad-log-every",type=int, default=100, help="Per-layer gradient log interval")
-    p.add_argument("--wandb-project", default="babilong_rpe")
-    p.add_argument("--wandb-run-name",default=None)
+    p.add_argument("--wandb-run-name",default=None)  # kept for run_name logging only
 
     return p.parse_args()
 
@@ -807,25 +806,7 @@ def main():
     print(f"  W&B run:      {run_name}", flush=True)
     print(f"  Timestamp:    {datetime.now().isoformat()}", flush=True)
 
-    # W&B init (offline mode on HPC — set WANDB_MODE=offline in SLURM)
-    try:
-        import wandb
-        wandb.init(
-            project=args.wandb_project,
-            name=run_name,
-            config={
-                "condition": condition, "base_model": args.base_model,
-                "enable_yarn": args.enable_yarn, "yarn_factor": args.yarn_factor,
-                "lora_rank": args.lora_rank, "lora_alpha": args.lora_alpha,
-                "lora_dropout": args.lora_dropout,
-                "lr": args.lr, "epochs": args.epochs,
-                "batch_size": args.batch_size, "grad_accum": args.grad_accum,
-                "warmup_ratio": args.warmup_ratio, "max_seq_len": args.max_seq_len,
-                "seed": args.seed,
-            },
-        )
-    except Exception as e:
-        print(f"  W&B init failed (continuing without): {e}", flush=True)
+    # W&B disabled — metrics logged to JSON by TrainingProgressCallback instead.
 
     # Load model
     torch_dtype = torch.bfloat16 if (args.bf16 and not args.no_cuda) else torch.float32
@@ -901,7 +882,7 @@ def main():
         save_strategy="epoch",
         save_total_limit=3,           # Keep all 3 epoch checkpoints
         seed=args.seed,
-        report_to="wandb",
+        report_to="none",
         dataloader_num_workers=4 if not args.no_cuda else 0,
         remove_unused_columns=False,
         gradient_checkpointing=args.gradient_checkpointing and not args.no_cuda,

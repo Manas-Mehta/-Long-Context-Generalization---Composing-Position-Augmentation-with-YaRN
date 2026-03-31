@@ -31,11 +31,6 @@ conda activate "${SCRATCH}/conda_envs/rpe"
 export PYTHONPATH="${PROJECT_DIR}:${PYTHONPATH:-}"
 export HF_HOME="${SCRATCH}/hf_cache"
 export HF_HUB_OFFLINE=1
-export WANDB_MODE=offline
-export WANDB_DIR="${SCRATCH}/wandb_logs"
-export WANDB_PROJECT="babilong_rpe"
-
-mkdir -p "${SCRATCH}/wandb_logs"
 mkdir -p "${PROJECT_DIR}/${BABILONG_DIR}/slurm_logs"
 
 cd "${PROJECT_DIR}"
