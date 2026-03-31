@@ -1,0 +1,23 @@
+# RPE Configuration for BABILong — Curriculum to L=16384
+#
+# 3-epoch schedule (adapted from MRCR 5-epoch schedule).
+# Each epoch increases L, forcing the model to handle positions
+# sampled from a wider range.
+#
+# Epoch 1: L=8192  — matches max_seq_len. Near-sequential. Warm-up.
+# Epoch 2: L=12288 — 1.5× max_seq_len. Model starts learning position robustness.
+# Epoch 3: L=16384 — 1.78× max_seq_len. Final target. Consolidation built-in.
+#
+# L=16K is inside the YaRN f=2 extended window (~64K), so all
+# sampled position IDs are in the valid frequency range.
+
+rpe:
+  enabled: true
+  max_simulation_length: 16384
+  seed: null
+  training_mode: true
+  inference_mode: false
+  curriculum:
+    1: 8192
+    2: 12288
+    3: 16384

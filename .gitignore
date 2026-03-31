@@ -28,9 +28,16 @@ composable_cot/outputs/
 # Older outputs
 outputs/
 
-# MRCR data (scp to HPC, not git)
+# Notes — local only, never push
+Notes/
+
+# Data — scp to HPC, not git
 composable_cot/mrcr_context_extension/data/
 composable_cot/mrcr_context_extension/outputs/
+composable_cot/BABIlong/data/
+composable_cot/BABIlong/slurm_logs/
+composable_cot/BABIlong/checkpoints/
+composable_cot/BABIlong/results/
 
 # Downloaded model weights
 qwen2.5-7b-instruct/

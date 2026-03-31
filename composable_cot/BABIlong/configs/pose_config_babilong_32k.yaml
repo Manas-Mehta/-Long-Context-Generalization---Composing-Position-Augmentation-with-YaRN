@@ -1,0 +1,21 @@
+# PoSE Configuration for BABILong — Fixed target_length=32768
+#
+# PoSE splits each training sequence into 2 contiguous chunks with a
+# random position gap between them.
+#
+# With max_seq_len=9216 and target_length=32768:
+#   Chunk 1: positions [0, ..., ~4608]
+#   Gap:     random offset up to ~23000
+#   Chunk 2: positions [offset, ..., offset + ~4608]
+#
+# This teaches the model that content at position 28000 is as accessible
+# as content at position 100. At eval time with 128K context, the model
+# has seen gaps up to 32K during training.
+#
+# target_length=32K (not 16K): MRCR confirmed P32 > P16.
+# Larger gap = better generalization to long contexts.
+
+pose:
+  enabled: true
+  target_length: 32768
+  seed: null
