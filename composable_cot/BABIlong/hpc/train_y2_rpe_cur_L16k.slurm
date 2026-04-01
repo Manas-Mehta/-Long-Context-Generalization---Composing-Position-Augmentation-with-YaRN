@@ -1,13 +1,13 @@
 #!/bin/bash
 #SBATCH --job-name=bab_y2_rpe16
 #SBATCH --account=torch_pr_219_courant
-#SBATCH --partition=l40s_courant
+#SBATCH --partition=h200_courant
 #SBATCH --nodes=1
 #SBATCH --ntasks-per-node=1
 #SBATCH --cpus-per-task=8
 #SBATCH --mem=64G
 #SBATCH --gres=gpu:1
-#SBATCH --time=36:00:00
+#SBATCH --time=08:00:00
 #SBATCH --output=composable_cot/BABIlong/slurm_logs/train_y2_rpe_cur_L16k_%j.out
 #SBATCH --error=composable_cot/BABIlong/slurm_logs/train_y2_rpe_cur_L16k_%j.err
 #SBATCH --requeue
@@ -46,14 +46,14 @@ python ${BABILONG_DIR}/scripts/train_babilong_lora.py \
     --base-model "Qwen/Qwen2.5-7B-Instruct" \
     --enable-yarn --yarn-factor 2.0 \
     --rpe-config "${BABILONG_DIR}/configs/rpe_config_babilong_curriculum_L16k.yaml" \
-    --train-file "${BABILONG_DIR}/data/train/all_train.json" \
+    --train-file "${BABILONG_DIR}/data/train/all_train_1k.json" \
     --eval-dir   "${BABILONG_DIR}/data/eval" \
-    --output-dir "${BABILONG_DIR}/checkpoints/y2_rpe_cur_L16k" \
+    --output-dir "${BABILONG_DIR}/checkpoints/y2_rpe_cur_L16k_1k" \
     --max-seq-len 9216 \
     --lora-rank 16 --lora-alpha 32 --lora-dropout 0.1 \
-    --lr 2e-4 --epochs 3 --batch-size 1 --grad-accum 4 \
-    --warmup-ratio 0.05 --max-grad-norm 1.0 --seed 42 \
-    --eval-every 500 --eval-samples 200 \
+    --lr 5e-5 --epochs 3 --batch-size 1 --grad-accum 4 \
+    --warmup-ratio 0.15 --max-grad-norm 1.0 --seed 42 \
+    --eval-every 1000 --eval-samples 200 \
     --grad-log-every 100 \
     --wandb-run-name "y2_rpe_cur_L16k"
 
@@ -63,12 +63,13 @@ echo ""
 echo "=== Starting eval: y2_rpe_cur_L16k (YaRN f=4 at eval) ==="
 
 python ${BABILONG_DIR}/scripts/eval_babilong.py \
-    --checkpoint-dir "${BABILONG_DIR}/checkpoints/y2_rpe_cur_L16k" \
+    --checkpoint-dir "${BABILONG_DIR}/checkpoints/y2_rpe_cur_L16k_1k" \
     --base-model     "Qwen/Qwen2.5-7B-Instruct" \
     --enable-yarn    --yarn-factor 4.0 \
     --eval-dir       "${BABILONG_DIR}/data/eval" \
-    --output-dir     "${BABILONG_DIR}/results/y2_rpe_cur_L16k" \
-    --condition      "y2_rpe_cur_L16k" \
+    --output-dir     "${BABILONG_DIR}/results/y2_rpe_cur_L16k_1k" \
+    --condition      "y2_rpe_cur_L16k_1k" \
+    --max-samples    100 \
     --max-seq-len    131072 \
     --max-new-tokens 10
 

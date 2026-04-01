@@ -1,13 +1,13 @@
 #!/bin/bash
 #SBATCH --job-name=bab_lora_base
 #SBATCH --account=torch_pr_219_courant
-#SBATCH --partition=l40s_courant
+#SBATCH --partition=h200_courant
 #SBATCH --nodes=1
 #SBATCH --ntasks-per-node=1
 #SBATCH --cpus-per-task=8
 #SBATCH --mem=64G
 #SBATCH --gres=gpu:1
-#SBATCH --time=36:00:00
+#SBATCH --time=08:00:00
 #SBATCH --output=composable_cot/BABIlong/slurm_logs/train_lora_base_%j.out
 #SBATCH --error=composable_cot/BABIlong/slurm_logs/train_lora_base_%j.err
 #SBATCH --requeue
@@ -45,14 +45,14 @@ echo ""
 
 python ${BABILONG_DIR}/scripts/train_babilong_lora.py \
     --base-model "Qwen/Qwen2.5-7B-Instruct" \
-    --train-file "${BABILONG_DIR}/data/train/all_train.json" \
+    --train-file "${BABILONG_DIR}/data/train/all_train_1k.json" \
     --eval-dir   "${BABILONG_DIR}/data/eval" \
-    --output-dir "${BABILONG_DIR}/checkpoints/lora_base" \
+    --output-dir "${BABILONG_DIR}/checkpoints/lora_base_1k" \
     --max-seq-len 9216 \
     --lora-rank 16 --lora-alpha 32 --lora-dropout 0.1 \
-    --lr 2e-4 --epochs 3 --batch-size 1 --grad-accum 4 \
-    --warmup-ratio 0.05 --max-grad-norm 1.0 --seed 42 \
-    --eval-every 500 --eval-samples 200 \
+    --lr 5e-5 --epochs 3 --batch-size 1 --grad-accum 4 \
+    --warmup-ratio 0.15 --max-grad-norm 1.0 --seed 42 \
+    --eval-every 1000 --eval-samples 200 \
     --grad-log-every 100 \
     --wandb-run-name "lora_base"
 
@@ -62,11 +62,12 @@ echo ""
 echo "=== Starting eval: lora_base ==="
 
 python ${BABILONG_DIR}/scripts/eval_babilong.py \
-    --checkpoint-dir "${BABILONG_DIR}/checkpoints/lora_base" \
+    --checkpoint-dir "${BABILONG_DIR}/checkpoints/lora_base_1k" \
     --base-model     "Qwen/Qwen2.5-7B-Instruct" \
     --eval-dir       "${BABILONG_DIR}/data/eval" \
-    --output-dir     "${BABILONG_DIR}/results/lora_base" \
-    --condition      "lora_base" \
+    --output-dir     "${BABILONG_DIR}/results/lora_base_1k" \
+    --condition      "lora_base_1k" \
+    --max-samples    100 \
     --max-seq-len    131072 \
     --max-new-tokens 10
 
