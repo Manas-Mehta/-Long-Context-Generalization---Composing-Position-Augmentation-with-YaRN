@@ -51,7 +51,7 @@ python ${BABILONG_DIR}/scripts/train_babilong_lora.py \
     --output-dir "${BABILONG_DIR}/checkpoints/y2_pose_32k_1k" \
     --max-seq-len 9216 \
     --lora-rank 16 --lora-alpha 32 --lora-dropout 0.1 \
-    --lr 5e-5 --epochs 3 --batch-size 1 --grad-accum 4 \
+    --lr 5e-5 --epochs 2 --batch-size 1 --grad-accum 4 \
     --warmup-ratio 0.15 --max-grad-norm 1.0 --seed 42 \
     --eval-every 1000 --eval-samples 200 \
     --grad-log-every 100 \
