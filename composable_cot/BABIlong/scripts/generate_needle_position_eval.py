@@ -52,7 +52,8 @@ ZONES = {
 }
 
 BIN_TO_TOKENS = {
-    "0k":   1024,      # 0k is actually the raw bAbI facts with no noise; use small size
+    # NOTE: "0k" removed — zone control is meaningless without noise, and the
+    # previous 0k value (1024) duplicated the 1k bin.
     "1k":   1024,
     "2k":   2048,
     "4k":   4096,
@@ -60,7 +61,11 @@ BIN_TO_TOKENS = {
     "16k":  16384,
     "32k":  32768,
     "64k":  65536,
-    "128k": 131072,
+    # 128k: reduced below 131072 to leave headroom for eval-time prompt
+    # overhead (QA3_INSTRUCTION ~110 + QA3_POST_PROMPT ~35 + chat template
+    # ~30 + <context> wrapper ~15 ≈ 190 tokens). Without this the eval's
+    # left-truncation would eat facts at the very start of the beg-zone.
+    "128k": 130700,
 }
 
 # Noise-dataset configs: (hf_id, config, split, text_field)
@@ -214,11 +219,9 @@ def generate(
         for zone_name in zones:
             start_pct, end_pct = ZONES[zone_name]
 
-            # Short bins may not fit facts in the end zone — enforce min zone width
-            zone_width = end_pct - start_pct
-            if sample_size * zone_width < 500 and bin_label in ("0k", "1k"):
-                print(f"  SKIP {bin_label}_{zone_name}: bin too small for zone")
-                continue
+            # Per-sample IndexError from NoiseInjectionDataset (below) already
+            # handles cases where facts can't fit in the requested zone for a
+            # particular story — no pre-skip needed.
 
             out_path = Path(output_dir) / f"{zone_name}_{bin_label}.json"
             print(f"\n=== Generating {zone_name}_{bin_label}  (size={sample_size}, zone=[{start_pct},{end_pct}])")
@@ -229,8 +232,8 @@ def generate(
                 random_seed=random_seed + hash((bin_label, zone_name)) % 10000,
             )
 
-            # For 0k and 1k: no PG19 noise possible (facts already take up most tokens)
-            # Still run NoiseInjectionDataset to control placement
+            # At 1k/2k some samples will fail to fit facts into the target
+            # zone — those are caught by the IndexError below.
             ds = NoiseInjectionDataset(
                 task_dataset=task_ds,
                 noise_sampler=noise_sampler,
@@ -335,7 +338,7 @@ def main():
     p = argparse.ArgumentParser()
     p.add_argument("--selected-indices", default="composable_cot/BABIlong/data/eval_needle/selected_100_indices.json")
     p.add_argument("--output-dir",       default="composable_cot/BABIlong/data/eval_needle")
-    p.add_argument("--bins",             default="0k,1k,2k,4k,8k,16k,32k,64k,128k")
+    p.add_argument("--bins",             default="1k,2k,4k,8k,16k,32k,64k,128k")
     p.add_argument("--zones",            default="beg,mid,end")
     p.add_argument("--noise-dataset",    default="pg19", choices=list(NOISE_CONFIGS.keys()))
     p.add_argument("--max-samples",      type=int, default=0, help="Cap samples per cell for testing (0=all)")

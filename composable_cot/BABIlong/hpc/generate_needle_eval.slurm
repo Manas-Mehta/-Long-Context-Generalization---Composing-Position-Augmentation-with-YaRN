@@ -47,7 +47,7 @@ echo ""
 python ${BABILONG_DIR}/scripts/generate_needle_position_eval.py \
     --selected-indices ${BABILONG_DIR}/data/eval_needle/selected_100_indices.json \
     --output-dir       ${BABILONG_DIR}/data/eval_needle \
-    --bins             0k,1k,2k,4k,8k,16k,32k,64k,128k \
+    --bins             1k,2k,4k,8k,16k,32k,64k,128k \
     --zones            beg,mid,end \
     --noise-dataset    pg19 \
     --random-seed      42 \
