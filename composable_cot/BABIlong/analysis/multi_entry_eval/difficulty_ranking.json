@@ -1,0 +1,4112 @@
+{
+  "tier1_hardest": [
+    {
+      "idx": 883,
+      "object": "football",
+      "answer": "bathroom",
+      "target_entries": 2,
+      "rpe_long_fails": [
+        "32k",
+        "64k",
+        "128k"
+      ],
+      "base_long_fails": [
+        "32k",
+        "64k"
+      ],
+      "rpe_base_gap_bins": [],
+      "total_rpe_fails": 8,
+      "total_base_fails": 5
+    },
+    {
+      "idx": 3,
+      "object": "football",
+      "answer": "bathroom",
+      "target_entries": 2,
+      "rpe_long_fails": [
+        "32k",
+        "64k",
+        "128k"
+      ],
+      "base_long_fails": [
+        "32k",
+        "64k",
+        "128k"
+      ],
+      "rpe_base_gap_bins": [],
+      "total_rpe_fails": 7,
+      "total_base_fails": 9
+    },
+    {
+      "idx": 891,
+      "object": "milk",
+      "answer": "bathroom",
+      "target_entries": 3,
+      "rpe_long_fails": [
+        "32k",
+        "64k",
+        "128k"
+      ],
+      "base_long_fails": [
+        "32k"
+      ],
+      "rpe_base_gap_bins": [],
+      "total_rpe_fails": 6,
+      "total_base_fails": 1
+    },
+    {
+      "idx": 209,
+      "object": "milk",
+      "answer": "garden",
+      "target_entries": 2,
+      "rpe_long_fails": [
+        "32k",
+        "64k",
+        "128k"
+      ],
+      "base_long_fails": [],
+      "rpe_base_gap_bins": [],
+      "total_rpe_fails": 5,
+      "total_base_fails": 5
+    },
+    {
+      "idx": 276,
+      "object": "football",
+      "answer": "kitchen",
+      "target_entries": 2,
+      "rpe_long_fails": [
+        "32k",
+        "64k",
+        "128k"
+      ],
+      "base_long_fails": [
+        "32k",
+        "64k",
+        "128k"
+      ],
+      "rpe_base_gap_bins": [],
+      "total_rpe_fails": 5,
+      "total_base_fails": 7
+    },
+    {
+      "idx": 844,
+      "object": "football",
+      "answer": "bedroom",
+      "target_entries": 2,
+      "rpe_long_fails": [
+        "64k",
+        "128k"
+      ],
+      "base_long_fails": [
+        "32k",
+        "64k",
+        "128k"
+      ],
+      "rpe_base_gap_bins": [
+        "32k"
+      ],
+      "total_rpe_fails": 6,
+      "total_base_fails": 6
+    },
+    {
+      "idx": 338,
+      "object": "apple",
+      "answer": "kitchen",
+      "target_entries": 3,
+      "rpe_long_fails": [
+        "32k",
+        "128k"
+      ],
+      "base_long_fails": [
+        "64k",
+        "128k"
+      ],
+      "rpe_base_gap_bins": [
+        "64k"
+      ],
+      "total_rpe_fails": 4,
+      "total_base_fails": 4
+    },
+    {
+      "idx": 309,
+      "object": "apple",
+      "answer": "garden",
+      "target_entries": 2,
+      "rpe_long_fails": [
+        "32k",
+        "128k"
+      ],
+      "base_long_fails": [
+        "32k"
+      ],
+      "rpe_base_gap_bins": [],
+      "total_rpe_fails": 3,
+      "total_base_fails": 3
+    },
+    {
+      "idx": 391,
+      "object": "milk",
+      "answer": "kitchen",
+      "target_entries": 2,
+      "rpe_long_fails": [
+        "32k",
+        "64k"
+      ],
+      "base_long_fails": [
+        "64k",
+        "128k"
+      ],
+      "rpe_base_gap_bins": [
+        "128k"
+      ],
+      "total_rpe_fails": 3,
+      "total_base_fails": 5
+    },
+    {
+      "idx": 401,
+      "object": "apple",
+      "answer": "garden",
+      "target_entries": 2,
+      "rpe_long_fails": [
+        "64k",
+        "128k"
+      ],
+      "base_long_fails": [
+        "32k",
+        "64k",
+        "128k"
+      ],
+      "rpe_base_gap_bins": [
+        "32k"
+      ],
+      "total_rpe_fails": 3,
+      "total_base_fails": 4
+    },
+    {
+      "idx": 578,
+      "object": "milk",
+      "answer": "hallway",
+      "target_entries": 2,
+      "rpe_long_fails": [
+        "32k",
+        "64k"
+      ],
+      "base_long_fails": [
+        "64k"
+      ],
+      "rpe_base_gap_bins": [],
+      "total_rpe_fails": 3,
+      "total_base_fails": 3
+    },
+    {
+      "idx": 629,
+      "object": "milk",
+      "answer": "garden",
+      "target_entries": 2,
+      "rpe_long_fails": [
+        "64k",
+        "128k"
+      ],
+      "base_long_fails": [
+        "32k",
+        "64k",
+        "128k"
+      ],
+      "rpe_base_gap_bins": [
+        "32k"
+      ],
+      "total_rpe_fails": 3,
+      "total_base_fails": 4
+    },
+    {
+      "idx": 739,
+      "object": "milk",
+      "answer": "garden",
+      "target_entries": 2,
+      "rpe_long_fails": [
+        "64k",
+        "128k"
+      ],
+      "base_long_fails": [
+        "128k"
+      ],
+      "rpe_base_gap_bins": [],
+      "total_rpe_fails": 3,
+      "total_base_fails": 3
+    },
+    {
+      "idx": 41,
+      "object": "football",
+      "answer": "garden",
+      "target_entries": 2,
+      "rpe_long_fails": [
+        "64k",
+        "128k"
+      ],
+      "base_long_fails": [
+        "32k",
+        "64k",
+        "128k"
+      ],
+      "rpe_base_gap_bins": [
+        "32k"
+      ],
+      "total_rpe_fails": 2,
+      "total_base_fails": 3
+    },
+    {
+      "idx": 177,
+      "object": "football",
+      "answer": "kitchen",
+      "target_entries": 2,
+      "rpe_long_fails": [
+        "64k",
+        "128k"
+      ],
+      "base_long_fails": [
+        "64k"
+      ],
+      "rpe_base_gap_bins": [],
+      "total_rpe_fails": 2,
+      "total_base_fails": 1
+    },
+    {
+      "idx": 275,
+      "object": "football",
+      "answer": "office",
+      "target_entries": 2,
+      "rpe_long_fails": [
+        "64k",
+        "128k"
+      ],
+      "base_long_fails": [
+        "32k"
+      ],
+      "rpe_base_gap_bins": [
+        "32k"
+      ],
+      "total_rpe_fails": 2,
+      "total_base_fails": 1
+    },
+    {
+      "idx": 601,
+      "object": "apple",
+      "answer": "garden",
+      "target_entries": 2,
+      "rpe_long_fails": [
+        "64k",
+        "128k"
+      ],
+      "base_long_fails": [],
+      "rpe_base_gap_bins": [],
+      "total_rpe_fails": 2,
+      "total_base_fails": 1
+    },
+    {
+      "idx": 642,
+      "object": "apple",
+      "answer": "kitchen",
+      "target_entries": 2,
+      "rpe_long_fails": [
+        "32k",
+        "64k"
+      ],
+      "base_long_fails": [
+        "32k",
+        "64k"
+      ],
+      "rpe_base_gap_bins": [],
+      "total_rpe_fails": 2,
+      "total_base_fails": 3
+    },
+    {
+      "idx": 655,
+      "object": "milk",
+      "answer": "bedroom",
+      "target_entries": 2,
+      "rpe_long_fails": [
+        "32k",
+        "64k"
+      ],
+      "base_long_fails": [
+        "64k",
+        "128k"
+      ],
+      "rpe_base_gap_bins": [
+        "128k"
+      ],
+      "total_rpe_fails": 2,
+      "total_base_fails": 5
+    },
+    {
+      "idx": 656,
+      "object": "milk",
+      "answer": "bedroom",
+      "target_entries": 2,
+      "rpe_long_fails": [
+        "32k",
+        "64k"
+      ],
+      "base_long_fails": [
+        "32k",
+        "64k",
+        "128k"
+      ],
+      "rpe_base_gap_bins": [
+        "128k"
+      ],
+      "total_rpe_fails": 2,
+      "total_base_fails": 6
+    },
+    {
+      "idx": 339,
+      "object": "apple",
+      "answer": "hallway",
+      "target_entries": 2,
+      "rpe_long_fails": [
+        "64k"
+      ],
+      "base_long_fails": [
+        "64k",
+        "128k"
+      ],
+      "rpe_base_gap_bins": [
+        "128k"
+      ],
+      "total_rpe_fails": 6,
+      "total_base_fails": 4
+    },
+    {
+      "idx": 444,
+      "object": "football",
+      "answer": "hallway",
+      "target_entries": 2,
+      "rpe_long_fails": [
+        "128k"
+      ],
+      "base_long_fails": [
+        "32k",
+        "64k",
+        "128k"
+      ],
+      "rpe_base_gap_bins": [
+        "32k",
+        "64k"
+      ],
+      "total_rpe_fails": 6,
+      "total_base_fails": 7
+    },
+    {
+      "idx": 241,
+      "object": "football",
+      "answer": "bathroom",
+      "target_entries": 2,
+      "rpe_long_fails": [
+        "128k"
+      ],
+      "base_long_fails": [
+        "32k",
+        "64k",
+        "128k"
+      ],
+      "rpe_base_gap_bins": [
+        "32k",
+        "64k"
+      ],
+      "total_rpe_fails": 4,
+      "total_base_fails": 4
+    },
+    {
+      "idx": 579,
+      "object": "milk",
+      "answer": "bedroom",
+      "target_entries": 2,
+      "rpe_long_fails": [
+        "128k"
+      ],
+      "base_long_fails": [
+        "32k",
+        "64k",
+        "128k"
+      ],
+      "rpe_base_gap_bins": [
+        "32k",
+        "64k"
+      ],
+      "total_rpe_fails": 4,
+      "total_base_fails": 7
+    },
+    {
+      "idx": 843,
+      "object": "football",
+      "answer": "bedroom",
+      "target_entries": 2,
+      "rpe_long_fails": [
+        "128k"
+      ],
+      "base_long_fails": [
+        "32k",
+        "64k",
+        "128k"
+      ],
+      "rpe_base_gap_bins": [
+        "32k",
+        "64k"
+      ],
+      "total_rpe_fails": 4,
+      "total_base_fails": 8
+    },
+    {
+      "idx": 881,
+      "object": "football",
+      "answer": "bathroom",
+      "target_entries": 2,
+      "rpe_long_fails": [
+        "32k"
+      ],
+      "base_long_fails": [
+        "64k",
+        "128k"
+      ],
+      "rpe_base_gap_bins": [
+        "64k",
+        "128k"
+      ],
+      "total_rpe_fails": 4,
+      "total_base_fails": 6
+    },
+    {
+      "idx": 40,
+      "object": "football",
+      "answer": "garden",
+      "target_entries": 2,
+      "rpe_long_fails": [
+        "128k"
+      ],
+      "base_long_fails": [
+        "32k",
+        "128k"
+      ],
+      "rpe_base_gap_bins": [
+        "32k"
+      ],
+      "total_rpe_fails": 3,
+      "total_base_fails": 3
+    },
+    {
+      "idx": 413,
+      "object": "football",
+      "answer": "kitchen",
+      "target_entries": 2,
+      "rpe_long_fails": [
+        "128k"
+      ],
+      "base_long_fails": [
+        "32k",
+        "128k"
+      ],
+      "rpe_base_gap_bins": [
+        "32k"
+      ],
+      "total_rpe_fails": 3,
+      "total_base_fails": 5
+    },
+    {
+      "idx": 454,
+      "object": "apple",
+      "answer": "hallway",
+      "target_entries": 3,
+      "rpe_long_fails": [
+        "32k"
+      ],
+      "base_long_fails": [],
+      "rpe_base_gap_bins": [],
+      "total_rpe_fails": 3,
+      "total_base_fails": 0
+    },
+    {
+      "idx": 641,
+      "object": "apple",
+      "answer": "kitchen",
+      "target_entries": 2,
+      "rpe_long_fails": [
+        "32k"
+      ],
+      "base_long_fails": [
+        "128k"
+      ],
+      "rpe_base_gap_bins": [
+        "128k"
+      ],
+      "total_rpe_fails": 3,
+      "total_base_fails": 1
+    },
+    {
+      "idx": 735,
+      "object": "apple",
+      "answer": "bathroom",
+      "target_entries": 2,
+      "rpe_long_fails": [
+        "128k"
+      ],
+      "base_long_fails": [
+        "128k"
+      ],
+      "rpe_base_gap_bins": [],
+      "total_rpe_fails": 3,
+      "total_base_fails": 1
+    },
+    {
+      "idx": 813,
+      "object": "apple",
+      "answer": "kitchen",
+      "target_entries": 3,
+      "rpe_long_fails": [
+        "128k"
+      ],
+      "base_long_fails": [
+        "64k",
+        "128k"
+      ],
+      "rpe_base_gap_bins": [
+        "64k"
+      ],
+      "total_rpe_fails": 3,
+      "total_base_fails": 3
+    },
+    {
+      "idx": 21,
+      "object": "football",
+      "answer": "garden",
+      "target_entries": 2,
+      "rpe_long_fails": [
+        "32k"
+      ],
+      "base_long_fails": [],
+      "rpe_base_gap_bins": [],
+      "total_rpe_fails": 2,
+      "total_base_fails": 1
+    },
+    {
+      "idx": 22,
+      "object": "football",
+      "answer": "hallway",
+      "target_entries": 2,
+      "rpe_long_fails": [
+        "128k"
+      ],
+      "base_long_fails": [
+        "32k",
+        "128k"
+      ],
+      "rpe_base_gap_bins": [
+        "32k"
+      ],
+      "total_rpe_fails": 2,
+      "total_base_fails": 3
+    },
+    {
+      "idx": 28,
+      "object": "football",
+      "answer": "garden",
+      "target_entries": 3,
+      "rpe_long_fails": [
+        "64k"
+      ],
+      "base_long_fails": [
+        "128k"
+      ],
+      "rpe_base_gap_bins": [
+        "128k"
+      ],
+      "total_rpe_fails": 2,
+      "total_base_fails": 1
+    },
+    {
+      "idx": 152,
+      "object": "apple",
+      "answer": "garden",
+      "target_entries": 2,
+      "rpe_long_fails": [
+        "32k"
+      ],
+      "base_long_fails": [],
+      "rpe_base_gap_bins": [],
+      "total_rpe_fails": 2,
+      "total_base_fails": 1
+    },
+    {
+      "idx": 164,
+      "object": "milk",
+      "answer": "bathroom",
+      "target_entries": 2,
+      "rpe_long_fails": [
+        "128k"
+      ],
+      "base_long_fails": [
+        "32k"
+      ],
+      "rpe_base_gap_bins": [
+        "32k"
+      ],
+      "total_rpe_fails": 2,
+      "total_base_fails": 2
+    },
+    {
+      "idx": 398,
+      "object": "apple",
+      "answer": "bathroom",
+      "target_entries": 3,
+      "rpe_long_fails": [
+        "32k"
+      ],
+      "base_long_fails": [],
+      "rpe_base_gap_bins": [],
+      "total_rpe_fails": 2,
+      "total_base_fails": 0
+    },
+    {
+      "idx": 424,
+      "object": "football",
+      "answer": "garden",
+      "target_entries": 2,
+      "rpe_long_fails": [
+        "128k"
+      ],
+      "base_long_fails": [],
+      "rpe_base_gap_bins": [],
+      "total_rpe_fails": 2,
+      "total_base_fails": 0
+    },
+    {
+      "idx": 616,
+      "object": "milk",
+      "answer": "garden",
+      "target_entries": 2,
+      "rpe_long_fails": [
+        "128k"
+      ],
+      "base_long_fails": [
+        "32k"
+      ],
+      "rpe_base_gap_bins": [
+        "32k"
+      ],
+      "total_rpe_fails": 2,
+      "total_base_fails": 4
+    },
+    {
+      "idx": 648,
+      "object": "football",
+      "answer": "kitchen",
+      "target_entries": 2,
+      "rpe_long_fails": [
+        "128k"
+      ],
+      "base_long_fails": [
+        "32k",
+        "64k",
+        "128k"
+      ],
+      "rpe_base_gap_bins": [
+        "32k",
+        "64k"
+      ],
+      "total_rpe_fails": 2,
+      "total_base_fails": 5
+    },
+    {
+      "idx": 697,
+      "object": "milk",
+      "answer": "bedroom",
+      "target_entries": 2,
+      "rpe_long_fails": [
+        "128k"
+      ],
+      "base_long_fails": [
+        "128k"
+      ],
+      "rpe_base_gap_bins": [],
+      "total_rpe_fails": 2,
+      "total_base_fails": 1
+    },
+    {
+      "idx": 737,
+      "object": "apple",
+      "answer": "bathroom",
+      "target_entries": 2,
+      "rpe_long_fails": [
+        "64k"
+      ],
+      "base_long_fails": [
+        "32k",
+        "64k",
+        "128k"
+      ],
+      "rpe_base_gap_bins": [
+        "32k",
+        "128k"
+      ],
+      "total_rpe_fails": 2,
+      "total_base_fails": 6
+    },
+    {
+      "idx": 904,
+      "object": "football",
+      "answer": "garden",
+      "target_entries": 4,
+      "rpe_long_fails": [
+        "128k"
+      ],
+      "base_long_fails": [
+        "32k"
+      ],
+      "rpe_base_gap_bins": [
+        "32k"
+      ],
+      "total_rpe_fails": 2,
+      "total_base_fails": 4
+    },
+    {
+      "idx": 73,
+      "object": "apple",
+      "answer": "kitchen",
+      "target_entries": 2,
+      "rpe_long_fails": [
+        "128k"
+      ],
+      "base_long_fails": [],
+      "rpe_base_gap_bins": [],
+      "total_rpe_fails": 1,
+      "total_base_fails": 1
+    },
+    {
+      "idx": 76,
+      "object": "milk",
+      "answer": "hallway",
+      "target_entries": 2,
+      "rpe_long_fails": [
+        "128k"
+      ],
+      "base_long_fails": [
+        "128k"
+      ],
+      "rpe_base_gap_bins": [],
+      "total_rpe_fails": 1,
+      "total_base_fails": 1
+    },
+    {
+      "idx": 98,
+      "object": "milk",
+      "answer": "bedroom",
+      "target_entries": 2,
+      "rpe_long_fails": [
+        "128k"
+      ],
+      "base_long_fails": [
+        "128k"
+      ],
+      "rpe_base_gap_bins": [],
+      "total_rpe_fails": 1,
+      "total_base_fails": 1
+    },
+    {
+      "idx": 107,
+      "object": "football",
+      "answer": "garden",
+      "target_entries": 3,
+      "rpe_long_fails": [
+        "32k"
+      ],
+      "base_long_fails": [],
+      "rpe_base_gap_bins": [],
+      "total_rpe_fails": 1,
+      "total_base_fails": 1
+    },
+    {
+      "idx": 151,
+      "object": "apple",
+      "answer": "garden",
+      "target_entries": 2,
+      "rpe_long_fails": [
+        "64k"
+      ],
+      "base_long_fails": [
+        "32k",
+        "64k"
+      ],
+      "rpe_base_gap_bins": [
+        "32k"
+      ],
+      "total_rpe_fails": 1,
+      "total_base_fails": 3
+    },
+    {
+      "idx": 232,
+      "object": "football",
+      "answer": "garden",
+      "target_entries": 2,
+      "rpe_long_fails": [
+        "64k"
+      ],
+      "base_long_fails": [
+        "64k"
+      ],
+      "rpe_base_gap_bins": [],
+      "total_rpe_fails": 1,
+      "total_base_fails": 1
+    },
+    {
+      "idx": 295,
+      "object": "apple",
+      "answer": "bedroom",
+      "target_entries": 2,
+      "rpe_long_fails": [
+        "64k"
+      ],
+      "base_long_fails": [
+        "64k"
+      ],
+      "rpe_base_gap_bins": [],
+      "total_rpe_fails": 1,
+      "total_base_fails": 1
+    },
+    {
+      "idx": 343,
+      "object": "milk",
+      "answer": "garden",
+      "target_entries": 2,
+      "rpe_long_fails": [
+        "128k"
+      ],
+      "base_long_fails": [
+        "128k"
+      ],
+      "rpe_base_gap_bins": [],
+      "total_rpe_fails": 1,
+      "total_base_fails": 1
+    },
+    {
+      "idx": 368,
+      "object": "milk",
+      "answer": "kitchen",
+      "target_entries": 2,
+      "rpe_long_fails": [
+        "128k"
+      ],
+      "base_long_fails": [
+        "128k"
+      ],
+      "rpe_base_gap_bins": [],
+      "total_rpe_fails": 1,
+      "total_base_fails": 1
+    },
+    {
+      "idx": 369,
+      "object": "milk",
+      "answer": "kitchen",
+      "target_entries": 2,
+      "rpe_long_fails": [
+        "128k"
+      ],
+      "base_long_fails": [
+        "128k"
+      ],
+      "rpe_base_gap_bins": [],
+      "total_rpe_fails": 1,
+      "total_base_fails": 1
+    },
+    {
+      "idx": 379,
+      "object": "football",
+      "answer": "bathroom",
+      "target_entries": 2,
+      "rpe_long_fails": [
+        "128k"
+      ],
+      "base_long_fails": [
+        "64k",
+        "128k"
+      ],
+      "rpe_base_gap_bins": [
+        "64k"
+      ],
+      "total_rpe_fails": 1,
+      "total_base_fails": 2
+    },
+    {
+      "idx": 414,
+      "object": "football",
+      "answer": "hallway",
+      "target_entries": 3,
+      "rpe_long_fails": [
+        "128k"
+      ],
+      "base_long_fails": [
+        "128k"
+      ],
+      "rpe_base_gap_bins": [],
+      "total_rpe_fails": 1,
+      "total_base_fails": 2
+    },
+    {
+      "idx": 513,
+      "object": "apple",
+      "answer": "kitchen",
+      "target_entries": 2,
+      "rpe_long_fails": [
+        "128k"
+      ],
+      "base_long_fails": [],
+      "rpe_base_gap_bins": [],
+      "total_rpe_fails": 1,
+      "total_base_fails": 0
+    },
+    {
+      "idx": 524,
+      "object": "apple",
+      "answer": "bedroom",
+      "target_entries": 2,
+      "rpe_long_fails": [
+        "128k"
+      ],
+      "base_long_fails": [
+        "64k"
+      ],
+      "rpe_base_gap_bins": [
+        "64k"
+      ],
+      "total_rpe_fails": 1,
+      "total_base_fails": 1
+    },
+    {
+      "idx": 559,
+      "object": "milk",
+      "answer": "garden",
+      "target_entries": 2,
+      "rpe_long_fails": [
+        "128k"
+      ],
+      "base_long_fails": [],
+      "rpe_base_gap_bins": [],
+      "total_rpe_fails": 1,
+      "total_base_fails": 0
+    },
+    {
+      "idx": 577,
+      "object": "football",
+      "answer": "kitchen",
+      "target_entries": 2,
+      "rpe_long_fails": [
+        "64k"
+      ],
+      "base_long_fails": [
+        "64k",
+        "128k"
+      ],
+      "rpe_base_gap_bins": [
+        "128k"
+      ],
+      "total_rpe_fails": 1,
+      "total_base_fails": 4
+    },
+    {
+      "idx": 607,
+      "object": "apple",
+      "answer": "hallway",
+      "target_entries": 2,
+      "rpe_long_fails": [
+        "64k"
+      ],
+      "base_long_fails": [
+        "64k"
+      ],
+      "rpe_base_gap_bins": [],
+      "total_rpe_fails": 1,
+      "total_base_fails": 4
+    },
+    {
+      "idx": 640,
+      "object": "apple",
+      "answer": "kitchen",
+      "target_entries": 2,
+      "rpe_long_fails": [
+        "128k"
+      ],
+      "base_long_fails": [],
+      "rpe_base_gap_bins": [],
+      "total_rpe_fails": 1,
+      "total_base_fails": 0
+    },
+    {
+      "idx": 646,
+      "object": "football",
+      "answer": "kitchen",
+      "target_entries": 2,
+      "rpe_long_fails": [
+        "128k"
+      ],
+      "base_long_fails": [],
+      "rpe_base_gap_bins": [],
+      "total_rpe_fails": 1,
+      "total_base_fails": 0
+    },
+    {
+      "idx": 698,
+      "object": "milk",
+      "answer": "bedroom",
+      "target_entries": 2,
+      "rpe_long_fails": [
+        "64k"
+      ],
+      "base_long_fails": [
+        "32k",
+        "64k",
+        "128k"
+      ],
+      "rpe_base_gap_bins": [
+        "32k",
+        "128k"
+      ],
+      "total_rpe_fails": 1,
+      "total_base_fails": 3
+    },
+    {
+      "idx": 713,
+      "object": "football",
+      "answer": "garden",
+      "target_entries": 2,
+      "rpe_long_fails": [
+        "64k"
+      ],
+      "base_long_fails": [
+        "32k",
+        "64k",
+        "128k"
+      ],
+      "rpe_base_gap_bins": [
+        "32k",
+        "128k"
+      ],
+      "total_rpe_fails": 1,
+      "total_base_fails": 5
+    },
+    {
+      "idx": 714,
+      "object": "football",
+      "answer": "hallway",
+      "target_entries": 2,
+      "rpe_long_fails": [
+        "128k"
+      ],
+      "base_long_fails": [
+        "128k"
+      ],
+      "rpe_base_gap_bins": [],
+      "total_rpe_fails": 1,
+      "total_base_fails": 1
+    },
+    {
+      "idx": 808,
+      "object": "apple",
+      "answer": "bedroom",
+      "target_entries": 2,
+      "rpe_long_fails": [
+        "64k"
+      ],
+      "base_long_fails": [
+        "32k"
+      ],
+      "rpe_base_gap_bins": [
+        "32k"
+      ],
+      "total_rpe_fails": 1,
+      "total_base_fails": 1
+    },
+    {
+      "idx": 828,
+      "object": "milk",
+      "answer": "office",
+      "target_entries": 2,
+      "rpe_long_fails": [
+        "128k"
+      ],
+      "base_long_fails": [],
+      "rpe_base_gap_bins": [],
+      "total_rpe_fails": 1,
+      "total_base_fails": 0
+    },
+    {
+      "idx": 899,
+      "object": "milk",
+      "answer": "bedroom",
+      "target_entries": 3,
+      "rpe_long_fails": [
+        "64k"
+      ],
+      "base_long_fails": [
+        "128k"
+      ],
+      "rpe_base_gap_bins": [
+        "128k"
+      ],
+      "total_rpe_fails": 1,
+      "total_base_fails": 1
+    },
+    {
+      "idx": 917,
+      "object": "milk",
+      "answer": "kitchen",
+      "target_entries": 2,
+      "rpe_long_fails": [
+        "128k"
+      ],
+      "base_long_fails": [
+        "128k"
+      ],
+      "rpe_base_gap_bins": [],
+      "total_rpe_fails": 1,
+      "total_base_fails": 1
+    },
+    {
+      "idx": 958,
+      "object": "apple",
+      "answer": "bathroom",
+      "target_entries": 2,
+      "rpe_long_fails": [
+        "32k"
+      ],
+      "base_long_fails": [
+        "128k"
+      ],
+      "rpe_base_gap_bins": [
+        "128k"
+      ],
+      "total_rpe_fails": 1,
+      "total_base_fails": 1
+    },
+    {
+      "idx": 959,
+      "object": "apple",
+      "answer": "bathroom",
+      "target_entries": 2,
+      "rpe_long_fails": [
+        "128k"
+      ],
+      "base_long_fails": [
+        "128k"
+      ],
+      "rpe_base_gap_bins": [],
+      "total_rpe_fails": 1,
+      "total_base_fails": 1
+    },
+    {
+      "idx": 978,
+      "object": "milk",
+      "answer": "kitchen",
+      "target_entries": 2,
+      "rpe_long_fails": [
+        "128k"
+      ],
+      "base_long_fails": [
+        "128k"
+      ],
+      "rpe_base_gap_bins": [],
+      "total_rpe_fails": 1,
+      "total_base_fails": 1
+    },
+    {
+      "idx": 993,
+      "object": "milk",
+      "answer": "hallway",
+      "target_entries": 2,
+      "rpe_long_fails": [
+        "128k"
+      ],
+      "base_long_fails": [
+        "128k"
+      ],
+      "rpe_base_gap_bins": [],
+      "total_rpe_fails": 1,
+      "total_base_fails": 1
+    }
+  ],
+  "tier2_hard": [
+    {
+      "idx": 169,
+      "object": "milk",
+      "answer": "bedroom",
+      "target_entries": 2,
+      "rpe_long_fails": [],
+      "base_long_fails": [
+        "32k",
+        "64k",
+        "128k"
+      ],
+      "rpe_base_gap_bins": [
+        "32k",
+        "64k",
+        "128k"
+      ],
+      "total_rpe_fails": 1,
+      "total_base_fails": 4
+    },
+    {
+      "idx": 4,
+      "object": "football",
+      "answer": "bathroom",
+      "target_entries": 2,
+      "rpe_long_fails": [],
+      "base_long_fails": [
+        "32k",
+        "128k"
+      ],
+      "rpe_base_gap_bins": [
+        "32k",
+        "128k"
+      ],
+      "total_rpe_fails": 4,
+      "total_base_fails": 8
+    },
+    {
+      "idx": 617,
+      "object": "milk",
+      "answer": "office",
+      "target_entries": 2,
+      "rpe_long_fails": [],
+      "base_long_fails": [
+        "32k",
+        "64k"
+      ],
+      "rpe_base_gap_bins": [
+        "32k",
+        "64k"
+      ],
+      "total_rpe_fails": 0,
+      "total_base_fails": 5
+    },
+    {
+      "idx": 25,
+      "object": "football",
+      "answer": "bathroom",
+      "target_entries": 2,
+      "rpe_long_fails": [],
+      "base_long_fails": [
+        "64k",
+        "128k"
+      ],
+      "rpe_base_gap_bins": [
+        "64k",
+        "128k"
+      ],
+      "total_rpe_fails": 2,
+      "total_base_fails": 4
+    },
+    {
+      "idx": 64,
+      "object": "football",
+      "answer": "garden",
+      "target_entries": 3,
+      "rpe_long_fails": [],
+      "base_long_fails": [
+        "32k",
+        "64k"
+      ],
+      "rpe_base_gap_bins": [
+        "32k",
+        "64k"
+      ],
+      "total_rpe_fails": 0,
+      "total_base_fails": 4
+    },
+    {
+      "idx": 337,
+      "object": "apple",
+      "answer": "office",
+      "target_entries": 2,
+      "rpe_long_fails": [],
+      "base_long_fails": [
+        "32k",
+        "64k"
+      ],
+      "rpe_base_gap_bins": [
+        "32k",
+        "64k"
+      ],
+      "total_rpe_fails": 1,
+      "total_base_fails": 4
+    },
+    {
+      "idx": 403,
+      "object": "milk",
+      "answer": "bathroom",
+      "target_entries": 3,
+      "rpe_long_fails": [],
+      "base_long_fails": [
+        "32k",
+        "128k"
+      ],
+      "rpe_base_gap_bins": [
+        "32k",
+        "128k"
+      ],
+      "total_rpe_fails": 3,
+      "total_base_fails": 4
+    },
+    {
+      "idx": 539,
+      "object": "milk",
+      "answer": "office",
+      "target_entries": 2,
+      "rpe_long_fails": [],
+      "base_long_fails": [
+        "64k",
+        "128k"
+      ],
+      "rpe_base_gap_bins": [
+        "64k",
+        "128k"
+      ],
+      "total_rpe_fails": 0,
+      "total_base_fails": 4
+    },
+    {
+      "idx": 538,
+      "object": "milk",
+      "answer": "hallway",
+      "target_entries": 2,
+      "rpe_long_fails": [],
+      "base_long_fails": [
+        "64k",
+        "128k"
+      ],
+      "rpe_base_gap_bins": [
+        "64k",
+        "128k"
+      ],
+      "total_rpe_fails": 0,
+      "total_base_fails": 3
+    },
+    {
+      "idx": 27,
+      "object": "football",
+      "answer": "garden",
+      "target_entries": 3,
+      "rpe_long_fails": [],
+      "base_long_fails": [
+        "64k",
+        "128k"
+      ],
+      "rpe_base_gap_bins": [
+        "64k",
+        "128k"
+      ],
+      "total_rpe_fails": 0,
+      "total_base_fails": 2
+    },
+    {
+      "idx": 29,
+      "object": "apple",
+      "answer": "garden",
+      "target_entries": 2,
+      "rpe_long_fails": [],
+      "base_long_fails": [
+        "64k",
+        "128k"
+      ],
+      "rpe_base_gap_bins": [
+        "64k",
+        "128k"
+      ],
+      "total_rpe_fails": 1,
+      "total_base_fails": 2
+    },
+    {
+      "idx": 42,
+      "object": "milk",
+      "answer": "garden",
+      "target_entries": 2,
+      "rpe_long_fails": [],
+      "base_long_fails": [
+        "32k",
+        "128k"
+      ],
+      "rpe_base_gap_bins": [
+        "32k",
+        "128k"
+      ],
+      "total_rpe_fails": 0,
+      "total_base_fails": 2
+    },
+    {
+      "idx": 179,
+      "object": "football",
+      "answer": "hallway",
+      "target_entries": 3,
+      "rpe_long_fails": [],
+      "base_long_fails": [
+        "64k",
+        "128k"
+      ],
+      "rpe_base_gap_bins": [
+        "64k",
+        "128k"
+      ],
+      "total_rpe_fails": 1,
+      "total_base_fails": 2
+    },
+    {
+      "idx": 192,
+      "object": "football",
+      "answer": "bedroom",
+      "target_entries": 2,
+      "rpe_long_fails": [],
+      "base_long_fails": [
+        "32k",
+        "128k"
+      ],
+      "rpe_base_gap_bins": [
+        "32k",
+        "128k"
+      ],
+      "total_rpe_fails": 2,
+      "total_base_fails": 2
+    },
+    {
+      "idx": 198,
+      "object": "apple",
+      "answer": "bathroom",
+      "target_entries": 2,
+      "rpe_long_fails": [],
+      "base_long_fails": [
+        "64k",
+        "128k"
+      ],
+      "rpe_base_gap_bins": [
+        "64k",
+        "128k"
+      ],
+      "total_rpe_fails": 1,
+      "total_base_fails": 2
+    },
+    {
+      "idx": 382,
+      "object": "milk",
+      "answer": "bathroom",
+      "target_entries": 2,
+      "rpe_long_fails": [],
+      "base_long_fails": [
+        "32k",
+        "128k"
+      ],
+      "rpe_base_gap_bins": [
+        "32k",
+        "128k"
+      ],
+      "total_rpe_fails": 0,
+      "total_base_fails": 2
+    },
+    {
+      "idx": 615,
+      "object": "apple",
+      "answer": "kitchen",
+      "target_entries": 3,
+      "rpe_long_fails": [],
+      "base_long_fails": [
+        "64k",
+        "128k"
+      ],
+      "rpe_base_gap_bins": [
+        "64k",
+        "128k"
+      ],
+      "total_rpe_fails": 0,
+      "total_base_fails": 2
+    },
+    {
+      "idx": 736,
+      "object": "apple",
+      "answer": "bathroom",
+      "target_entries": 2,
+      "rpe_long_fails": [],
+      "base_long_fails": [
+        "64k",
+        "128k"
+      ],
+      "rpe_base_gap_bins": [
+        "64k",
+        "128k"
+      ],
+      "total_rpe_fails": 1,
+      "total_base_fails": 2
+    },
+    {
+      "idx": 807,
+      "object": "apple",
+      "answer": "bedroom",
+      "target_entries": 2,
+      "rpe_long_fails": [],
+      "base_long_fails": [
+        "64k",
+        "128k"
+      ],
+      "rpe_base_gap_bins": [
+        "64k",
+        "128k"
+      ],
+      "total_rpe_fails": 0,
+      "total_base_fails": 2
+    },
+    {
+      "idx": 643,
+      "object": "apple",
+      "answer": "bathroom",
+      "target_entries": 2,
+      "rpe_long_fails": [],
+      "base_long_fails": [
+        "128k"
+      ],
+      "rpe_base_gap_bins": [
+        "128k"
+      ],
+      "total_rpe_fails": 4,
+      "total_base_fails": 7
+    },
+    {
+      "idx": 364,
+      "object": "milk",
+      "answer": "office",
+      "target_entries": 2,
+      "rpe_long_fails": [],
+      "base_long_fails": [
+        "128k"
+      ],
+      "rpe_base_gap_bins": [
+        "128k"
+      ],
+      "total_rpe_fails": 0,
+      "total_base_fails": 5
+    },
+    {
+      "idx": 503,
+      "object": "apple",
+      "answer": "bathroom",
+      "target_entries": 2,
+      "rpe_long_fails": [],
+      "base_long_fails": [
+        "128k"
+      ],
+      "rpe_base_gap_bins": [
+        "128k"
+      ],
+      "total_rpe_fails": 1,
+      "total_base_fails": 5
+    },
+    {
+      "idx": 283,
+      "object": "apple",
+      "answer": "hallway",
+      "target_entries": 2,
+      "rpe_long_fails": [],
+      "base_long_fails": [
+        "32k"
+      ],
+      "rpe_base_gap_bins": [
+        "32k"
+      ],
+      "total_rpe_fails": 1,
+      "total_base_fails": 4
+    },
+    {
+      "idx": 788,
+      "object": "apple",
+      "answer": "bedroom",
+      "target_entries": 2,
+      "rpe_long_fails": [],
+      "base_long_fails": [
+        "128k"
+      ],
+      "rpe_base_gap_bins": [
+        "128k"
+      ],
+      "total_rpe_fails": 1,
+      "total_base_fails": 4
+    },
+    {
+      "idx": 284,
+      "object": "football",
+      "answer": "office",
+      "target_entries": 3,
+      "rpe_long_fails": [],
+      "base_long_fails": [
+        "128k"
+      ],
+      "rpe_base_gap_bins": [
+        "128k"
+      ],
+      "total_rpe_fails": 0,
+      "total_base_fails": 3
+    },
+    {
+      "idx": 130,
+      "object": "milk",
+      "answer": "garden",
+      "target_entries": 2,
+      "rpe_long_fails": [],
+      "base_long_fails": [
+        "128k"
+      ],
+      "rpe_base_gap_bins": [
+        "128k"
+      ],
+      "total_rpe_fails": 1,
+      "total_base_fails": 2
+    },
+    {
+      "idx": 178,
+      "object": "football",
+      "answer": "kitchen",
+      "target_entries": 2,
+      "rpe_long_fails": [],
+      "base_long_fails": [
+        "64k"
+      ],
+      "rpe_base_gap_bins": [
+        "64k"
+      ],
+      "total_rpe_fails": 0,
+      "total_base_fails": 2
+    },
+    {
+      "idx": 181,
+      "object": "football",
+      "answer": "bathroom",
+      "target_entries": 2,
+      "rpe_long_fails": [],
+      "base_long_fails": [
+        "128k"
+      ],
+      "rpe_base_gap_bins": [
+        "128k"
+      ],
+      "total_rpe_fails": 1,
+      "total_base_fails": 2
+    },
+    {
+      "idx": 196,
+      "object": "apple",
+      "answer": "bathroom",
+      "target_entries": 2,
+      "rpe_long_fails": [],
+      "base_long_fails": [
+        "32k"
+      ],
+      "rpe_base_gap_bins": [
+        "32k"
+      ],
+      "total_rpe_fails": 0,
+      "total_base_fails": 2
+    },
+    {
+      "idx": 378,
+      "object": "milk",
+      "answer": "bedroom",
+      "target_entries": 2,
+      "rpe_long_fails": [],
+      "base_long_fails": [
+        "128k"
+      ],
+      "rpe_base_gap_bins": [
+        "128k"
+      ],
+      "total_rpe_fails": 2,
+      "total_base_fails": 2
+    },
+    {
+      "idx": 402,
+      "object": "apple",
+      "answer": "hallway",
+      "target_entries": 2,
+      "rpe_long_fails": [],
+      "base_long_fails": [
+        "32k"
+      ],
+      "rpe_base_gap_bins": [
+        "32k"
+      ],
+      "total_rpe_fails": 1,
+      "total_base_fails": 2
+    },
+    {
+      "idx": 757,
+      "object": "milk",
+      "answer": "kitchen",
+      "target_entries": 2,
+      "rpe_long_fails": [],
+      "base_long_fails": [
+        "64k"
+      ],
+      "rpe_base_gap_bins": [
+        "64k"
+      ],
+      "total_rpe_fails": 1,
+      "total_base_fails": 2
+    },
+    {
+      "idx": 814,
+      "object": "apple",
+      "answer": "garden",
+      "target_entries": 2,
+      "rpe_long_fails": [],
+      "base_long_fails": [
+        "128k"
+      ],
+      "rpe_base_gap_bins": [
+        "128k"
+      ],
+      "total_rpe_fails": 0,
+      "total_base_fails": 2
+    },
+    {
+      "idx": 929,
+      "object": "apple",
+      "answer": "bathroom",
+      "target_entries": 3,
+      "rpe_long_fails": [],
+      "base_long_fails": [
+        "128k"
+      ],
+      "rpe_base_gap_bins": [
+        "128k"
+      ],
+      "total_rpe_fails": 1,
+      "total_base_fails": 2
+    },
+    {
+      "idx": 942,
+      "object": "football",
+      "answer": "hallway",
+      "target_entries": 4,
+      "rpe_long_fails": [],
+      "base_long_fails": [
+        "128k"
+      ],
+      "rpe_base_gap_bins": [
+        "128k"
+      ],
+      "total_rpe_fails": 0,
+      "total_base_fails": 2
+    },
+    {
+      "idx": 960,
+      "object": "football",
+      "answer": "hallway",
+      "target_entries": 2,
+      "rpe_long_fails": [],
+      "base_long_fails": [
+        "128k"
+      ],
+      "rpe_base_gap_bins": [
+        "128k"
+      ],
+      "total_rpe_fails": 0,
+      "total_base_fails": 2
+    },
+    {
+      "idx": 37,
+      "object": "apple",
+      "answer": "bathroom",
+      "target_entries": 3,
+      "rpe_long_fails": [],
+      "base_long_fails": [
+        "128k"
+      ],
+      "rpe_base_gap_bins": [
+        "128k"
+      ],
+      "total_rpe_fails": 0,
+      "total_base_fails": 1
+    },
+    {
+      "idx": 57,
+      "object": "football",
+      "answer": "office",
+      "target_entries": 2,
+      "rpe_long_fails": [],
+      "base_long_fails": [
+        "128k"
+      ],
+      "rpe_base_gap_bins": [
+        "128k"
+      ],
+      "total_rpe_fails": 0,
+      "total_base_fails": 1
+    },
+    {
+      "idx": 83,
+      "object": "apple",
+      "answer": "bathroom",
+      "target_entries": 2,
+      "rpe_long_fails": [],
+      "base_long_fails": [
+        "128k"
+      ],
+      "rpe_base_gap_bins": [
+        "128k"
+      ],
+      "total_rpe_fails": 0,
+      "total_base_fails": 1
+    },
+    {
+      "idx": 99,
+      "object": "milk",
+      "answer": "bathroom",
+      "target_entries": 2,
+      "rpe_long_fails": [],
+      "base_long_fails": [
+        "128k"
+      ],
+      "rpe_base_gap_bins": [
+        "128k"
+      ],
+      "total_rpe_fails": 1,
+      "total_base_fails": 1
+    },
+    {
+      "idx": 132,
+      "object": "milk",
+      "answer": "bathroom",
+      "target_entries": 2,
+      "rpe_long_fails": [],
+      "base_long_fails": [
+        "128k"
+      ],
+      "rpe_base_gap_bins": [
+        "128k"
+      ],
+      "total_rpe_fails": 0,
+      "total_base_fails": 1
+    },
+    {
+      "idx": 138,
+      "object": "football",
+      "answer": "bedroom",
+      "target_entries": 2,
+      "rpe_long_fails": [],
+      "base_long_fails": [
+        "128k"
+      ],
+      "rpe_base_gap_bins": [
+        "128k"
+      ],
+      "total_rpe_fails": 0,
+      "total_base_fails": 1
+    },
+    {
+      "idx": 154,
+      "object": "milk",
+      "answer": "bathroom",
+      "target_entries": 3,
+      "rpe_long_fails": [],
+      "base_long_fails": [
+        "128k"
+      ],
+      "rpe_base_gap_bins": [
+        "128k"
+      ],
+      "total_rpe_fails": 0,
+      "total_base_fails": 1
+    },
+    {
+      "idx": 201,
+      "object": "milk",
+      "answer": "bedroom",
+      "target_entries": 2,
+      "rpe_long_fails": [],
+      "base_long_fails": [
+        "128k"
+      ],
+      "rpe_base_gap_bins": [
+        "128k"
+      ],
+      "total_rpe_fails": 0,
+      "total_base_fails": 1
+    },
+    {
+      "idx": 308,
+      "object": "milk",
+      "answer": "bathroom",
+      "target_entries": 2,
+      "rpe_long_fails": [],
+      "base_long_fails": [
+        "64k"
+      ],
+      "rpe_base_gap_bins": [
+        "64k"
+      ],
+      "total_rpe_fails": 2,
+      "total_base_fails": 1
+    },
+    {
+      "idx": 314,
+      "object": "football",
+      "answer": "hallway",
+      "target_entries": 2,
+      "rpe_long_fails": [],
+      "base_long_fails": [
+        "128k"
+      ],
+      "rpe_base_gap_bins": [
+        "128k"
+      ],
+      "total_rpe_fails": 0,
+      "total_base_fails": 1
+    },
+    {
+      "idx": 354,
+      "object": "football",
+      "answer": "hallway",
+      "target_entries": 2,
+      "rpe_long_fails": [],
+      "base_long_fails": [
+        "128k"
+      ],
+      "rpe_base_gap_bins": [
+        "128k"
+      ],
+      "total_rpe_fails": 0,
+      "total_base_fails": 1
+    },
+    {
+      "idx": 359,
+      "object": "football",
+      "answer": "bathroom",
+      "target_entries": 2,
+      "rpe_long_fails": [],
+      "base_long_fails": [
+        "64k"
+      ],
+      "rpe_base_gap_bins": [
+        "64k"
+      ],
+      "total_rpe_fails": 1,
+      "total_base_fails": 1
+    },
+    {
+      "idx": 394,
+      "object": "milk",
+      "answer": "office",
+      "target_entries": 4,
+      "rpe_long_fails": [],
+      "base_long_fails": [
+        "128k"
+      ],
+      "rpe_base_gap_bins": [
+        "128k"
+      ],
+      "total_rpe_fails": 0,
+      "total_base_fails": 1
+    },
+    {
+      "idx": 399,
+      "object": "milk",
+      "answer": "office",
+      "target_entries": 2,
+      "rpe_long_fails": [],
+      "base_long_fails": [
+        "128k"
+      ],
+      "rpe_base_gap_bins": [
+        "128k"
+      ],
+      "total_rpe_fails": 0,
+      "total_base_fails": 1
+    },
+    {
+      "idx": 448,
+      "object": "football",
+      "answer": "hallway",
+      "target_entries": 2,
+      "rpe_long_fails": [],
+      "base_long_fails": [
+        "128k"
+      ],
+      "rpe_base_gap_bins": [
+        "128k"
+      ],
+      "total_rpe_fails": 0,
+      "total_base_fails": 1
+    },
+    {
+      "idx": 474,
+      "object": "football",
+      "answer": "kitchen",
+      "target_entries": 2,
+      "rpe_long_fails": [],
+      "base_long_fails": [
+        "64k"
+      ],
+      "rpe_base_gap_bins": [
+        "64k"
+      ],
+      "total_rpe_fails": 0,
+      "total_base_fails": 1
+    },
+    {
+      "idx": 479,
+      "object": "apple",
+      "answer": "garden",
+      "target_entries": 2,
+      "rpe_long_fails": [],
+      "base_long_fails": [
+        "32k"
+      ],
+      "rpe_base_gap_bins": [
+        "32k"
+      ],
+      "total_rpe_fails": 0,
+      "total_base_fails": 1
+    },
+    {
+      "idx": 504,
+      "object": "apple",
+      "answer": "garden",
+      "target_entries": 2,
+      "rpe_long_fails": [],
+      "base_long_fails": [
+        "128k"
+      ],
+      "rpe_base_gap_bins": [
+        "128k"
+      ],
+      "total_rpe_fails": 0,
+      "total_base_fails": 1
+    },
+    {
+      "idx": 514,
+      "object": "apple",
+      "answer": "bathroom",
+      "target_entries": 3,
+      "rpe_long_fails": [],
+      "base_long_fails": [
+        "128k"
+      ],
+      "rpe_base_gap_bins": [
+        "128k"
+      ],
+      "total_rpe_fails": 0,
+      "total_base_fails": 1
+    },
+    {
+      "idx": 575,
+      "object": "football",
+      "answer": "hallway",
+      "target_entries": 2,
+      "rpe_long_fails": [],
+      "base_long_fails": [
+        "128k"
+      ],
+      "rpe_base_gap_bins": [
+        "128k"
+      ],
+      "total_rpe_fails": 1,
+      "total_base_fails": 1
+    },
+    {
+      "idx": 576,
+      "object": "football",
+      "answer": "hallway",
+      "target_entries": 2,
+      "rpe_long_fails": [],
+      "base_long_fails": [
+        "128k"
+      ],
+      "rpe_base_gap_bins": [
+        "128k"
+      ],
+      "total_rpe_fails": 2,
+      "total_base_fails": 1
+    },
+    {
+      "idx": 586,
+      "object": "football",
+      "answer": "bathroom",
+      "target_entries": 2,
+      "rpe_long_fails": [],
+      "base_long_fails": [
+        "128k"
+      ],
+      "rpe_base_gap_bins": [
+        "128k"
+      ],
+      "total_rpe_fails": 0,
+      "total_base_fails": 1
+    },
+    {
+      "idx": 587,
+      "object": "football",
+      "answer": "bathroom",
+      "target_entries": 2,
+      "rpe_long_fails": [],
+      "base_long_fails": [
+        "32k"
+      ],
+      "rpe_base_gap_bins": [
+        "32k"
+      ],
+      "total_rpe_fails": 0,
+      "total_base_fails": 1
+    },
+    {
+      "idx": 588,
+      "object": "football",
+      "answer": "bathroom",
+      "target_entries": 2,
+      "rpe_long_fails": [],
+      "base_long_fails": [
+        "128k"
+      ],
+      "rpe_base_gap_bins": [
+        "128k"
+      ],
+      "total_rpe_fails": 0,
+      "total_base_fails": 1
+    },
+    {
+      "idx": 657,
+      "object": "milk",
+      "answer": "kitchen",
+      "target_entries": 2,
+      "rpe_long_fails": [],
+      "base_long_fails": [
+        "128k"
+      ],
+      "rpe_base_gap_bins": [
+        "128k"
+      ],
+      "total_rpe_fails": 0,
+      "total_base_fails": 1
+    },
+    {
+      "idx": 718,
+      "object": "apple",
+      "answer": "garden",
+      "target_entries": 2,
+      "rpe_long_fails": [],
+      "base_long_fails": [
+        "128k"
+      ],
+      "rpe_base_gap_bins": [
+        "128k"
+      ],
+      "total_rpe_fails": 0,
+      "total_base_fails": 1
+    },
+    {
+      "idx": 748,
+      "object": "apple",
+      "answer": "hallway",
+      "target_entries": 2,
+      "rpe_long_fails": [],
+      "base_long_fails": [
+        "128k"
+      ],
+      "rpe_base_gap_bins": [
+        "128k"
+      ],
+      "total_rpe_fails": 0,
+      "total_base_fails": 1
+    },
+    {
+      "idx": 823,
+      "object": "football",
+      "answer": "hallway",
+      "target_entries": 2,
+      "rpe_long_fails": [],
+      "base_long_fails": [
+        "64k"
+      ],
+      "rpe_base_gap_bins": [
+        "64k"
+      ],
+      "total_rpe_fails": 0,
+      "total_base_fails": 1
+    },
+    {
+      "idx": 824,
+      "object": "milk",
+      "answer": "hallway",
+      "target_entries": 2,
+      "rpe_long_fails": [],
+      "base_long_fails": [
+        "128k"
+      ],
+      "rpe_base_gap_bins": [
+        "128k"
+      ],
+      "total_rpe_fails": 0,
+      "total_base_fails": 1
+    },
+    {
+      "idx": 826,
+      "object": "apple",
+      "answer": "hallway",
+      "target_entries": 2,
+      "rpe_long_fails": [],
+      "base_long_fails": [
+        "128k"
+      ],
+      "rpe_base_gap_bins": [
+        "128k"
+      ],
+      "total_rpe_fails": 0,
+      "total_base_fails": 1
+    },
+    {
+      "idx": 849,
+      "object": "apple",
+      "answer": "hallway",
+      "target_entries": 2,
+      "rpe_long_fails": [],
+      "base_long_fails": [
+        "128k"
+      ],
+      "rpe_base_gap_bins": [
+        "128k"
+      ],
+      "total_rpe_fails": 0,
+      "total_base_fails": 1
+    },
+    {
+      "idx": 853,
+      "object": "milk",
+      "answer": "kitchen",
+      "target_entries": 3,
+      "rpe_long_fails": [],
+      "base_long_fails": [
+        "128k"
+      ],
+      "rpe_base_gap_bins": [
+        "128k"
+      ],
+      "total_rpe_fails": 0,
+      "total_base_fails": 1
+    },
+    {
+      "idx": 892,
+      "object": "milk",
+      "answer": "bathroom",
+      "target_entries": 3,
+      "rpe_long_fails": [],
+      "base_long_fails": [
+        "128k"
+      ],
+      "rpe_base_gap_bins": [
+        "128k"
+      ],
+      "total_rpe_fails": 2,
+      "total_base_fails": 1
+    },
+    {
+      "idx": 901,
+      "object": "milk",
+      "answer": "office",
+      "target_entries": 2,
+      "rpe_long_fails": [],
+      "base_long_fails": [
+        "64k"
+      ],
+      "rpe_base_gap_bins": [
+        "64k"
+      ],
+      "total_rpe_fails": 0,
+      "total_base_fails": 1
+    },
+    {
+      "idx": 968,
+      "object": "football",
+      "answer": "bedroom",
+      "target_entries": 2,
+      "rpe_long_fails": [],
+      "base_long_fails": [
+        "64k"
+      ],
+      "rpe_base_gap_bins": [
+        "64k"
+      ],
+      "total_rpe_fails": 1,
+      "total_base_fails": 1
+    },
+    {
+      "idx": 998,
+      "object": "football",
+      "answer": "bathroom",
+      "target_entries": 2,
+      "rpe_long_fails": [],
+      "base_long_fails": [
+        "128k"
+      ],
+      "rpe_base_gap_bins": [
+        "128k"
+      ],
+      "total_rpe_fails": 0,
+      "total_base_fails": 1
+    }
+  ],
+  "tier3_easy_long": [
+    {
+      "idx": 9,
+      "object": "apple",
+      "answer": "bedroom",
+      "target_entries": 2,
+      "rpe_long_fails": [],
+      "base_long_fails": [],
+      "rpe_base_gap_bins": [],
+      "total_rpe_fails": 0,
+      "total_base_fails": 1
+    },
+    {
+      "idx": 26,
+      "object": "football",
+      "answer": "office",
+      "target_entries": 3,
+      "rpe_long_fails": [],
+      "base_long_fails": [],
+      "rpe_base_gap_bins": [],
+      "total_rpe_fails": 0,
+      "total_base_fails": 1
+    },
+    {
+      "idx": 38,
+      "object": "apple",
+      "answer": "garden",
+      "target_entries": 3,
+      "rpe_long_fails": [],
+      "base_long_fails": [],
+      "rpe_base_gap_bins": [],
+      "total_rpe_fails": 0,
+      "total_base_fails": 0
+    },
+    {
+      "idx": 39,
+      "object": "apple",
+      "answer": "garden",
+      "target_entries": 3,
+      "rpe_long_fails": [],
+      "base_long_fails": [],
+      "rpe_base_gap_bins": [],
+      "total_rpe_fails": 0,
+      "total_base_fails": 0
+    },
+    {
+      "idx": 44,
+      "object": "football",
+      "answer": "bathroom",
+      "target_entries": 3,
+      "rpe_long_fails": [],
+      "base_long_fails": [],
+      "rpe_base_gap_bins": [],
+      "total_rpe_fails": 0,
+      "total_base_fails": 0
+    },
+    {
+      "idx": 49,
+      "object": "milk",
+      "answer": "bedroom",
+      "target_entries": 2,
+      "rpe_long_fails": [],
+      "base_long_fails": [],
+      "rpe_base_gap_bins": [],
+      "total_rpe_fails": 0,
+      "total_base_fails": 0
+    },
+    {
+      "idx": 53,
+      "object": "apple",
+      "answer": "bathroom",
+      "target_entries": 2,
+      "rpe_long_fails": [],
+      "base_long_fails": [],
+      "rpe_base_gap_bins": [],
+      "total_rpe_fails": 0,
+      "total_base_fails": 0
+    },
+    {
+      "idx": 54,
+      "object": "apple",
+      "answer": "bathroom",
+      "target_entries": 2,
+      "rpe_long_fails": [],
+      "base_long_fails": [],
+      "rpe_base_gap_bins": [],
+      "total_rpe_fails": 0,
+      "total_base_fails": 0
+    },
+    {
+      "idx": 60,
+      "object": "football",
+      "answer": "hallway",
+      "target_entries": 2,
+      "rpe_long_fails": [],
+      "base_long_fails": [],
+      "rpe_base_gap_bins": [],
+      "total_rpe_fails": 0,
+      "total_base_fails": 0
+    },
+    {
+      "idx": 63,
+      "object": "football",
+      "answer": "garden",
+      "target_entries": 3,
+      "rpe_long_fails": [],
+      "base_long_fails": [],
+      "rpe_base_gap_bins": [],
+      "total_rpe_fails": 0,
+      "total_base_fails": 0
+    },
+    {
+      "idx": 69,
+      "object": "football",
+      "answer": "kitchen",
+      "target_entries": 2,
+      "rpe_long_fails": [],
+      "base_long_fails": [],
+      "rpe_base_gap_bins": [],
+      "total_rpe_fails": 0,
+      "total_base_fails": 0
+    },
+    {
+      "idx": 74,
+      "object": "apple",
+      "answer": "garden",
+      "target_entries": 4,
+      "rpe_long_fails": [],
+      "base_long_fails": [],
+      "rpe_base_gap_bins": [],
+      "total_rpe_fails": 0,
+      "total_base_fails": 0
+    },
+    {
+      "idx": 80,
+      "object": "milk",
+      "answer": "kitchen",
+      "target_entries": 2,
+      "rpe_long_fails": [],
+      "base_long_fails": [],
+      "rpe_base_gap_bins": [],
+      "total_rpe_fails": 0,
+      "total_base_fails": 0
+    },
+    {
+      "idx": 81,
+      "object": "milk",
+      "answer": "kitchen",
+      "target_entries": 2,
+      "rpe_long_fails": [],
+      "base_long_fails": [],
+      "rpe_base_gap_bins": [],
+      "total_rpe_fails": 0,
+      "total_base_fails": 0
+    },
+    {
+      "idx": 82,
+      "object": "milk",
+      "answer": "kitchen",
+      "target_entries": 2,
+      "rpe_long_fails": [],
+      "base_long_fails": [],
+      "rpe_base_gap_bins": [],
+      "total_rpe_fails": 0,
+      "total_base_fails": 0
+    },
+    {
+      "idx": 94,
+      "object": "apple",
+      "answer": "kitchen",
+      "target_entries": 3,
+      "rpe_long_fails": [],
+      "base_long_fails": [],
+      "rpe_base_gap_bins": [],
+      "total_rpe_fails": 1,
+      "total_base_fails": 1
+    },
+    {
+      "idx": 95,
+      "object": "apple",
+      "answer": "kitchen",
+      "target_entries": 2,
+      "rpe_long_fails": [],
+      "base_long_fails": [],
+      "rpe_base_gap_bins": [],
+      "total_rpe_fails": 1,
+      "total_base_fails": 1
+    },
+    {
+      "idx": 96,
+      "object": "apple",
+      "answer": "kitchen",
+      "target_entries": 2,
+      "rpe_long_fails": [],
+      "base_long_fails": [],
+      "rpe_base_gap_bins": [],
+      "total_rpe_fails": 0,
+      "total_base_fails": 0
+    },
+    {
+      "idx": 97,
+      "object": "apple",
+      "answer": "hallway",
+      "target_entries": 2,
+      "rpe_long_fails": [],
+      "base_long_fails": [],
+      "rpe_base_gap_bins": [],
+      "total_rpe_fails": 0,
+      "total_base_fails": 0
+    },
+    {
+      "idx": 104,
+      "object": "milk",
+      "answer": "office",
+      "target_entries": 2,
+      "rpe_long_fails": [],
+      "base_long_fails": [],
+      "rpe_base_gap_bins": [],
+      "total_rpe_fails": 0,
+      "total_base_fails": 0
+    },
+    {
+      "idx": 106,
+      "object": "football",
+      "answer": "garden",
+      "target_entries": 3,
+      "rpe_long_fails": [],
+      "base_long_fails": [],
+      "rpe_base_gap_bins": [],
+      "total_rpe_fails": 1,
+      "total_base_fails": 2
+    },
+    {
+      "idx": 114,
+      "object": "apple",
+      "answer": "kitchen",
+      "target_entries": 2,
+      "rpe_long_fails": [],
+      "base_long_fails": [],
+      "rpe_base_gap_bins": [],
+      "total_rpe_fails": 0,
+      "total_base_fails": 0
+    },
+    {
+      "idx": 124,
+      "object": "apple",
+      "answer": "office",
+      "target_entries": 2,
+      "rpe_long_fails": [],
+      "base_long_fails": [],
+      "rpe_base_gap_bins": [],
+      "total_rpe_fails": 0,
+      "total_base_fails": 0
+    },
+    {
+      "idx": 131,
+      "object": "milk",
+      "answer": "bathroom",
+      "target_entries": 2,
+      "rpe_long_fails": [],
+      "base_long_fails": [],
+      "rpe_base_gap_bins": [],
+      "total_rpe_fails": 0,
+      "total_base_fails": 0
+    },
+    {
+      "idx": 133,
+      "object": "milk",
+      "answer": "bathroom",
+      "target_entries": 2,
+      "rpe_long_fails": [],
+      "base_long_fails": [],
+      "rpe_base_gap_bins": [],
+      "total_rpe_fails": 0,
+      "total_base_fails": 0
+    },
+    {
+      "idx": 139,
+      "object": "football",
+      "answer": "bedroom",
+      "target_entries": 2,
+      "rpe_long_fails": [],
+      "base_long_fails": [],
+      "rpe_base_gap_bins": [],
+      "total_rpe_fails": 0,
+      "total_base_fails": 0
+    },
+    {
+      "idx": 149,
+      "object": "milk",
+      "answer": "hallway",
+      "target_entries": 2,
+      "rpe_long_fails": [],
+      "base_long_fails": [],
+      "rpe_base_gap_bins": [],
+      "total_rpe_fails": 1,
+      "total_base_fails": 0
+    },
+    {
+      "idx": 153,
+      "object": "milk",
+      "answer": "bathroom",
+      "target_entries": 3,
+      "rpe_long_fails": [],
+      "base_long_fails": [],
+      "rpe_base_gap_bins": [],
+      "total_rpe_fails": 0,
+      "total_base_fails": 0
+    },
+    {
+      "idx": 155,
+      "object": "apple",
+      "answer": "bathroom",
+      "target_entries": 2,
+      "rpe_long_fails": [],
+      "base_long_fails": [],
+      "rpe_base_gap_bins": [],
+      "total_rpe_fails": 0,
+      "total_base_fails": 0
+    },
+    {
+      "idx": 156,
+      "object": "apple",
+      "answer": "bathroom",
+      "target_entries": 2,
+      "rpe_long_fails": [],
+      "base_long_fails": [],
+      "rpe_base_gap_bins": [],
+      "total_rpe_fails": 0,
+      "total_base_fails": 0
+    },
+    {
+      "idx": 157,
+      "object": "apple",
+      "answer": "bedroom",
+      "target_entries": 3,
+      "rpe_long_fails": [],
+      "base_long_fails": [],
+      "rpe_base_gap_bins": [],
+      "total_rpe_fails": 0,
+      "total_base_fails": 0
+    },
+    {
+      "idx": 158,
+      "object": "apple",
+      "answer": "bedroom",
+      "target_entries": 3,
+      "rpe_long_fails": [],
+      "base_long_fails": [],
+      "rpe_base_gap_bins": [],
+      "total_rpe_fails": 0,
+      "total_base_fails": 0
+    },
+    {
+      "idx": 163,
+      "object": "milk",
+      "answer": "garden",
+      "target_entries": 2,
+      "rpe_long_fails": [],
+      "base_long_fails": [],
+      "rpe_base_gap_bins": [],
+      "total_rpe_fails": 0,
+      "total_base_fails": 1
+    },
+    {
+      "idx": 180,
+      "object": "milk",
+      "answer": "garden",
+      "target_entries": 2,
+      "rpe_long_fails": [],
+      "base_long_fails": [],
+      "rpe_base_gap_bins": [],
+      "total_rpe_fails": 1,
+      "total_base_fails": 0
+    },
+    {
+      "idx": 182,
+      "object": "football",
+      "answer": "bathroom",
+      "target_entries": 2,
+      "rpe_long_fails": [],
+      "base_long_fails": [],
+      "rpe_base_gap_bins": [],
+      "total_rpe_fails": 0,
+      "total_base_fails": 0
+    },
+    {
+      "idx": 183,
+      "object": "football",
+      "answer": "bathroom",
+      "target_entries": 2,
+      "rpe_long_fails": [],
+      "base_long_fails": [],
+      "rpe_base_gap_bins": [],
+      "total_rpe_fails": 0,
+      "total_base_fails": 0
+    },
+    {
+      "idx": 202,
+      "object": "milk",
+      "answer": "bedroom",
+      "target_entries": 2,
+      "rpe_long_fails": [],
+      "base_long_fails": [],
+      "rpe_base_gap_bins": [],
+      "total_rpe_fails": 0,
+      "total_base_fails": 0
+    },
+    {
+      "idx": 203,
+      "object": "milk",
+      "answer": "bedroom",
+      "target_entries": 2,
+      "rpe_long_fails": [],
+      "base_long_fails": [],
+      "rpe_base_gap_bins": [],
+      "total_rpe_fails": 0,
+      "total_base_fails": 1
+    },
+    {
+      "idx": 223,
+      "object": "milk",
+      "answer": "bedroom",
+      "target_entries": 2,
+      "rpe_long_fails": [],
+      "base_long_fails": [],
+      "rpe_base_gap_bins": [],
+      "total_rpe_fails": 0,
+      "total_base_fails": 0
+    },
+    {
+      "idx": 224,
+      "object": "milk",
+      "answer": "bedroom",
+      "target_entries": 2,
+      "rpe_long_fails": [],
+      "base_long_fails": [],
+      "rpe_base_gap_bins": [],
+      "total_rpe_fails": 0,
+      "total_base_fails": 0
+    },
+    {
+      "idx": 228,
+      "object": "apple",
+      "answer": "hallway",
+      "target_entries": 3,
+      "rpe_long_fails": [],
+      "base_long_fails": [],
+      "rpe_base_gap_bins": [],
+      "total_rpe_fails": 3,
+      "total_base_fails": 0
+    },
+    {
+      "idx": 234,
+      "object": "milk",
+      "answer": "kitchen",
+      "target_entries": 2,
+      "rpe_long_fails": [],
+      "base_long_fails": [],
+      "rpe_base_gap_bins": [],
+      "total_rpe_fails": 0,
+      "total_base_fails": 0
+    },
+    {
+      "idx": 240,
+      "object": "football",
+      "answer": "bathroom",
+      "target_entries": 2,
+      "rpe_long_fails": [],
+      "base_long_fails": [],
+      "rpe_base_gap_bins": [],
+      "total_rpe_fails": 3,
+      "total_base_fails": 0
+    },
+    {
+      "idx": 254,
+      "object": "football",
+      "answer": "garden",
+      "target_entries": 2,
+      "rpe_long_fails": [],
+      "base_long_fails": [],
+      "rpe_base_gap_bins": [],
+      "total_rpe_fails": 0,
+      "total_base_fails": 0
+    },
+    {
+      "idx": 274,
+      "object": "apple",
+      "answer": "bathroom",
+      "target_entries": 2,
+      "rpe_long_fails": [],
+      "base_long_fails": [],
+      "rpe_base_gap_bins": [],
+      "total_rpe_fails": 0,
+      "total_base_fails": 0
+    },
+    {
+      "idx": 287,
+      "object": "apple",
+      "answer": "bathroom",
+      "target_entries": 2,
+      "rpe_long_fails": [],
+      "base_long_fails": [],
+      "rpe_base_gap_bins": [],
+      "total_rpe_fails": 0,
+      "total_base_fails": 0
+    },
+    {
+      "idx": 288,
+      "object": "milk",
+      "answer": "office",
+      "target_entries": 3,
+      "rpe_long_fails": [],
+      "base_long_fails": [],
+      "rpe_base_gap_bins": [],
+      "total_rpe_fails": 0,
+      "total_base_fails": 0
+    },
+    {
+      "idx": 289,
+      "object": "milk",
+      "answer": "office",
+      "target_entries": 3,
+      "rpe_long_fails": [],
+      "base_long_fails": [],
+      "rpe_base_gap_bins": [],
+      "total_rpe_fails": 0,
+      "total_base_fails": 1
+    },
+    {
+      "idx": 291,
+      "object": "football",
+      "answer": "garden",
+      "target_entries": 3,
+      "rpe_long_fails": [],
+      "base_long_fails": [],
+      "rpe_base_gap_bins": [],
+      "total_rpe_fails": 0,
+      "total_base_fails": 0
+    },
+    {
+      "idx": 292,
+      "object": "football",
+      "answer": "garden",
+      "target_entries": 3,
+      "rpe_long_fails": [],
+      "base_long_fails": [],
+      "rpe_base_gap_bins": [],
+      "total_rpe_fails": 0,
+      "total_base_fails": 0
+    },
+    {
+      "idx": 294,
+      "object": "football",
+      "answer": "bedroom",
+      "target_entries": 2,
+      "rpe_long_fails": [],
+      "base_long_fails": [],
+      "rpe_base_gap_bins": [],
+      "total_rpe_fails": 0,
+      "total_base_fails": 0
+    },
+    {
+      "idx": 297,
+      "object": "milk",
+      "answer": "kitchen",
+      "target_entries": 2,
+      "rpe_long_fails": [],
+      "base_long_fails": [],
+      "rpe_base_gap_bins": [],
+      "total_rpe_fails": 1,
+      "total_base_fails": 0
+    },
+    {
+      "idx": 304,
+      "object": "football",
+      "answer": "bedroom",
+      "target_entries": 2,
+      "rpe_long_fails": [],
+      "base_long_fails": [],
+      "rpe_base_gap_bins": [],
+      "total_rpe_fails": 0,
+      "total_base_fails": 0
+    },
+    {
+      "idx": 313,
+      "object": "football",
+      "answer": "hallway",
+      "target_entries": 2,
+      "rpe_long_fails": [],
+      "base_long_fails": [],
+      "rpe_base_gap_bins": [],
+      "total_rpe_fails": 0,
+      "total_base_fails": 0
+    },
+    {
+      "idx": 319,
+      "object": "milk",
+      "answer": "bedroom",
+      "target_entries": 5,
+      "rpe_long_fails": [],
+      "base_long_fails": [],
+      "rpe_base_gap_bins": [],
+      "total_rpe_fails": 0,
+      "total_base_fails": 0
+    },
+    {
+      "idx": 330,
+      "object": "football",
+      "answer": "garden",
+      "target_entries": 2,
+      "rpe_long_fails": [],
+      "base_long_fails": [],
+      "rpe_base_gap_bins": [],
+      "total_rpe_fails": 0,
+      "total_base_fails": 0
+    },
+    {
+      "idx": 333,
+      "object": "football",
+      "answer": "garden",
+      "target_entries": 2,
+      "rpe_long_fails": [],
+      "base_long_fails": [],
+      "rpe_base_gap_bins": [],
+      "total_rpe_fails": 0,
+      "total_base_fails": 0
+    },
+    {
+      "idx": 334,
+      "object": "football",
+      "answer": "garden",
+      "target_entries": 2,
+      "rpe_long_fails": [],
+      "base_long_fails": [],
+      "rpe_base_gap_bins": [],
+      "total_rpe_fails": 0,
+      "total_base_fails": 0
+    },
+    {
+      "idx": 335,
+      "object": "milk",
+      "answer": "office",
+      "target_entries": 2,
+      "rpe_long_fails": [],
+      "base_long_fails": [],
+      "rpe_base_gap_bins": [],
+      "total_rpe_fails": 0,
+      "total_base_fails": 1
+    },
+    {
+      "idx": 336,
+      "object": "milk",
+      "answer": "office",
+      "target_entries": 2,
+      "rpe_long_fails": [],
+      "base_long_fails": [],
+      "rpe_base_gap_bins": [],
+      "total_rpe_fails": 0,
+      "total_base_fails": 2
+    },
+    {
+      "idx": 350,
+      "object": "apple",
+      "answer": "garden",
+      "target_entries": 2,
+      "rpe_long_fails": [],
+      "base_long_fails": [],
+      "rpe_base_gap_bins": [],
+      "total_rpe_fails": 0,
+      "total_base_fails": 0
+    },
+    {
+      "idx": 363,
+      "object": "apple",
+      "answer": "office",
+      "target_entries": 4,
+      "rpe_long_fails": [],
+      "base_long_fails": [],
+      "rpe_base_gap_bins": [],
+      "total_rpe_fails": 0,
+      "total_base_fails": 0
+    },
+    {
+      "idx": 374,
+      "object": "apple",
+      "answer": "garden",
+      "target_entries": 3,
+      "rpe_long_fails": [],
+      "base_long_fails": [],
+      "rpe_base_gap_bins": [],
+      "total_rpe_fails": 0,
+      "total_base_fails": 0
+    },
+    {
+      "idx": 381,
+      "object": "milk",
+      "answer": "bathroom",
+      "target_entries": 2,
+      "rpe_long_fails": [],
+      "base_long_fails": [],
+      "rpe_base_gap_bins": [],
+      "total_rpe_fails": 0,
+      "total_base_fails": 0
+    },
+    {
+      "idx": 383,
+      "object": "football",
+      "answer": "hallway",
+      "target_entries": 2,
+      "rpe_long_fails": [],
+      "base_long_fails": [],
+      "rpe_base_gap_bins": [],
+      "total_rpe_fails": 0,
+      "total_base_fails": 0
+    },
+    {
+      "idx": 384,
+      "object": "milk",
+      "answer": "office",
+      "target_entries": 2,
+      "rpe_long_fails": [],
+      "base_long_fails": [],
+      "rpe_base_gap_bins": [],
+      "total_rpe_fails": 0,
+      "total_base_fails": 0
+    },
+    {
+      "idx": 392,
+      "object": "milk",
+      "answer": "office",
+      "target_entries": 4,
+      "rpe_long_fails": [],
+      "base_long_fails": [],
+      "rpe_base_gap_bins": [],
+      "total_rpe_fails": 0,
+      "total_base_fails": 0
+    },
+    {
+      "idx": 404,
+      "object": "apple",
+      "answer": "bedroom",
+      "target_entries": 4,
+      "rpe_long_fails": [],
+      "base_long_fails": [],
+      "rpe_base_gap_bins": [],
+      "total_rpe_fails": 0,
+      "total_base_fails": 0
+    },
+    {
+      "idx": 464,
+      "object": "football",
+      "answer": "bedroom",
+      "target_entries": 2,
+      "rpe_long_fails": [],
+      "base_long_fails": [],
+      "rpe_base_gap_bins": [],
+      "total_rpe_fails": 0,
+      "total_base_fails": 0
+    },
+    {
+      "idx": 475,
+      "object": "apple",
+      "answer": "bedroom",
+      "target_entries": 3,
+      "rpe_long_fails": [],
+      "base_long_fails": [],
+      "rpe_base_gap_bins": [],
+      "total_rpe_fails": 1,
+      "total_base_fails": 0
+    },
+    {
+      "idx": 476,
+      "object": "apple",
+      "answer": "office",
+      "target_entries": 2,
+      "rpe_long_fails": [],
+      "base_long_fails": [],
+      "rpe_base_gap_bins": [],
+      "total_rpe_fails": 0,
+      "total_base_fails": 0
+    },
+    {
+      "idx": 477,
+      "object": "apple",
+      "answer": "garden",
+      "target_entries": 2,
+      "rpe_long_fails": [],
+      "base_long_fails": [],
+      "rpe_base_gap_bins": [],
+      "total_rpe_fails": 1,
+      "total_base_fails": 0
+    },
+    {
+      "idx": 478,
+      "object": "apple",
+      "answer": "garden",
+      "target_entries": 2,
+      "rpe_long_fails": [],
+      "base_long_fails": [],
+      "rpe_base_gap_bins": [],
+      "total_rpe_fails": 0,
+      "total_base_fails": 0
+    },
+    {
+      "idx": 480,
+      "object": "apple",
+      "answer": "hallway",
+      "target_entries": 2,
+      "rpe_long_fails": [],
+      "base_long_fails": [],
+      "rpe_base_gap_bins": [],
+      "total_rpe_fails": 1,
+      "total_base_fails": 0
+    },
+    {
+      "idx": 482,
+      "object": "apple",
+      "answer": "hallway",
+      "target_entries": 2,
+      "rpe_long_fails": [],
+      "base_long_fails": [],
+      "rpe_base_gap_bins": [],
+      "total_rpe_fails": 0,
+      "total_base_fails": 0
+    },
+    {
+      "idx": 483,
+      "object": "apple",
+      "answer": "bathroom",
+      "target_entries": 2,
+      "rpe_long_fails": [],
+      "base_long_fails": [],
+      "rpe_base_gap_bins": [],
+      "total_rpe_fails": 1,
+      "total_base_fails": 0
+    },
+    {
+      "idx": 493,
+      "object": "apple",
+      "answer": "office",
+      "target_entries": 2,
+      "rpe_long_fails": [],
+      "base_long_fails": [],
+      "rpe_base_gap_bins": [],
+      "total_rpe_fails": 0,
+      "total_base_fails": 0
+    },
+    {
+      "idx": 494,
+      "object": "apple",
+      "answer": "office",
+      "target_entries": 2,
+      "rpe_long_fails": [],
+      "base_long_fails": [],
+      "rpe_base_gap_bins": [],
+      "total_rpe_fails": 0,
+      "total_base_fails": 0
+    },
+    {
+      "idx": 511,
+      "object": "apple",
+      "answer": "garden",
+      "target_entries": 2,
+      "rpe_long_fails": [],
+      "base_long_fails": [],
+      "rpe_base_gap_bins": [],
+      "total_rpe_fails": 0,
+      "total_base_fails": 0
+    },
+    {
+      "idx": 512,
+      "object": "apple",
+      "answer": "bathroom",
+      "target_entries": 3,
+      "rpe_long_fails": [],
+      "base_long_fails": [],
+      "rpe_base_gap_bins": [],
+      "total_rpe_fails": 0,
+      "total_base_fails": 0
+    },
+    {
+      "idx": 534,
+      "object": "apple",
+      "answer": "office",
+      "target_entries": 2,
+      "rpe_long_fails": [],
+      "base_long_fails": [],
+      "rpe_base_gap_bins": [],
+      "total_rpe_fails": 0,
+      "total_base_fails": 0
+    },
+    {
+      "idx": 545,
+      "object": "milk",
+      "answer": "bathroom",
+      "target_entries": 2,
+      "rpe_long_fails": [],
+      "base_long_fails": [],
+      "rpe_base_gap_bins": [],
+      "total_rpe_fails": 0,
+      "total_base_fails": 0
+    },
+    {
+      "idx": 549,
+      "object": "milk",
+      "answer": "bedroom",
+      "target_entries": 3,
+      "rpe_long_fails": [],
+      "base_long_fails": [],
+      "rpe_base_gap_bins": [],
+      "total_rpe_fails": 0,
+      "total_base_fails": 1
+    },
+    {
+      "idx": 553,
+      "object": "football",
+      "answer": "office",
+      "target_entries": 2,
+      "rpe_long_fails": [],
+      "base_long_fails": [],
+      "rpe_base_gap_bins": [],
+      "total_rpe_fails": 0,
+      "total_base_fails": 0
+    },
+    {
+      "idx": 554,
+      "object": "football",
+      "answer": "office",
+      "target_entries": 2,
+      "rpe_long_fails": [],
+      "base_long_fails": [],
+      "rpe_base_gap_bins": [],
+      "total_rpe_fails": 0,
+      "total_base_fails": 0
+    },
+    {
+      "idx": 558,
+      "object": "apple",
+      "answer": "bathroom",
+      "target_entries": 2,
+      "rpe_long_fails": [],
+      "base_long_fails": [],
+      "rpe_base_gap_bins": [],
+      "total_rpe_fails": 0,
+      "total_base_fails": 0
+    },
+    {
+      "idx": 567,
+      "object": "milk",
+      "answer": "garden",
+      "target_entries": 3,
+      "rpe_long_fails": [],
+      "base_long_fails": [],
+      "rpe_base_gap_bins": [],
+      "total_rpe_fails": 0,
+      "total_base_fails": 0
+    },
+    {
+      "idx": 585,
+      "object": "football",
+      "answer": "bathroom",
+      "target_entries": 2,
+      "rpe_long_fails": [],
+      "base_long_fails": [],
+      "rpe_base_gap_bins": [],
+      "total_rpe_fails": 0,
+      "total_base_fails": 0
+    },
+    {
+      "idx": 592,
+      "object": "apple",
+      "answer": "office",
+      "target_entries": 2,
+      "rpe_long_fails": [],
+      "base_long_fails": [],
+      "rpe_base_gap_bins": [],
+      "total_rpe_fails": 1,
+      "total_base_fails": 3
+    },
+    {
+      "idx": 597,
+      "object": "milk",
+      "answer": "bathroom",
+      "target_entries": 2,
+      "rpe_long_fails": [],
+      "base_long_fails": [],
+      "rpe_base_gap_bins": [],
+      "total_rpe_fails": 0,
+      "total_base_fails": 1
+    },
+    {
+      "idx": 598,
+      "object": "milk",
+      "answer": "bathroom",
+      "target_entries": 2,
+      "rpe_long_fails": [],
+      "base_long_fails": [],
+      "rpe_base_gap_bins": [],
+      "total_rpe_fails": 0,
+      "total_base_fails": 0
+    },
+    {
+      "idx": 599,
+      "object": "apple",
+      "answer": "bathroom",
+      "target_entries": 2,
+      "rpe_long_fails": [],
+      "base_long_fails": [],
+      "rpe_base_gap_bins": [],
+      "total_rpe_fails": 0,
+      "total_base_fails": 0
+    },
+    {
+      "idx": 604,
+      "object": "football",
+      "answer": "garden",
+      "target_entries": 2,
+      "rpe_long_fails": [],
+      "base_long_fails": [],
+      "rpe_base_gap_bins": [],
+      "total_rpe_fails": 0,
+      "total_base_fails": 0
+    },
+    {
+      "idx": 624,
+      "object": "apple",
+      "answer": "bathroom",
+      "target_entries": 2,
+      "rpe_long_fails": [],
+      "base_long_fails": [],
+      "rpe_base_gap_bins": [],
+      "total_rpe_fails": 0,
+      "total_base_fails": 0
+    },
+    {
+      "idx": 628,
+      "object": "milk",
+      "answer": "office",
+      "target_entries": 2,
+      "rpe_long_fails": [],
+      "base_long_fails": [],
+      "rpe_base_gap_bins": [],
+      "total_rpe_fails": 0,
+      "total_base_fails": 0
+    },
+    {
+      "idx": 645,
+      "object": "football",
+      "answer": "kitchen",
+      "target_entries": 2,
+      "rpe_long_fails": [],
+      "base_long_fails": [],
+      "rpe_base_gap_bins": [],
+      "total_rpe_fails": 0,
+      "total_base_fails": 1
+    },
+    {
+      "idx": 658,
+      "object": "milk",
+      "answer": "kitchen",
+      "target_entries": 2,
+      "rpe_long_fails": [],
+      "base_long_fails": [],
+      "rpe_base_gap_bins": [],
+      "total_rpe_fails": 0,
+      "total_base_fails": 0
+    },
+    {
+      "idx": 661,
+      "object": "milk",
+      "answer": "hallway",
+      "target_entries": 2,
+      "rpe_long_fails": [],
+      "base_long_fails": [],
+      "rpe_base_gap_bins": [],
+      "total_rpe_fails": 0,
+      "total_base_fails": 0
+    },
+    {
+      "idx": 662,
+      "object": "milk",
+      "answer": "hallway",
+      "target_entries": 2,
+      "rpe_long_fails": [],
+      "base_long_fails": [],
+      "rpe_base_gap_bins": [],
+      "total_rpe_fails": 0,
+      "total_base_fails": 0
+    },
+    {
+      "idx": 666,
+      "object": "apple",
+      "answer": "bedroom",
+      "target_entries": 2,
+      "rpe_long_fails": [],
+      "base_long_fails": [],
+      "rpe_base_gap_bins": [],
+      "total_rpe_fails": 0,
+      "total_base_fails": 0
+    },
+    {
+      "idx": 689,
+      "object": "football",
+      "answer": "office",
+      "target_entries": 2,
+      "rpe_long_fails": [],
+      "base_long_fails": [],
+      "rpe_base_gap_bins": [],
+      "total_rpe_fails": 1,
+      "total_base_fails": 0
+    },
+    {
+      "idx": 704,
+      "object": "milk",
+      "answer": "office",
+      "target_entries": 3,
+      "rpe_long_fails": [],
+      "base_long_fails": [],
+      "rpe_base_gap_bins": [],
+      "total_rpe_fails": 0,
+      "total_base_fails": 0
+    },
+    {
+      "idx": 709,
+      "object": "football",
+      "answer": "garden",
+      "target_entries": 2,
+      "rpe_long_fails": [],
+      "base_long_fails": [],
+      "rpe_base_gap_bins": [],
+      "total_rpe_fails": 0,
+      "total_base_fails": 0
+    },
+    {
+      "idx": 715,
+      "object": "football",
+      "answer": "garden",
+      "target_entries": 2,
+      "rpe_long_fails": [],
+      "base_long_fails": [],
+      "rpe_base_gap_bins": [],
+      "total_rpe_fails": 0,
+      "total_base_fails": 0
+    },
+    {
+      "idx": 716,
+      "object": "football",
+      "answer": "garden",
+      "target_entries": 2,
+      "rpe_long_fails": [],
+      "base_long_fails": [],
+      "rpe_base_gap_bins": [],
+      "total_rpe_fails": 0,
+      "total_base_fails": 0
+    },
+    {
+      "idx": 722,
+      "object": "milk",
+      "answer": "office",
+      "target_entries": 2,
+      "rpe_long_fails": [],
+      "base_long_fails": [],
+      "rpe_base_gap_bins": [],
+      "total_rpe_fails": 0,
+      "total_base_fails": 0
+    },
+    {
+      "idx": 723,
+      "object": "milk",
+      "answer": "office",
+      "target_entries": 2,
+      "rpe_long_fails": [],
+      "base_long_fails": [],
+      "rpe_base_gap_bins": [],
+      "total_rpe_fails": 0,
+      "total_base_fails": 0
+    },
+    {
+      "idx": 726,
+      "object": "apple",
+      "answer": "bathroom",
+      "target_entries": 2,
+      "rpe_long_fails": [],
+      "base_long_fails": [],
+      "rpe_base_gap_bins": [],
+      "total_rpe_fails": 0,
+      "total_base_fails": 0
+    },
+    {
+      "idx": 728,
+      "object": "milk",
+      "answer": "bathroom",
+      "target_entries": 2,
+      "rpe_long_fails": [],
+      "base_long_fails": [],
+      "rpe_base_gap_bins": [],
+      "total_rpe_fails": 0,
+      "total_base_fails": 0
+    },
+    {
+      "idx": 755,
+      "object": "football",
+      "answer": "kitchen",
+      "target_entries": 2,
+      "rpe_long_fails": [],
+      "base_long_fails": [],
+      "rpe_base_gap_bins": [],
+      "total_rpe_fails": 1,
+      "total_base_fails": 1
+    },
+    {
+      "idx": 756,
+      "object": "football",
+      "answer": "kitchen",
+      "target_entries": 2,
+      "rpe_long_fails": [],
+      "base_long_fails": [],
+      "rpe_base_gap_bins": [],
+      "total_rpe_fails": 1,
+      "total_base_fails": 2
+    },
+    {
+      "idx": 759,
+      "object": "football",
+      "answer": "bathroom",
+      "target_entries": 2,
+      "rpe_long_fails": [],
+      "base_long_fails": [],
+      "rpe_base_gap_bins": [],
+      "total_rpe_fails": 0,
+      "total_base_fails": 1
+    },
+    {
+      "idx": 763,
+      "object": "apple",
+      "answer": "garden",
+      "target_entries": 2,
+      "rpe_long_fails": [],
+      "base_long_fails": [],
+      "rpe_base_gap_bins": [],
+      "total_rpe_fails": 0,
+      "total_base_fails": 1
+    },
+    {
+      "idx": 769,
+      "object": "apple",
+      "answer": "bedroom",
+      "target_entries": 2,
+      "rpe_long_fails": [],
+      "base_long_fails": [],
+      "rpe_base_gap_bins": [],
+      "total_rpe_fails": 0,
+      "total_base_fails": 0
+    },
+    {
+      "idx": 775,
+      "object": "milk",
+      "answer": "kitchen",
+      "target_entries": 2,
+      "rpe_long_fails": [],
+      "base_long_fails": [],
+      "rpe_base_gap_bins": [],
+      "total_rpe_fails": 1,
+      "total_base_fails": 0
+    },
+    {
+      "idx": 776,
+      "object": "milk",
+      "answer": "kitchen",
+      "target_entries": 2,
+      "rpe_long_fails": [],
+      "base_long_fails": [],
+      "rpe_base_gap_bins": [],
+      "total_rpe_fails": 0,
+      "total_base_fails": 0
+    },
+    {
+      "idx": 777,
+      "object": "milk",
+      "answer": "bedroom",
+      "target_entries": 3,
+      "rpe_long_fails": [],
+      "base_long_fails": [],
+      "rpe_base_gap_bins": [],
+      "total_rpe_fails": 0,
+      "total_base_fails": 0
+    },
+    {
+      "idx": 778,
+      "object": "milk",
+      "answer": "hallway",
+      "target_entries": 2,
+      "rpe_long_fails": [],
+      "base_long_fails": [],
+      "rpe_base_gap_bins": [],
+      "total_rpe_fails": 0,
+      "total_base_fails": 0
+    },
+    {
+      "idx": 782,
+      "object": "football",
+      "answer": "hallway",
+      "target_entries": 2,
+      "rpe_long_fails": [],
+      "base_long_fails": [],
+      "rpe_base_gap_bins": [],
+      "total_rpe_fails": 0,
+      "total_base_fails": 0
+    },
+    {
+      "idx": 783,
+      "object": "football",
+      "answer": "hallway",
+      "target_entries": 2,
+      "rpe_long_fails": [],
+      "base_long_fails": [],
+      "rpe_base_gap_bins": [],
+      "total_rpe_fails": 0,
+      "total_base_fails": 1
+    },
+    {
+      "idx": 795,
+      "object": "apple",
+      "answer": "kitchen",
+      "target_entries": 2,
+      "rpe_long_fails": [],
+      "base_long_fails": [],
+      "rpe_base_gap_bins": [],
+      "total_rpe_fails": 1,
+      "total_base_fails": 0
+    },
+    {
+      "idx": 796,
+      "object": "apple",
+      "answer": "kitchen",
+      "target_entries": 2,
+      "rpe_long_fails": [],
+      "base_long_fails": [],
+      "rpe_base_gap_bins": [],
+      "total_rpe_fails": 0,
+      "total_base_fails": 0
+    },
+    {
+      "idx": 797,
+      "object": "apple",
+      "answer": "kitchen",
+      "target_entries": 2,
+      "rpe_long_fails": [],
+      "base_long_fails": [],
+      "rpe_base_gap_bins": [],
+      "total_rpe_fails": 0,
+      "total_base_fails": 0
+    },
+    {
+      "idx": 798,
+      "object": "apple",
+      "answer": "garden",
+      "target_entries": 2,
+      "rpe_long_fails": [],
+      "base_long_fails": [],
+      "rpe_base_gap_bins": [],
+      "total_rpe_fails": 0,
+      "total_base_fails": 0
+    },
+    {
+      "idx": 799,
+      "object": "apple",
+      "answer": "garden",
+      "target_entries": 2,
+      "rpe_long_fails": [],
+      "base_long_fails": [],
+      "rpe_base_gap_bins": [],
+      "total_rpe_fails": 0,
+      "total_base_fails": 0
+    },
+    {
+      "idx": 805,
+      "object": "apple",
+      "answer": "garden",
+      "target_entries": 2,
+      "rpe_long_fails": [],
+      "base_long_fails": [],
+      "rpe_base_gap_bins": [],
+      "total_rpe_fails": 0,
+      "total_base_fails": 0
+    },
+    {
+      "idx": 806,
+      "object": "apple",
+      "answer": "garden",
+      "target_entries": 2,
+      "rpe_long_fails": [],
+      "base_long_fails": [],
+      "rpe_base_gap_bins": [],
+      "total_rpe_fails": 1,
+      "total_base_fails": 0
+    },
+    {
+      "idx": 809,
+      "object": "apple",
+      "answer": "bedroom",
+      "target_entries": 2,
+      "rpe_long_fails": [],
+      "base_long_fails": [],
+      "rpe_base_gap_bins": [],
+      "total_rpe_fails": 0,
+      "total_base_fails": 0
+    },
+    {
+      "idx": 821,
+      "object": "apple",
+      "answer": "hallway",
+      "target_entries": 2,
+      "rpe_long_fails": [],
+      "base_long_fails": [],
+      "rpe_base_gap_bins": [],
+      "total_rpe_fails": 0,
+      "total_base_fails": 0
+    },
+    {
+      "idx": 822,
+      "object": "apple",
+      "answer": "hallway",
+      "target_entries": 2,
+      "rpe_long_fails": [],
+      "base_long_fails": [],
+      "rpe_base_gap_bins": [],
+      "total_rpe_fails": 1,
+      "total_base_fails": 0
+    },
+    {
+      "idx": 825,
+      "object": "apple",
+      "answer": "hallway",
+      "target_entries": 2,
+      "rpe_long_fails": [],
+      "base_long_fails": [],
+      "rpe_base_gap_bins": [],
+      "total_rpe_fails": 0,
+      "total_base_fails": 0
+    },
+    {
+      "idx": 833,
+      "object": "football",
+      "answer": "hallway",
+      "target_entries": 2,
+      "rpe_long_fails": [],
+      "base_long_fails": [],
+      "rpe_base_gap_bins": [],
+      "total_rpe_fails": 0,
+      "total_base_fails": 0
+    },
+    {
+      "idx": 839,
+      "object": "football",
+      "answer": "bathroom",
+      "target_entries": 2,
+      "rpe_long_fails": [],
+      "base_long_fails": [],
+      "rpe_base_gap_bins": [],
+      "total_rpe_fails": 1,
+      "total_base_fails": 0
+    },
+    {
+      "idx": 854,
+      "object": "milk",
+      "answer": "kitchen",
+      "target_entries": 3,
+      "rpe_long_fails": [],
+      "base_long_fails": [],
+      "rpe_base_gap_bins": [],
+      "total_rpe_fails": 0,
+      "total_base_fails": 2
+    },
+    {
+      "idx": 859,
+      "object": "football",
+      "answer": "office",
+      "target_entries": 2,
+      "rpe_long_fails": [],
+      "base_long_fails": [],
+      "rpe_base_gap_bins": [],
+      "total_rpe_fails": 0,
+      "total_base_fails": 0
+    },
+    {
+      "idx": 863,
+      "object": "football",
+      "answer": "kitchen",
+      "target_entries": 3,
+      "rpe_long_fails": [],
+      "base_long_fails": [],
+      "rpe_base_gap_bins": [],
+      "total_rpe_fails": 0,
+      "total_base_fails": 0
+    },
+    {
+      "idx": 864,
+      "object": "football",
+      "answer": "kitchen",
+      "target_entries": 3,
+      "rpe_long_fails": [],
+      "base_long_fails": [],
+      "rpe_base_gap_bins": [],
+      "total_rpe_fails": 0,
+      "total_base_fails": 0
+    },
+    {
+      "idx": 879,
+      "object": "apple",
+      "answer": "garden",
+      "target_entries": 2,
+      "rpe_long_fails": [],
+      "base_long_fails": [],
+      "rpe_base_gap_bins": [],
+      "total_rpe_fails": 0,
+      "total_base_fails": 0
+    },
+    {
+      "idx": 893,
+      "object": "milk",
+      "answer": "garden",
+      "target_entries": 2,
+      "rpe_long_fails": [],
+      "base_long_fails": [],
+      "rpe_base_gap_bins": [],
+      "total_rpe_fails": 0,
+      "total_base_fails": 0
+    },
+    {
+      "idx": 894,
+      "object": "football",
+      "answer": "bedroom",
+      "target_entries": 3,
+      "rpe_long_fails": [],
+      "base_long_fails": [],
+      "rpe_base_gap_bins": [],
+      "total_rpe_fails": 0,
+      "total_base_fails": 0
+    },
+    {
+      "idx": 900,
+      "object": "milk",
+      "answer": "office",
+      "target_entries": 2,
+      "rpe_long_fails": [],
+      "base_long_fails": [],
+      "rpe_base_gap_bins": [],
+      "total_rpe_fails": 0,
+      "total_base_fails": 0
+    },
+    {
+      "idx": 907,
+      "object": "apple",
+      "answer": "office",
+      "target_entries": 2,
+      "rpe_long_fails": [],
+      "base_long_fails": [],
+      "rpe_base_gap_bins": [],
+      "total_rpe_fails": 0,
+      "total_base_fails": 0
+    },
+    {
+      "idx": 919,
+      "object": "milk",
+      "answer": "garden",
+      "target_entries": 3,
+      "rpe_long_fails": [],
+      "base_long_fails": [],
+      "rpe_base_gap_bins": [],
+      "total_rpe_fails": 0,
+      "total_base_fails": 0
+    },
+    {
+      "idx": 934,
+      "object": "apple",
+      "answer": "hallway",
+      "target_entries": 2,
+      "rpe_long_fails": [],
+      "base_long_fails": [],
+      "rpe_base_gap_bins": [],
+      "total_rpe_fails": 0,
+      "total_base_fails": 0
+    },
+    {
+      "idx": 939,
+      "object": "milk",
+      "answer": "bathroom",
+      "target_entries": 2,
+      "rpe_long_fails": [],
+      "base_long_fails": [],
+      "rpe_base_gap_bins": [],
+      "total_rpe_fails": 0,
+      "total_base_fails": 0
+    },
+    {
+      "idx": 940,
+      "object": "football",
+      "answer": "hallway",
+      "target_entries": 4,
+      "rpe_long_fails": [],
+      "base_long_fails": [],
+      "rpe_base_gap_bins": [],
+      "total_rpe_fails": 0,
+      "total_base_fails": 0
+    },
+    {
+      "idx": 941,
+      "object": "football",
+      "answer": "kitchen",
+      "target_entries": 3,
+      "rpe_long_fails": [],
+      "base_long_fails": [],
+      "rpe_base_gap_bins": [],
+      "total_rpe_fails": 1,
+      "total_base_fails": 0
+    },
+    {
+      "idx": 946,
+      "object": "football",
+      "answer": "office",
+      "target_entries": 3,
+      "rpe_long_fails": [],
+      "base_long_fails": [],
+      "rpe_base_gap_bins": [],
+      "total_rpe_fails": 2,
+      "total_base_fails": 0
+    },
+    {
+      "idx": 947,
+      "object": "football",
+      "answer": "office",
+      "target_entries": 3,
+      "rpe_long_fails": [],
+      "base_long_fails": [],
+      "rpe_base_gap_bins": [],
+      "total_rpe_fails": 3,
+      "total_base_fails": 1
+    },
+    {
+      "idx": 948,
+      "object": "football",
+      "answer": "office",
+      "target_entries": 3,
+      "rpe_long_fails": [],
+      "base_long_fails": [],
+      "rpe_base_gap_bins": [],
+      "total_rpe_fails": 0,
+      "total_base_fails": 0
+    },
+    {
+      "idx": 969,
+      "object": "football",
+      "answer": "bedroom",
+      "target_entries": 3,
+      "rpe_long_fails": [],
+      "base_long_fails": [],
+      "rpe_base_gap_bins": [],
+      "total_rpe_fails": 0,
+      "total_base_fails": 0
+    },
+    {
+      "idx": 973,
+      "object": "apple",
+      "answer": "bedroom",
+      "target_entries": 2,
+      "rpe_long_fails": [],
+      "base_long_fails": [],
+      "rpe_base_gap_bins": [],
+      "total_rpe_fails": 1,
+      "total_base_fails": 0
+    },
+    {
+      "idx": 984,
+      "object": "football",
+      "answer": "hallway",
+      "target_entries": 2,
+      "rpe_long_fails": [],
+      "base_long_fails": [],
+      "rpe_base_gap_bins": [],
+      "total_rpe_fails": 0,
+      "total_base_fails": 0
+    },
+    {
+      "idx": 989,
+      "object": "football",
+      "answer": "hallway",
+      "target_entries": 2,
+      "rpe_long_fails": [],
+      "base_long_fails": [],
+      "rpe_base_gap_bins": [],
+      "total_rpe_fails": 0,
+      "total_base_fails": 0
+    },
+    {
+      "idx": 992,
+      "object": "milk",
+      "answer": "hallway",
+      "target_entries": 2,
+      "rpe_long_fails": [],
+      "base_long_fails": [],
+      "rpe_base_gap_bins": [],
+      "total_rpe_fails": 0,
+      "total_base_fails": 0
+    },
+    {
+      "idx": 994,
+      "object": "apple",
+      "answer": "bedroom",
+      "target_entries": 3,
+      "rpe_long_fails": [],
+      "base_long_fails": [],
+      "rpe_base_gap_bins": [],
+      "total_rpe_fails": 0,
+      "total_base_fails": 0
+    },
+    {
+      "idx": 995,
+      "object": "apple",
+      "answer": "hallway",
+      "target_entries": 2,
+      "rpe_long_fails": [],
+      "base_long_fails": [],
+      "rpe_base_gap_bins": [],
+      "total_rpe_fails": 0,
+      "total_base_fails": 0
+    },
+    {
+      "idx": 996,
+      "object": "apple",
+      "answer": "hallway",
+      "target_entries": 2,
+      "rpe_long_fails": [],
+      "base_long_fails": [],
+      "rpe_base_gap_bins": [],
+      "total_rpe_fails": 0,
+      "total_base_fails": 0
+    },
+    {
+      "idx": 997,
+      "object": "milk",
+      "answer": "bedroom",
+      "target_entries": 2,
+      "rpe_long_fails": [],
+      "base_long_fails": [],
+      "rpe_base_gap_bins": [],
+      "total_rpe_fails": 0,
+      "total_base_fails": 0
+    }
+  ],
+  "summary": {
+    "n_hardest": 74,
+    "n_hard": 72,
+    "n_easy_long": 159
+  }
+}

@@ -1,0 +1,16 @@
+{
+  "description": "Multi-entry subset of BABILong QA3 eval (target room visited 2+ times)",
+  "source": "Filtered from eval/ using sample_difficulty_tags.json",
+  "total_samples": 305,
+  "entry_distribution": {
+    "2_entries": 242,
+    "3_entries": 54,
+    "4_entries": 8,
+    "5_entries": 1
+  },
+  "object_distribution": {
+    "football": 102,
+    "apple": 107,
+    "milk": 96
+  }
+}

@@ -1,0 +1,159 @@
+=== BABILong Eval: y2_rpe_cur_L16k — multi-entry subset (305 samples) ===
+  Job ID:    6195086
+  Node:      gh117.hpc.nyu.edu
+  GPU:       NVIDIA H200, 143771 MiB
+  Timestamp: Mon Apr 13 16:18:24 EDT 2026
+
+======================================================================
+BABILong QA3 — Evaluation
+======================================================================
+  Condition:    y2_rpe_cur_L16k_me
+  Checkpoint:   /scratch/mm14444/RPE/composable_cot/BABIlong/checkpoints/y2_rpe_cur_L16k_1k/checkpoint-2000
+  YaRN:         True (factor=4.0)
+  Eval dir:     composable_cot/BABIlong/data/eval_multi_entry
+  Output dir:   composable_cot/BABIlong/results/y2_rpe_cur_L16k_me
+  Bins:         ['0k', '1k', '2k', '4k', '8k', '16k', '32k', '64k', '128k']
+  Max samples:  all
+  Max seq len:  131072
+  Timestamp:    2026-04-13T16:19:28.186312
+
+======================================================================
+MODEL LOADING
+======================================================================
+  Base model:  Qwen/Qwen2.5-7B-Instruct
+  Checkpoint:  /scratch/mm14444/RPE/composable_cot/BABIlong/checkpoints/y2_rpe_cur_L16k_1k/checkpoint-2000
+  YaRN:        True (factor=4.0)
+  Tokenizer loaded in 0.4s
+
+  Enabling YaRN: factor=4.0
+  Base model loaded in 35.0s
+  LoRA merged in 1.3s
+  Model ready.
+
+======================================================================
+BIN: 0k
+======================================================================
+    [0k] 1/305 | 524288.0 samples/min | ETA 0.0min
+    [0k] 50/305 | 13.8 samples/min | ETA 0.3min
+    [0k] 100/305 | 16.8 samples/min | ETA 0.2min
+    [0k] 150/305 | 17.9 samples/min | ETA 0.1min
+    [0k] 200/305 | 18.9 samples/min | ETA 0.1min
+    [0k] 250/305 | 19.3 samples/min | ETA 0.0min
+    [0k] 300/305 | 19.7 samples/min | ETA 0.0min
+    [0k] DONE: 273/305 correct (89.5%) | skipped=0 | 16s
+
+======================================================================
+BIN: 1k
+======================================================================
+    [1k] 1/264 | 599186.3 samples/min | ETA 0.0min
+    [1k] 50/264 | 18.8 samples/min | ETA 0.2min
+    [1k] 100/264 | 18.5 samples/min | ETA 0.1min
+    [1k] 150/264 | 18.5 samples/min | ETA 0.1min
+    [1k] 200/264 | 18.5 samples/min | ETA 0.1min
+    [1k] 250/264 | 18.5 samples/min | ETA 0.0min
+    [1k] DONE: 238/264 correct (90.2%) | skipped=0 | 14s
+
+======================================================================
+BIN: 2k
+======================================================================
+    [2k] 1/304 | 599186.3 samples/min | ETA 0.0min
+    [2k] 50/304 | 12.5 samples/min | ETA 0.3min
+    [2k] 100/304 | 12.5 samples/min | ETA 0.3min
+    [2k] 150/304 | 12.5 samples/min | ETA 0.2min
+    [2k] 200/304 | 12.5 samples/min | ETA 0.1min
+    [2k] 250/304 | 12.4 samples/min | ETA 0.1min
+    [2k] 300/304 | 12.4 samples/min | ETA 0.0min
+    [2k] DONE: 276/304 correct (90.8%) | skipped=0 | 25s
+
+======================================================================
+BIN: 4k
+======================================================================
+    [4k] 1/305 | 699050.7 samples/min | ETA 0.0min
+    [4k] 50/305 | 7.0 samples/min | ETA 0.6min
+    [4k] 100/305 | 7.0 samples/min | ETA 0.5min
+    [4k] 150/305 | 7.0 samples/min | ETA 0.4min
+    [4k] 200/305 | 7.0 samples/min | ETA 0.2min
+    [4k] 250/305 | 7.0 samples/min | ETA 0.1min
+    [4k] 300/305 | 7.0 samples/min | ETA 0.0min
+    [4k] DONE: 282/305 correct (92.5%) | skipped=0 | 44s
+
+======================================================================
+BIN: 8k
+======================================================================
+    [8k] 1/305 | 599186.3 samples/min | ETA 0.0min
+    [8k] 50/305 | 3.7 samples/min | ETA 1.2min
+    [8k] 100/305 | 3.6 samples/min | ETA 0.9min
+    [8k] 150/305 | 3.6 samples/min | ETA 0.7min
+    [8k] 200/305 | 3.6 samples/min | ETA 0.5min
+    [8k] 250/305 | 3.6 samples/min | ETA 0.3min
+    [8k] 300/305 | 3.6 samples/min | ETA 0.0min
+    [8k] DONE: 286/305 correct (93.8%) | skipped=0 | 84s
+
+======================================================================
+BIN: 16k
+======================================================================
+    [16k] 1/305 | 699050.7 samples/min | ETA 0.0min
+    [16k] 50/305 | 1.7 samples/min | ETA 2.5min
+    [16k] 100/305 | 1.7 samples/min | ETA 2.1min
+    [16k] 150/305 | 1.7 samples/min | ETA 1.6min
+    [16k] 200/305 | 1.7 samples/min | ETA 1.1min
+    [16k] 250/305 | 1.7 samples/min | ETA 0.6min
+    [16k] 300/305 | 1.6 samples/min | ETA 0.1min
+    [16k] DONE: 286/305 correct (93.8%) | skipped=0 | 186s
+
+======================================================================
+BIN: 32k
+======================================================================
+    [32k] 1/305 | 699050.7 samples/min | ETA 0.0min
+    [32k] 50/305 | 0.7 samples/min | ETA 6.2min
+    [32k] 100/305 | 0.7 samples/min | ETA 5.1min
+    [32k] 150/305 | 0.7 samples/min | ETA 3.8min
+    [32k] 200/305 | 0.7 samples/min | ETA 2.6min
+    [32k] 250/305 | 0.7 samples/min | ETA 1.4min
+    [32k] 300/305 | 0.7 samples/min | ETA 0.1min
+    [32k] DONE: 285/305 correct (93.4%) | skipped=0 | 457s
+
+======================================================================
+BIN: 64k
+======================================================================
+    [64k] 1/305 | 466033.8 samples/min | ETA 0.0min
+    [64k] 50/305 | 0.2 samples/min | ETA 17.3min
+    [64k] 100/305 | 0.2 samples/min | ETA 14.1min
+    [64k] 150/305 | 0.2 samples/min | ETA 10.7min
+    [64k] 200/305 | 0.2 samples/min | ETA 7.3min
+    [64k] 250/305 | 0.2 samples/min | ETA 3.8min
+    [64k] 300/305 | 0.2 samples/min | ETA 0.3min
+    [64k] DONE: 275/305 correct (90.2%) | skipped=0 | 1274s
+
+======================================================================
+BIN: 128k
+======================================================================
+    [128k] 1/305 | 524288.0 samples/min | ETA 0.0min
+    [128k] 50/305 | 0.1 samples/min | ETA 55.4min
+    [128k] 100/305 | 0.1 samples/min | ETA 44.8min
+    [128k] 150/305 | 0.1 samples/min | ETA 34.1min
+    [128k] 200/305 | 0.1 samples/min | ETA 23.1min
+    [128k] 250/305 | 0.1 samples/min | ETA 12.1min
+    [128k] 300/305 | 0.1 samples/min | ETA 1.1min
+    [128k] DONE: 256/305 correct (83.9%) | skipped=0 | 4059s
+
+======================================================================
+SUMMARY — y2_rpe_cur_L16k_me
+======================================================================
+  Bin           N  Correct   Accuracy
+  -------- ------ -------- ----------
+  0k          305      273      89.5%
+  1k          264      238      90.1%
+  2k          304      276      90.8%
+  4k          305      282      92.5%
+  8k          305      286      93.8%
+  16k         305      286      93.8%
+  32k         305      285      93.4%
+  64k         305      275      90.2%
+  128k        305      256      83.9%
+  OVERALL    2703     2457      90.9%
+======================================================================
+EVAL COMPLETE
+======================================================================
+
+=== y2_rpe_cur_L16k multi-entry eval complete: Mon Apr 13 18:02:47 EDT 2026 ===
