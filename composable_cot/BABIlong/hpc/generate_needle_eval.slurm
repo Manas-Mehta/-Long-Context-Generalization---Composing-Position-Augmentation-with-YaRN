@@ -7,10 +7,15 @@
 #SBATCH --cpus-per-task=8
 #SBATCH --mem=64G
 #SBATCH --gres=gpu:1
-#SBATCH --time=02:00:00
+#SBATCH --time=08:00:00
 
 # NOTE: CPU-only generation, but h200_courant used because account may be
 # restricted to GPU partitions. Change to a CPU partition if available.
+#
+# Why 8h: first-run PG19 download is the long pole — PG19 has hundreds of
+# book files, easily 30-90 min to pull on a slow node. Once cached in
+# $HF_HOME, subsequent runs finish in ~60-90 min total. Prior 2h run
+# (job 6214862) timed out mid-download on gh130.
 #SBATCH --output=composable_cot/BABIlong/slurm_logs/gen_needle_%j.out
 #SBATCH --error=composable_cot/BABIlong/slurm_logs/gen_needle_%j.err
 
