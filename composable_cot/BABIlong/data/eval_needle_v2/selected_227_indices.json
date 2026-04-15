@@ -1,0 +1,2054 @@
+{
+  "n_total": 227,
+  "n_hard_multi_entry": 207,
+  "n_single_entry_ref": 20,
+  "description": "207 hard multi-entry samples (differentiating subset: excluded samples correct by every model at every bin) + 20 single-entry reference. For needle-position eval v2.",
+  "hard_subset_definition": "Exclude samples correct by every model at every bin where present (universally-easy).",
+  "selected_indices": [
+    3,
+    4,
+    9,
+    21,
+    22,
+    25,
+    26,
+    27,
+    28,
+    29,
+    35,
+    37,
+    40,
+    41,
+    42,
+    47,
+    50,
+    57,
+    60,
+    64,
+    73,
+    76,
+    83,
+    94,
+    95,
+    98,
+    99,
+    106,
+    107,
+    130,
+    132,
+    133,
+    136,
+    138,
+    144,
+    149,
+    151,
+    152,
+    154,
+    162,
+    163,
+    164,
+    169,
+    175,
+    177,
+    178,
+    179,
+    180,
+    181,
+    192,
+    196,
+    198,
+    201,
+    203,
+    209,
+    217,
+    228,
+    232,
+    240,
+    241,
+    275,
+    276,
+    283,
+    284,
+    289,
+    291,
+    295,
+    297,
+    308,
+    309,
+    313,
+    314,
+    325,
+    331,
+    335,
+    336,
+    337,
+    338,
+    339,
+    343,
+    349,
+    354,
+    359,
+    364,
+    366,
+    368,
+    369,
+    378,
+    379,
+    382,
+    384,
+    391,
+    392,
+    394,
+    398,
+    399,
+    401,
+    402,
+    403,
+    413,
+    414,
+    417,
+    424,
+    444,
+    448,
+    454,
+    474,
+    475,
+    476,
+    477,
+    479,
+    480,
+    483,
+    503,
+    504,
+    512,
+    513,
+    514,
+    524,
+    538,
+    539,
+    545,
+    549,
+    559,
+    575,
+    576,
+    577,
+    578,
+    579,
+    586,
+    587,
+    588,
+    592,
+    597,
+    601,
+    607,
+    615,
+    616,
+    617,
+    620,
+    629,
+    640,
+    641,
+    642,
+    643,
+    645,
+    646,
+    648,
+    655,
+    656,
+    657,
+    689,
+    697,
+    698,
+    704,
+    709,
+    713,
+    714,
+    718,
+    728,
+    735,
+    736,
+    737,
+    739,
+    740,
+    748,
+    755,
+    756,
+    757,
+    759,
+    763,
+    775,
+    778,
+    782,
+    783,
+    788,
+    795,
+    799,
+    800,
+    806,
+    807,
+    808,
+    809,
+    813,
+    814,
+    822,
+    823,
+    824,
+    826,
+    828,
+    839,
+    843,
+    844,
+    849,
+    853,
+    854,
+    859,
+    870,
+    879,
+    881,
+    883,
+    885,
+    891,
+    892,
+    899,
+    901,
+    904,
+    917,
+    929,
+    936,
+    940,
+    941,
+    942,
+    946,
+    947,
+    958,
+    959,
+    960,
+    968,
+    973,
+    978,
+    984,
+    989,
+    990,
+    993,
+    997,
+    998
+  ],
+  "per_sample": [
+    {
+      "idx": 3,
+      "object": "football",
+      "answer": "bathroom",
+      "target_entries": 2,
+      "tier": "hard_multi_entry",
+      "failure_score": 23
+    },
+    {
+      "idx": 579,
+      "object": "milk",
+      "answer": "bedroom",
+      "target_entries": 2,
+      "tier": "hard_multi_entry",
+      "failure_score": 19
+    },
+    {
+      "idx": 883,
+      "object": "football",
+      "answer": "bathroom",
+      "target_entries": 2,
+      "tier": "hard_multi_entry",
+      "failure_score": 19
+    },
+    {
+      "idx": 444,
+      "object": "football",
+      "answer": "hallway",
+      "target_entries": 2,
+      "tier": "hard_multi_entry",
+      "failure_score": 18
+    },
+    {
+      "idx": 843,
+      "object": "football",
+      "answer": "bedroom",
+      "target_entries": 2,
+      "tier": "hard_multi_entry",
+      "failure_score": 18
+    },
+    {
+      "idx": 4,
+      "object": "football",
+      "answer": "bathroom",
+      "target_entries": 2,
+      "tier": "hard_multi_entry",
+      "failure_score": 17
+    },
+    {
+      "idx": 209,
+      "object": "milk",
+      "answer": "garden",
+      "target_entries": 2,
+      "tier": "hard_multi_entry",
+      "failure_score": 16
+    },
+    {
+      "idx": 844,
+      "object": "football",
+      "answer": "bedroom",
+      "target_entries": 2,
+      "tier": "hard_multi_entry",
+      "failure_score": 16
+    },
+    {
+      "idx": 276,
+      "object": "football",
+      "answer": "kitchen",
+      "target_entries": 2,
+      "tier": "hard_multi_entry",
+      "failure_score": 15
+    },
+    {
+      "idx": 643,
+      "object": "apple",
+      "answer": "bathroom",
+      "target_entries": 2,
+      "tier": "hard_multi_entry",
+      "failure_score": 15
+    },
+    {
+      "idx": 364,
+      "object": "milk",
+      "answer": "office",
+      "target_entries": 2,
+      "tier": "hard_multi_entry",
+      "failure_score": 13
+    },
+    {
+      "idx": 616,
+      "object": "milk",
+      "answer": "garden",
+      "target_entries": 2,
+      "tier": "hard_multi_entry",
+      "failure_score": 12
+    },
+    {
+      "idx": 656,
+      "object": "milk",
+      "answer": "bedroom",
+      "target_entries": 2,
+      "tier": "hard_multi_entry",
+      "failure_score": 12
+    },
+    {
+      "idx": 881,
+      "object": "football",
+      "answer": "bathroom",
+      "target_entries": 2,
+      "tier": "hard_multi_entry",
+      "failure_score": 12
+    },
+    {
+      "idx": 904,
+      "object": "football",
+      "answer": "garden",
+      "target_entries": 4,
+      "tier": "hard_multi_entry",
+      "failure_score": 12
+    },
+    {
+      "idx": 22,
+      "object": "football",
+      "answer": "hallway",
+      "target_entries": 2,
+      "tier": "hard_multi_entry",
+      "failure_score": 11
+    },
+    {
+      "idx": 309,
+      "object": "apple",
+      "answer": "garden",
+      "target_entries": 2,
+      "tier": "hard_multi_entry",
+      "failure_score": 11
+    },
+    {
+      "idx": 337,
+      "object": "apple",
+      "answer": "office",
+      "target_entries": 2,
+      "tier": "hard_multi_entry",
+      "failure_score": 11
+    },
+    {
+      "idx": 338,
+      "object": "apple",
+      "answer": "kitchen",
+      "target_entries": 3,
+      "tier": "hard_multi_entry",
+      "failure_score": 11
+    },
+    {
+      "idx": 339,
+      "object": "apple",
+      "answer": "hallway",
+      "target_entries": 2,
+      "tier": "hard_multi_entry",
+      "failure_score": 11
+    },
+    {
+      "idx": 503,
+      "object": "apple",
+      "answer": "bathroom",
+      "target_entries": 2,
+      "tier": "hard_multi_entry",
+      "failure_score": 11
+    },
+    {
+      "idx": 813,
+      "object": "apple",
+      "answer": "kitchen",
+      "target_entries": 3,
+      "tier": "hard_multi_entry",
+      "failure_score": 11
+    },
+    {
+      "idx": 629,
+      "object": "milk",
+      "answer": "garden",
+      "target_entries": 2,
+      "tier": "hard_multi_entry",
+      "failure_score": 10
+    },
+    {
+      "idx": 655,
+      "object": "milk",
+      "answer": "bedroom",
+      "target_entries": 2,
+      "tier": "hard_multi_entry",
+      "failure_score": 10
+    },
+    {
+      "idx": 737,
+      "object": "apple",
+      "answer": "bathroom",
+      "target_entries": 2,
+      "tier": "hard_multi_entry",
+      "failure_score": 10
+    },
+    {
+      "idx": 413,
+      "object": "football",
+      "answer": "kitchen",
+      "target_entries": 2,
+      "tier": "hard_multi_entry",
+      "failure_score": 9
+    },
+    {
+      "idx": 607,
+      "object": "apple",
+      "answer": "hallway",
+      "target_entries": 2,
+      "tier": "hard_multi_entry",
+      "failure_score": 9
+    },
+    {
+      "idx": 617,
+      "object": "milk",
+      "answer": "office",
+      "target_entries": 2,
+      "tier": "hard_multi_entry",
+      "failure_score": 9
+    },
+    {
+      "idx": 739,
+      "object": "milk",
+      "answer": "garden",
+      "target_entries": 2,
+      "tier": "hard_multi_entry",
+      "failure_score": 9
+    },
+    {
+      "idx": 241,
+      "object": "football",
+      "answer": "bathroom",
+      "target_entries": 2,
+      "tier": "hard_multi_entry",
+      "failure_score": 8
+    },
+    {
+      "idx": 391,
+      "object": "milk",
+      "answer": "kitchen",
+      "target_entries": 2,
+      "tier": "hard_multi_entry",
+      "failure_score": 8
+    },
+    {
+      "idx": 403,
+      "object": "milk",
+      "answer": "bathroom",
+      "target_entries": 3,
+      "tier": "hard_multi_entry",
+      "failure_score": 8
+    },
+    {
+      "idx": 578,
+      "object": "milk",
+      "answer": "hallway",
+      "target_entries": 2,
+      "tier": "hard_multi_entry",
+      "failure_score": 8
+    },
+    {
+      "idx": 698,
+      "object": "milk",
+      "answer": "bedroom",
+      "target_entries": 2,
+      "tier": "hard_multi_entry",
+      "failure_score": 8
+    },
+    {
+      "idx": 177,
+      "object": "football",
+      "answer": "kitchen",
+      "target_entries": 2,
+      "tier": "hard_multi_entry",
+      "failure_score": 7
+    },
+    {
+      "idx": 198,
+      "object": "apple",
+      "answer": "bathroom",
+      "target_entries": 2,
+      "tier": "hard_multi_entry",
+      "failure_score": 7
+    },
+    {
+      "idx": 336,
+      "object": "milk",
+      "answer": "office",
+      "target_entries": 2,
+      "tier": "hard_multi_entry",
+      "failure_score": 7
+    },
+    {
+      "idx": 401,
+      "object": "apple",
+      "answer": "garden",
+      "target_entries": 2,
+      "tier": "hard_multi_entry",
+      "failure_score": 7
+    },
+    {
+      "idx": 424,
+      "object": "football",
+      "answer": "garden",
+      "target_entries": 2,
+      "tier": "hard_multi_entry",
+      "failure_score": 7
+    },
+    {
+      "idx": 648,
+      "object": "football",
+      "answer": "kitchen",
+      "target_entries": 2,
+      "tier": "hard_multi_entry",
+      "failure_score": 7
+    },
+    {
+      "idx": 735,
+      "object": "apple",
+      "answer": "bathroom",
+      "target_entries": 2,
+      "tier": "hard_multi_entry",
+      "failure_score": 7
+    },
+    {
+      "idx": 736,
+      "object": "apple",
+      "answer": "bathroom",
+      "target_entries": 2,
+      "tier": "hard_multi_entry",
+      "failure_score": 7
+    },
+    {
+      "idx": 891,
+      "object": "milk",
+      "answer": "bathroom",
+      "target_entries": 3,
+      "tier": "hard_multi_entry",
+      "failure_score": 7
+    },
+    {
+      "idx": 25,
+      "object": "football",
+      "answer": "bathroom",
+      "target_entries": 2,
+      "tier": "hard_multi_entry",
+      "failure_score": 6
+    },
+    {
+      "idx": 40,
+      "object": "football",
+      "answer": "garden",
+      "target_entries": 2,
+      "tier": "hard_multi_entry",
+      "failure_score": 6
+    },
+    {
+      "idx": 192,
+      "object": "football",
+      "answer": "bedroom",
+      "target_entries": 2,
+      "tier": "hard_multi_entry",
+      "failure_score": 6
+    },
+    {
+      "idx": 275,
+      "object": "football",
+      "answer": "office",
+      "target_entries": 2,
+      "tier": "hard_multi_entry",
+      "failure_score": 6
+    },
+    {
+      "idx": 284,
+      "object": "football",
+      "answer": "office",
+      "target_entries": 3,
+      "tier": "hard_multi_entry",
+      "failure_score": 6
+    },
+    {
+      "idx": 576,
+      "object": "football",
+      "answer": "hallway",
+      "target_entries": 2,
+      "tier": "hard_multi_entry",
+      "failure_score": 6
+    },
+    {
+      "idx": 697,
+      "object": "milk",
+      "answer": "bedroom",
+      "target_entries": 2,
+      "tier": "hard_multi_entry",
+      "failure_score": 6
+    },
+    {
+      "idx": 713,
+      "object": "football",
+      "answer": "garden",
+      "target_entries": 2,
+      "tier": "hard_multi_entry",
+      "failure_score": 6
+    },
+    {
+      "idx": 28,
+      "object": "football",
+      "answer": "garden",
+      "target_entries": 3,
+      "tier": "hard_multi_entry",
+      "failure_score": 5
+    },
+    {
+      "idx": 41,
+      "object": "football",
+      "answer": "garden",
+      "target_entries": 2,
+      "tier": "hard_multi_entry",
+      "failure_score": 5
+    },
+    {
+      "idx": 64,
+      "object": "football",
+      "answer": "garden",
+      "target_entries": 3,
+      "tier": "hard_multi_entry",
+      "failure_score": 5
+    },
+    {
+      "idx": 73,
+      "object": "apple",
+      "answer": "kitchen",
+      "target_entries": 2,
+      "tier": "hard_multi_entry",
+      "failure_score": 5
+    },
+    {
+      "idx": 106,
+      "object": "football",
+      "answer": "garden",
+      "target_entries": 3,
+      "tier": "hard_multi_entry",
+      "failure_score": 5
+    },
+    {
+      "idx": 151,
+      "object": "apple",
+      "answer": "garden",
+      "target_entries": 2,
+      "tier": "hard_multi_entry",
+      "failure_score": 5
+    },
+    {
+      "idx": 169,
+      "object": "milk",
+      "answer": "bedroom",
+      "target_entries": 2,
+      "tier": "hard_multi_entry",
+      "failure_score": 5
+    },
+    {
+      "idx": 228,
+      "object": "apple",
+      "answer": "hallway",
+      "target_entries": 3,
+      "tier": "hard_multi_entry",
+      "failure_score": 5
+    },
+    {
+      "idx": 283,
+      "object": "apple",
+      "answer": "hallway",
+      "target_entries": 2,
+      "tier": "hard_multi_entry",
+      "failure_score": 5
+    },
+    {
+      "idx": 308,
+      "object": "milk",
+      "answer": "bathroom",
+      "target_entries": 2,
+      "tier": "hard_multi_entry",
+      "failure_score": 5
+    },
+    {
+      "idx": 378,
+      "object": "milk",
+      "answer": "bedroom",
+      "target_entries": 2,
+      "tier": "hard_multi_entry",
+      "failure_score": 5
+    },
+    {
+      "idx": 379,
+      "object": "football",
+      "answer": "bathroom",
+      "target_entries": 2,
+      "tier": "hard_multi_entry",
+      "failure_score": 5
+    },
+    {
+      "idx": 402,
+      "object": "apple",
+      "answer": "hallway",
+      "target_entries": 2,
+      "tier": "hard_multi_entry",
+      "failure_score": 5
+    },
+    {
+      "idx": 414,
+      "object": "football",
+      "answer": "hallway",
+      "target_entries": 3,
+      "tier": "hard_multi_entry",
+      "failure_score": 5
+    },
+    {
+      "idx": 454,
+      "object": "apple",
+      "answer": "hallway",
+      "target_entries": 3,
+      "tier": "hard_multi_entry",
+      "failure_score": 5
+    },
+    {
+      "idx": 539,
+      "object": "milk",
+      "answer": "office",
+      "target_entries": 2,
+      "tier": "hard_multi_entry",
+      "failure_score": 5
+    },
+    {
+      "idx": 575,
+      "object": "football",
+      "answer": "hallway",
+      "target_entries": 2,
+      "tier": "hard_multi_entry",
+      "failure_score": 5
+    },
+    {
+      "idx": 577,
+      "object": "football",
+      "answer": "kitchen",
+      "target_entries": 2,
+      "tier": "hard_multi_entry",
+      "failure_score": 5
+    },
+    {
+      "idx": 592,
+      "object": "apple",
+      "answer": "office",
+      "target_entries": 2,
+      "tier": "hard_multi_entry",
+      "failure_score": 5
+    },
+    {
+      "idx": 641,
+      "object": "apple",
+      "answer": "kitchen",
+      "target_entries": 2,
+      "tier": "hard_multi_entry",
+      "failure_score": 5
+    },
+    {
+      "idx": 642,
+      "object": "apple",
+      "answer": "kitchen",
+      "target_entries": 2,
+      "tier": "hard_multi_entry",
+      "failure_score": 5
+    },
+    {
+      "idx": 788,
+      "object": "apple",
+      "answer": "bedroom",
+      "target_entries": 2,
+      "tier": "hard_multi_entry",
+      "failure_score": 5
+    },
+    {
+      "idx": 849,
+      "object": "apple",
+      "answer": "hallway",
+      "target_entries": 2,
+      "tier": "hard_multi_entry",
+      "failure_score": 5
+    },
+    {
+      "idx": 21,
+      "object": "football",
+      "answer": "garden",
+      "target_entries": 2,
+      "tier": "hard_multi_entry",
+      "failure_score": 4
+    },
+    {
+      "idx": 29,
+      "object": "apple",
+      "answer": "garden",
+      "target_entries": 2,
+      "tier": "hard_multi_entry",
+      "failure_score": 4
+    },
+    {
+      "idx": 107,
+      "object": "football",
+      "answer": "garden",
+      "target_entries": 3,
+      "tier": "hard_multi_entry",
+      "failure_score": 4
+    },
+    {
+      "idx": 130,
+      "object": "milk",
+      "answer": "garden",
+      "target_entries": 2,
+      "tier": "hard_multi_entry",
+      "failure_score": 4
+    },
+    {
+      "idx": 152,
+      "object": "apple",
+      "answer": "garden",
+      "target_entries": 2,
+      "tier": "hard_multi_entry",
+      "failure_score": 4
+    },
+    {
+      "idx": 164,
+      "object": "milk",
+      "answer": "bathroom",
+      "target_entries": 2,
+      "tier": "hard_multi_entry",
+      "failure_score": 4
+    },
+    {
+      "idx": 178,
+      "object": "football",
+      "answer": "kitchen",
+      "target_entries": 2,
+      "tier": "hard_multi_entry",
+      "failure_score": 4
+    },
+    {
+      "idx": 179,
+      "object": "football",
+      "answer": "hallway",
+      "target_entries": 3,
+      "tier": "hard_multi_entry",
+      "failure_score": 4
+    },
+    {
+      "idx": 524,
+      "object": "apple",
+      "answer": "bedroom",
+      "target_entries": 2,
+      "tier": "hard_multi_entry",
+      "failure_score": 4
+    },
+    {
+      "idx": 538,
+      "object": "milk",
+      "answer": "hallway",
+      "target_entries": 2,
+      "tier": "hard_multi_entry",
+      "failure_score": 4
+    },
+    {
+      "idx": 601,
+      "object": "apple",
+      "answer": "garden",
+      "target_entries": 2,
+      "tier": "hard_multi_entry",
+      "failure_score": 4
+    },
+    {
+      "idx": 756,
+      "object": "football",
+      "answer": "kitchen",
+      "target_entries": 2,
+      "tier": "hard_multi_entry",
+      "failure_score": 4
+    },
+    {
+      "idx": 814,
+      "object": "apple",
+      "answer": "garden",
+      "target_entries": 2,
+      "tier": "hard_multi_entry",
+      "failure_score": 4
+    },
+    {
+      "idx": 892,
+      "object": "milk",
+      "answer": "bathroom",
+      "target_entries": 3,
+      "tier": "hard_multi_entry",
+      "failure_score": 4
+    },
+    {
+      "idx": 947,
+      "object": "football",
+      "answer": "office",
+      "target_entries": 3,
+      "tier": "hard_multi_entry",
+      "failure_score": 4
+    },
+    {
+      "idx": 978,
+      "object": "milk",
+      "answer": "kitchen",
+      "target_entries": 2,
+      "tier": "hard_multi_entry",
+      "failure_score": 4
+    },
+    {
+      "idx": 27,
+      "object": "football",
+      "answer": "garden",
+      "target_entries": 3,
+      "tier": "hard_multi_entry",
+      "failure_score": 3
+    },
+    {
+      "idx": 42,
+      "object": "milk",
+      "answer": "garden",
+      "target_entries": 2,
+      "tier": "hard_multi_entry",
+      "failure_score": 3
+    },
+    {
+      "idx": 60,
+      "object": "football",
+      "answer": "hallway",
+      "target_entries": 2,
+      "tier": "hard_multi_entry",
+      "failure_score": 3
+    },
+    {
+      "idx": 76,
+      "object": "milk",
+      "answer": "hallway",
+      "target_entries": 2,
+      "tier": "hard_multi_entry",
+      "failure_score": 3
+    },
+    {
+      "idx": 94,
+      "object": "apple",
+      "answer": "kitchen",
+      "target_entries": 3,
+      "tier": "hard_multi_entry",
+      "failure_score": 3
+    },
+    {
+      "idx": 181,
+      "object": "football",
+      "answer": "bathroom",
+      "target_entries": 2,
+      "tier": "hard_multi_entry",
+      "failure_score": 3
+    },
+    {
+      "idx": 196,
+      "object": "apple",
+      "answer": "bathroom",
+      "target_entries": 2,
+      "tier": "hard_multi_entry",
+      "failure_score": 3
+    },
+    {
+      "idx": 240,
+      "object": "football",
+      "answer": "bathroom",
+      "target_entries": 2,
+      "tier": "hard_multi_entry",
+      "failure_score": 3
+    },
+    {
+      "idx": 343,
+      "object": "milk",
+      "answer": "garden",
+      "target_entries": 2,
+      "tier": "hard_multi_entry",
+      "failure_score": 3
+    },
+    {
+      "idx": 354,
+      "object": "football",
+      "answer": "hallway",
+      "target_entries": 2,
+      "tier": "hard_multi_entry",
+      "failure_score": 3
+    },
+    {
+      "idx": 359,
+      "object": "football",
+      "answer": "bathroom",
+      "target_entries": 2,
+      "tier": "hard_multi_entry",
+      "failure_score": 3
+    },
+    {
+      "idx": 368,
+      "object": "milk",
+      "answer": "kitchen",
+      "target_entries": 2,
+      "tier": "hard_multi_entry",
+      "failure_score": 3
+    },
+    {
+      "idx": 369,
+      "object": "milk",
+      "answer": "kitchen",
+      "target_entries": 2,
+      "tier": "hard_multi_entry",
+      "failure_score": 3
+    },
+    {
+      "idx": 448,
+      "object": "football",
+      "answer": "hallway",
+      "target_entries": 2,
+      "tier": "hard_multi_entry",
+      "failure_score": 3
+    },
+    {
+      "idx": 476,
+      "object": "apple",
+      "answer": "office",
+      "target_entries": 2,
+      "tier": "hard_multi_entry",
+      "failure_score": 3
+    },
+    {
+      "idx": 545,
+      "object": "milk",
+      "answer": "bathroom",
+      "target_entries": 2,
+      "tier": "hard_multi_entry",
+      "failure_score": 3
+    },
+    {
+      "idx": 559,
+      "object": "milk",
+      "answer": "garden",
+      "target_entries": 2,
+      "tier": "hard_multi_entry",
+      "failure_score": 3
+    },
+    {
+      "idx": 615,
+      "object": "apple",
+      "answer": "kitchen",
+      "target_entries": 3,
+      "tier": "hard_multi_entry",
+      "failure_score": 3
+    },
+    {
+      "idx": 689,
+      "object": "football",
+      "answer": "office",
+      "target_entries": 2,
+      "tier": "hard_multi_entry",
+      "failure_score": 3
+    },
+    {
+      "idx": 714,
+      "object": "football",
+      "answer": "hallway",
+      "target_entries": 2,
+      "tier": "hard_multi_entry",
+      "failure_score": 3
+    },
+    {
+      "idx": 755,
+      "object": "football",
+      "answer": "kitchen",
+      "target_entries": 2,
+      "tier": "hard_multi_entry",
+      "failure_score": 3
+    },
+    {
+      "idx": 757,
+      "object": "milk",
+      "answer": "kitchen",
+      "target_entries": 2,
+      "tier": "hard_multi_entry",
+      "failure_score": 3
+    },
+    {
+      "idx": 778,
+      "object": "milk",
+      "answer": "hallway",
+      "target_entries": 2,
+      "tier": "hard_multi_entry",
+      "failure_score": 3
+    },
+    {
+      "idx": 828,
+      "object": "milk",
+      "answer": "office",
+      "target_entries": 2,
+      "tier": "hard_multi_entry",
+      "failure_score": 3
+    },
+    {
+      "idx": 917,
+      "object": "milk",
+      "answer": "kitchen",
+      "target_entries": 2,
+      "tier": "hard_multi_entry",
+      "failure_score": 3
+    },
+    {
+      "idx": 929,
+      "object": "apple",
+      "answer": "bathroom",
+      "target_entries": 3,
+      "tier": "hard_multi_entry",
+      "failure_score": 3
+    },
+    {
+      "idx": 958,
+      "object": "apple",
+      "answer": "bathroom",
+      "target_entries": 2,
+      "tier": "hard_multi_entry",
+      "failure_score": 3
+    },
+    {
+      "idx": 959,
+      "object": "apple",
+      "answer": "bathroom",
+      "target_entries": 2,
+      "tier": "hard_multi_entry",
+      "failure_score": 3
+    },
+    {
+      "idx": 993,
+      "object": "milk",
+      "answer": "hallway",
+      "target_entries": 2,
+      "tier": "hard_multi_entry",
+      "failure_score": 3
+    },
+    {
+      "idx": 9,
+      "object": "apple",
+      "answer": "bedroom",
+      "target_entries": 2,
+      "tier": "hard_multi_entry",
+      "failure_score": 2
+    },
+    {
+      "idx": 26,
+      "object": "football",
+      "answer": "office",
+      "target_entries": 3,
+      "tier": "hard_multi_entry",
+      "failure_score": 2
+    },
+    {
+      "idx": 37,
+      "object": "apple",
+      "answer": "bathroom",
+      "target_entries": 3,
+      "tier": "hard_multi_entry",
+      "failure_score": 2
+    },
+    {
+      "idx": 83,
+      "object": "apple",
+      "answer": "bathroom",
+      "target_entries": 2,
+      "tier": "hard_multi_entry",
+      "failure_score": 2
+    },
+    {
+      "idx": 95,
+      "object": "apple",
+      "answer": "kitchen",
+      "target_entries": 2,
+      "tier": "hard_multi_entry",
+      "failure_score": 2
+    },
+    {
+      "idx": 98,
+      "object": "milk",
+      "answer": "bedroom",
+      "target_entries": 2,
+      "tier": "hard_multi_entry",
+      "failure_score": 2
+    },
+    {
+      "idx": 99,
+      "object": "milk",
+      "answer": "bathroom",
+      "target_entries": 2,
+      "tier": "hard_multi_entry",
+      "failure_score": 2
+    },
+    {
+      "idx": 232,
+      "object": "football",
+      "answer": "garden",
+      "target_entries": 2,
+      "tier": "hard_multi_entry",
+      "failure_score": 2
+    },
+    {
+      "idx": 295,
+      "object": "apple",
+      "answer": "bedroom",
+      "target_entries": 2,
+      "tier": "hard_multi_entry",
+      "failure_score": 2
+    },
+    {
+      "idx": 335,
+      "object": "milk",
+      "answer": "office",
+      "target_entries": 2,
+      "tier": "hard_multi_entry",
+      "failure_score": 2
+    },
+    {
+      "idx": 382,
+      "object": "milk",
+      "answer": "bathroom",
+      "target_entries": 2,
+      "tier": "hard_multi_entry",
+      "failure_score": 2
+    },
+    {
+      "idx": 384,
+      "object": "milk",
+      "answer": "office",
+      "target_entries": 2,
+      "tier": "hard_multi_entry",
+      "failure_score": 2
+    },
+    {
+      "idx": 398,
+      "object": "apple",
+      "answer": "bathroom",
+      "target_entries": 3,
+      "tier": "hard_multi_entry",
+      "failure_score": 2
+    },
+    {
+      "idx": 474,
+      "object": "football",
+      "answer": "kitchen",
+      "target_entries": 2,
+      "tier": "hard_multi_entry",
+      "failure_score": 2
+    },
+    {
+      "idx": 483,
+      "object": "apple",
+      "answer": "bathroom",
+      "target_entries": 2,
+      "tier": "hard_multi_entry",
+      "failure_score": 2
+    },
+    {
+      "idx": 504,
+      "object": "apple",
+      "answer": "garden",
+      "target_entries": 2,
+      "tier": "hard_multi_entry",
+      "failure_score": 2
+    },
+    {
+      "idx": 514,
+      "object": "apple",
+      "answer": "bathroom",
+      "target_entries": 3,
+      "tier": "hard_multi_entry",
+      "failure_score": 2
+    },
+    {
+      "idx": 549,
+      "object": "milk",
+      "answer": "bedroom",
+      "target_entries": 3,
+      "tier": "hard_multi_entry",
+      "failure_score": 2
+    },
+    {
+      "idx": 588,
+      "object": "football",
+      "answer": "bathroom",
+      "target_entries": 2,
+      "tier": "hard_multi_entry",
+      "failure_score": 2
+    },
+    {
+      "idx": 597,
+      "object": "milk",
+      "answer": "bathroom",
+      "target_entries": 2,
+      "tier": "hard_multi_entry",
+      "failure_score": 2
+    },
+    {
+      "idx": 640,
+      "object": "apple",
+      "answer": "kitchen",
+      "target_entries": 2,
+      "tier": "hard_multi_entry",
+      "failure_score": 2
+    },
+    {
+      "idx": 646,
+      "object": "football",
+      "answer": "kitchen",
+      "target_entries": 2,
+      "tier": "hard_multi_entry",
+      "failure_score": 2
+    },
+    {
+      "idx": 728,
+      "object": "milk",
+      "answer": "bathroom",
+      "target_entries": 2,
+      "tier": "hard_multi_entry",
+      "failure_score": 2
+    },
+    {
+      "idx": 775,
+      "object": "milk",
+      "answer": "kitchen",
+      "target_entries": 2,
+      "tier": "hard_multi_entry",
+      "failure_score": 2
+    },
+    {
+      "idx": 782,
+      "object": "football",
+      "answer": "hallway",
+      "target_entries": 2,
+      "tier": "hard_multi_entry",
+      "failure_score": 2
+    },
+    {
+      "idx": 807,
+      "object": "apple",
+      "answer": "bedroom",
+      "target_entries": 2,
+      "tier": "hard_multi_entry",
+      "failure_score": 2
+    },
+    {
+      "idx": 808,
+      "object": "apple",
+      "answer": "bedroom",
+      "target_entries": 2,
+      "tier": "hard_multi_entry",
+      "failure_score": 2
+    },
+    {
+      "idx": 823,
+      "object": "football",
+      "answer": "hallway",
+      "target_entries": 2,
+      "tier": "hard_multi_entry",
+      "failure_score": 2
+    },
+    {
+      "idx": 826,
+      "object": "apple",
+      "answer": "hallway",
+      "target_entries": 2,
+      "tier": "hard_multi_entry",
+      "failure_score": 2
+    },
+    {
+      "idx": 839,
+      "object": "football",
+      "answer": "bathroom",
+      "target_entries": 2,
+      "tier": "hard_multi_entry",
+      "failure_score": 2
+    },
+    {
+      "idx": 854,
+      "object": "milk",
+      "answer": "kitchen",
+      "target_entries": 3,
+      "tier": "hard_multi_entry",
+      "failure_score": 2
+    },
+    {
+      "idx": 879,
+      "object": "apple",
+      "answer": "garden",
+      "target_entries": 2,
+      "tier": "hard_multi_entry",
+      "failure_score": 2
+    },
+    {
+      "idx": 899,
+      "object": "milk",
+      "answer": "bedroom",
+      "target_entries": 3,
+      "tier": "hard_multi_entry",
+      "failure_score": 2
+    },
+    {
+      "idx": 941,
+      "object": "football",
+      "answer": "kitchen",
+      "target_entries": 3,
+      "tier": "hard_multi_entry",
+      "failure_score": 2
+    },
+    {
+      "idx": 942,
+      "object": "football",
+      "answer": "hallway",
+      "target_entries": 4,
+      "tier": "hard_multi_entry",
+      "failure_score": 2
+    },
+    {
+      "idx": 946,
+      "object": "football",
+      "answer": "office",
+      "target_entries": 3,
+      "tier": "hard_multi_entry",
+      "failure_score": 2
+    },
+    {
+      "idx": 960,
+      "object": "football",
+      "answer": "hallway",
+      "target_entries": 2,
+      "tier": "hard_multi_entry",
+      "failure_score": 2
+    },
+    {
+      "idx": 968,
+      "object": "football",
+      "answer": "bedroom",
+      "target_entries": 2,
+      "tier": "hard_multi_entry",
+      "failure_score": 2
+    },
+    {
+      "idx": 984,
+      "object": "football",
+      "answer": "hallway",
+      "target_entries": 2,
+      "tier": "hard_multi_entry",
+      "failure_score": 2
+    },
+    {
+      "idx": 997,
+      "object": "milk",
+      "answer": "bedroom",
+      "target_entries": 2,
+      "tier": "hard_multi_entry",
+      "failure_score": 2
+    },
+    {
+      "idx": 57,
+      "object": "football",
+      "answer": "office",
+      "target_entries": 2,
+      "tier": "hard_multi_entry",
+      "failure_score": 1
+    },
+    {
+      "idx": 132,
+      "object": "milk",
+      "answer": "bathroom",
+      "target_entries": 2,
+      "tier": "hard_multi_entry",
+      "failure_score": 1
+    },
+    {
+      "idx": 133,
+      "object": "milk",
+      "answer": "bathroom",
+      "target_entries": 2,
+      "tier": "hard_multi_entry",
+      "failure_score": 1
+    },
+    {
+      "idx": 138,
+      "object": "football",
+      "answer": "bedroom",
+      "target_entries": 2,
+      "tier": "hard_multi_entry",
+      "failure_score": 1
+    },
+    {
+      "idx": 149,
+      "object": "milk",
+      "answer": "hallway",
+      "target_entries": 2,
+      "tier": "hard_multi_entry",
+      "failure_score": 1
+    },
+    {
+      "idx": 154,
+      "object": "milk",
+      "answer": "bathroom",
+      "target_entries": 3,
+      "tier": "hard_multi_entry",
+      "failure_score": 1
+    },
+    {
+      "idx": 163,
+      "object": "milk",
+      "answer": "garden",
+      "target_entries": 2,
+      "tier": "hard_multi_entry",
+      "failure_score": 1
+    },
+    {
+      "idx": 180,
+      "object": "milk",
+      "answer": "garden",
+      "target_entries": 2,
+      "tier": "hard_multi_entry",
+      "failure_score": 1
+    },
+    {
+      "idx": 201,
+      "object": "milk",
+      "answer": "bedroom",
+      "target_entries": 2,
+      "tier": "hard_multi_entry",
+      "failure_score": 1
+    },
+    {
+      "idx": 203,
+      "object": "milk",
+      "answer": "bedroom",
+      "target_entries": 2,
+      "tier": "hard_multi_entry",
+      "failure_score": 1
+    },
+    {
+      "idx": 289,
+      "object": "milk",
+      "answer": "office",
+      "target_entries": 3,
+      "tier": "hard_multi_entry",
+      "failure_score": 1
+    },
+    {
+      "idx": 291,
+      "object": "football",
+      "answer": "garden",
+      "target_entries": 3,
+      "tier": "hard_multi_entry",
+      "failure_score": 1
+    },
+    {
+      "idx": 297,
+      "object": "milk",
+      "answer": "kitchen",
+      "target_entries": 2,
+      "tier": "hard_multi_entry",
+      "failure_score": 1
+    },
+    {
+      "idx": 313,
+      "object": "football",
+      "answer": "hallway",
+      "target_entries": 2,
+      "tier": "hard_multi_entry",
+      "failure_score": 1
+    },
+    {
+      "idx": 314,
+      "object": "football",
+      "answer": "hallway",
+      "target_entries": 2,
+      "tier": "hard_multi_entry",
+      "failure_score": 1
+    },
+    {
+      "idx": 392,
+      "object": "milk",
+      "answer": "office",
+      "target_entries": 4,
+      "tier": "hard_multi_entry",
+      "failure_score": 1
+    },
+    {
+      "idx": 394,
+      "object": "milk",
+      "answer": "office",
+      "target_entries": 4,
+      "tier": "hard_multi_entry",
+      "failure_score": 1
+    },
+    {
+      "idx": 399,
+      "object": "milk",
+      "answer": "office",
+      "target_entries": 2,
+      "tier": "hard_multi_entry",
+      "failure_score": 1
+    },
+    {
+      "idx": 475,
+      "object": "apple",
+      "answer": "bedroom",
+      "target_entries": 3,
+      "tier": "hard_multi_entry",
+      "failure_score": 1
+    },
+    {
+      "idx": 477,
+      "object": "apple",
+      "answer": "garden",
+      "target_entries": 2,
+      "tier": "hard_multi_entry",
+      "failure_score": 1
+    },
+    {
+      "idx": 479,
+      "object": "apple",
+      "answer": "garden",
+      "target_entries": 2,
+      "tier": "hard_multi_entry",
+      "failure_score": 1
+    },
+    {
+      "idx": 480,
+      "object": "apple",
+      "answer": "hallway",
+      "target_entries": 2,
+      "tier": "hard_multi_entry",
+      "failure_score": 1
+    },
+    {
+      "idx": 512,
+      "object": "apple",
+      "answer": "bathroom",
+      "target_entries": 3,
+      "tier": "hard_multi_entry",
+      "failure_score": 1
+    },
+    {
+      "idx": 513,
+      "object": "apple",
+      "answer": "kitchen",
+      "target_entries": 2,
+      "tier": "hard_multi_entry",
+      "failure_score": 1
+    },
+    {
+      "idx": 586,
+      "object": "football",
+      "answer": "bathroom",
+      "target_entries": 2,
+      "tier": "hard_multi_entry",
+      "failure_score": 1
+    },
+    {
+      "idx": 587,
+      "object": "football",
+      "answer": "bathroom",
+      "target_entries": 2,
+      "tier": "hard_multi_entry",
+      "failure_score": 1
+    },
+    {
+      "idx": 645,
+      "object": "football",
+      "answer": "kitchen",
+      "target_entries": 2,
+      "tier": "hard_multi_entry",
+      "failure_score": 1
+    },
+    {
+      "idx": 657,
+      "object": "milk",
+      "answer": "kitchen",
+      "target_entries": 2,
+      "tier": "hard_multi_entry",
+      "failure_score": 1
+    },
+    {
+      "idx": 704,
+      "object": "milk",
+      "answer": "office",
+      "target_entries": 3,
+      "tier": "hard_multi_entry",
+      "failure_score": 1
+    },
+    {
+      "idx": 709,
+      "object": "football",
+      "answer": "garden",
+      "target_entries": 2,
+      "tier": "hard_multi_entry",
+      "failure_score": 1
+    },
+    {
+      "idx": 718,
+      "object": "apple",
+      "answer": "garden",
+      "target_entries": 2,
+      "tier": "hard_multi_entry",
+      "failure_score": 1
+    },
+    {
+      "idx": 748,
+      "object": "apple",
+      "answer": "hallway",
+      "target_entries": 2,
+      "tier": "hard_multi_entry",
+      "failure_score": 1
+    },
+    {
+      "idx": 759,
+      "object": "football",
+      "answer": "bathroom",
+      "target_entries": 2,
+      "tier": "hard_multi_entry",
+      "failure_score": 1
+    },
+    {
+      "idx": 763,
+      "object": "apple",
+      "answer": "garden",
+      "target_entries": 2,
+      "tier": "hard_multi_entry",
+      "failure_score": 1
+    },
+    {
+      "idx": 783,
+      "object": "football",
+      "answer": "hallway",
+      "target_entries": 2,
+      "tier": "hard_multi_entry",
+      "failure_score": 1
+    },
+    {
+      "idx": 795,
+      "object": "apple",
+      "answer": "kitchen",
+      "target_entries": 2,
+      "tier": "hard_multi_entry",
+      "failure_score": 1
+    },
+    {
+      "idx": 799,
+      "object": "apple",
+      "answer": "garden",
+      "target_entries": 2,
+      "tier": "hard_multi_entry",
+      "failure_score": 1
+    },
+    {
+      "idx": 806,
+      "object": "apple",
+      "answer": "garden",
+      "target_entries": 2,
+      "tier": "hard_multi_entry",
+      "failure_score": 1
+    },
+    {
+      "idx": 809,
+      "object": "apple",
+      "answer": "bedroom",
+      "target_entries": 2,
+      "tier": "hard_multi_entry",
+      "failure_score": 1
+    },
+    {
+      "idx": 822,
+      "object": "apple",
+      "answer": "hallway",
+      "target_entries": 2,
+      "tier": "hard_multi_entry",
+      "failure_score": 1
+    },
+    {
+      "idx": 824,
+      "object": "milk",
+      "answer": "hallway",
+      "target_entries": 2,
+      "tier": "hard_multi_entry",
+      "failure_score": 1
+    },
+    {
+      "idx": 853,
+      "object": "milk",
+      "answer": "kitchen",
+      "target_entries": 3,
+      "tier": "hard_multi_entry",
+      "failure_score": 1
+    },
+    {
+      "idx": 859,
+      "object": "football",
+      "answer": "office",
+      "target_entries": 2,
+      "tier": "hard_multi_entry",
+      "failure_score": 1
+    },
+    {
+      "idx": 901,
+      "object": "milk",
+      "answer": "office",
+      "target_entries": 2,
+      "tier": "hard_multi_entry",
+      "failure_score": 1
+    },
+    {
+      "idx": 940,
+      "object": "football",
+      "answer": "hallway",
+      "target_entries": 4,
+      "tier": "hard_multi_entry",
+      "failure_score": 1
+    },
+    {
+      "idx": 973,
+      "object": "apple",
+      "answer": "bedroom",
+      "target_entries": 2,
+      "tier": "hard_multi_entry",
+      "failure_score": 1
+    },
+    {
+      "idx": 989,
+      "object": "football",
+      "answer": "hallway",
+      "target_entries": 2,
+      "tier": "hard_multi_entry",
+      "failure_score": 1
+    },
+    {
+      "idx": 998,
+      "object": "football",
+      "answer": "bathroom",
+      "target_entries": 2,
+      "tier": "hard_multi_entry",
+      "failure_score": 1
+    },
+    {
+      "idx": 35,
+      "object": "unknown",
+      "answer": "unknown",
+      "target_entries": 0,
+      "tier": "single_entry_ref",
+      "failure_score": 0
+    },
+    {
+      "idx": 47,
+      "object": "unknown",
+      "answer": "unknown",
+      "target_entries": 0,
+      "tier": "single_entry_ref",
+      "failure_score": 0
+    },
+    {
+      "idx": 50,
+      "object": "unknown",
+      "answer": "unknown",
+      "target_entries": 0,
+      "tier": "single_entry_ref",
+      "failure_score": 0
+    },
+    {
+      "idx": 136,
+      "object": "unknown",
+      "answer": "unknown",
+      "target_entries": 0,
+      "tier": "single_entry_ref",
+      "failure_score": 0
+    },
+    {
+      "idx": 144,
+      "object": "unknown",
+      "answer": "unknown",
+      "target_entries": 0,
+      "tier": "single_entry_ref",
+      "failure_score": 0
+    },
+    {
+      "idx": 162,
+      "object": "unknown",
+      "answer": "unknown",
+      "target_entries": 0,
+      "tier": "single_entry_ref",
+      "failure_score": 0
+    },
+    {
+      "idx": 175,
+      "object": "unknown",
+      "answer": "unknown",
+      "target_entries": 0,
+      "tier": "single_entry_ref",
+      "failure_score": 0
+    },
+    {
+      "idx": 217,
+      "object": "unknown",
+      "answer": "unknown",
+      "target_entries": 0,
+      "tier": "single_entry_ref",
+      "failure_score": 0
+    },
+    {
+      "idx": 325,
+      "object": "unknown",
+      "answer": "unknown",
+      "target_entries": 0,
+      "tier": "single_entry_ref",
+      "failure_score": 0
+    },
+    {
+      "idx": 331,
+      "object": "unknown",
+      "answer": "unknown",
+      "target_entries": 0,
+      "tier": "single_entry_ref",
+      "failure_score": 0
+    },
+    {
+      "idx": 349,
+      "object": "unknown",
+      "answer": "unknown",
+      "target_entries": 0,
+      "tier": "single_entry_ref",
+      "failure_score": 0
+    },
+    {
+      "idx": 366,
+      "object": "unknown",
+      "answer": "unknown",
+      "target_entries": 0,
+      "tier": "single_entry_ref",
+      "failure_score": 0
+    },
+    {
+      "idx": 417,
+      "object": "unknown",
+      "answer": "unknown",
+      "target_entries": 0,
+      "tier": "single_entry_ref",
+      "failure_score": 0
+    },
+    {
+      "idx": 620,
+      "object": "unknown",
+      "answer": "unknown",
+      "target_entries": 0,
+      "tier": "single_entry_ref",
+      "failure_score": 0
+    },
+    {
+      "idx": 740,
+      "object": "unknown",
+      "answer": "unknown",
+      "target_entries": 0,
+      "tier": "single_entry_ref",
+      "failure_score": 0
+    },
+    {
+      "idx": 800,
+      "object": "unknown",
+      "answer": "unknown",
+      "target_entries": 0,
+      "tier": "single_entry_ref",
+      "failure_score": 0
+    },
+    {
+      "idx": 870,
+      "object": "unknown",
+      "answer": "unknown",
+      "target_entries": 0,
+      "tier": "single_entry_ref",
+      "failure_score": 0
+    },
+    {
+      "idx": 885,
+      "object": "unknown",
+      "answer": "unknown",
+      "target_entries": 0,
+      "tier": "single_entry_ref",
+      "failure_score": 0
+    },
+    {
+      "idx": 936,
+      "object": "unknown",
+      "answer": "unknown",
+      "target_entries": 0,
+      "tier": "single_entry_ref",
+      "failure_score": 0
+    },
+    {
+      "idx": 990,
+      "object": "unknown",
+      "answer": "unknown",
+      "target_entries": 0,
+      "tier": "single_entry_ref",
+      "failure_score": 0
+    }
+  ]
+}
