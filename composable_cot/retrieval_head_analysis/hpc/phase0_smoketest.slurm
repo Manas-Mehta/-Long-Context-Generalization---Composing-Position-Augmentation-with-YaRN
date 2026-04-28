@@ -1,7 +1,7 @@
 #!/bin/bash
 #SBATCH --job-name=qrhead_phase0
 #SBATCH --account=torch_pr_219_courant
-#SBATCH --partition=h200_courant
+#SBATCH --partition=l40s_courant
 #SBATCH --nodes=1
 #SBATCH --ntasks-per-node=1
 #SBATCH --cpus-per-task=8
