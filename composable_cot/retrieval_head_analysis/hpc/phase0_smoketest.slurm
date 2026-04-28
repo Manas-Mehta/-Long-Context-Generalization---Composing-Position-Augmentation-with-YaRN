@@ -24,9 +24,10 @@ PROJECT_DIR="${SCRATCH}/RPE"
 RHA_DIR="composable_cot/retrieval_head_analysis"
 
 eval "$(conda shell.bash hook)"
-conda activate "${SCRATCH}/conda_envs/qrhead"
+conda activate "${SCRATCH}/conda_envs/rpe"
 
-export PYTHONPATH="${PROJECT_DIR}:${PYTHONPATH:-}"
+# QRHead source lives at /scratch/mm14444/QRHead/src — prepend so qrretriever imports.
+export PYTHONPATH="${SCRATCH}/QRHead/src:${PROJECT_DIR}:${PYTHONPATH:-}"
 export HF_HOME="${SCRATCH}/hf_cache"
 export HF_HUB_OFFLINE=1
 export TRANSFORMERS_OFFLINE=1
