@@ -97,12 +97,15 @@ def main():
     print("=" * 60)
     per_doc_score_tensors = retriever.score_docs_per_head_for_detection(query, docs)
     print(f"  Returned {len(per_doc_score_tensors)} doc score tensors")
-    # Pick the first doc, look at its tensor
+    # Pick the first doc, look at its tensor.
+    # Qwen2.5-7B-Instruct uses GQA: 28 query heads, 4 KV heads → tensor is (28, 28).
     first_doc_id = next(iter(per_doc_score_tensors))
     first_tensor = per_doc_score_tensors[first_doc_id]
+    n_layers, n_heads = first_tensor.shape
     print(f"  first doc: {first_doc_id}, tensor shape: {tuple(first_tensor.shape)}")
-    assert first_tensor.shape == (28, 32), f"unexpected shape {first_tensor.shape}"
-    print(f"  ✓ shape (n_layers=28, n_heads=32) per doc")
+    assert n_layers == 28, f"expected 28 layers, got {n_layers}"
+    assert n_heads in (28, 32), f"unexpected head count {n_heads} for Qwen2.5-7B"
+    print(f"  ✓ shape (n_layers={n_layers}, n_heads={n_heads}) per doc")
     print()
 
     # Step 4: gold-vs-noise comparison
@@ -130,14 +133,14 @@ def main():
     print(f"\n  Top 10 heads by mean gold-doc attention:")
     print(f"    {'rank':>4}  {'head':>8}  {'mean_gold':>10}  {'mean_dist':>10}  {'ratio':>8}")
     for rank, idx in enumerate(top_idx.tolist()):
-        layer = idx // 32
-        head = idx % 32
+        layer = idx // n_heads
+        head = idx % n_heads
         g = gold_per_head_per_gold[layer, head].item()
         d = nogold_per_head_per_distractor[layer, head].item()
         print(f"    {rank+1:>4}  {layer:>2}-{head:<3}  {g:>10.4f}  {d:>10.4f}  {g/(d+1e-9):>8.2f}")
 
     # Sanity: top-K heads should attend more to gold than distractors
-    top1_layer, top1_head = top_idx[0].item() // 32, top_idx[0].item() % 32
+    top1_layer, top1_head = top_idx[0].item() // n_heads, top_idx[0].item() % n_heads
     top1_gold = gold_per_head_per_gold[top1_layer, top1_head].item()
     top1_dist = nogold_per_head_per_distractor[top1_layer, top1_head].item()
     if top1_gold > top1_dist:
