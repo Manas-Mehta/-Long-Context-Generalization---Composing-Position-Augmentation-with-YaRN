@@ -93,7 +93,14 @@ def build_one_story(
             "paragraph_text": sent,
             "title": None,
         })
-        if normalize(sent) in fact_sentences_norm:
+        sent_norm = normalize(sent)
+        # Mark gold if a bAbI fact appears as a substring of the (normalized)
+        # sentence. Substring rather than exact-match because at short bins
+        # (especially 1K) PG19 editorial fragments like `[_With a groan._]`
+        # or `Oh!` don't end in terminal punctuation, so they get glued onto
+        # the adjacent bAbI fact during sentence splitting. The fact text is
+        # still present as a substring within the merged sentence.
+        if any(fact in sent_norm for fact in fact_sentences_norm):
             gt_docs.append(sid)
 
     return {
