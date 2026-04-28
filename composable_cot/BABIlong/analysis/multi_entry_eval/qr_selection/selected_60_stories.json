@@ -1,0 +1,440 @@
+{
+  "seed": 42,
+  "source": "multi-entry hard subset (305 samples), random needle position, pre-needle phase",
+  "tiers": {
+    "win_lora": [
+      13,
+      14,
+      81,
+      85,
+      125,
+      130,
+      171,
+      193,
+      199,
+      210,
+      222,
+      268,
+      269
+    ],
+    "win_y2": [
+      61,
+      74,
+      84,
+      136,
+      139,
+      167,
+      172
+    ],
+    "win_rpe": [
+      1,
+      4,
+      7,
+      9,
+      15,
+      23,
+      63,
+      68,
+      70,
+      87,
+      107,
+      112,
+      120,
+      137,
+      138,
+      152,
+      160,
+      173,
+      185,
+      187,
+      190,
+      207,
+      220,
+      221,
+      259,
+      260,
+      267
+    ],
+    "mixed_other": [
+      8,
+      21,
+      50,
+      143,
+      162,
+      186,
+      234,
+      244,
+      295
+    ],
+    "saturated": [
+      41,
+      102,
+      180,
+      225
+    ]
+  },
+  "all_indices": [
+    1,
+    4,
+    7,
+    8,
+    9,
+    13,
+    14,
+    15,
+    21,
+    23,
+    41,
+    50,
+    61,
+    63,
+    68,
+    70,
+    74,
+    81,
+    84,
+    85,
+    87,
+    102,
+    107,
+    112,
+    120,
+    125,
+    130,
+    136,
+    137,
+    138,
+    139,
+    143,
+    152,
+    160,
+    162,
+    167,
+    171,
+    172,
+    173,
+    180,
+    185,
+    186,
+    187,
+    190,
+    193,
+    199,
+    207,
+    210,
+    220,
+    221,
+    222,
+    225,
+    234,
+    244,
+    259,
+    260,
+    267,
+    268,
+    269,
+    295
+  ],
+  "per_story_long_correctness": {
+    "1": {
+      "lora_base_me": 1,
+      "y2_base_me": 1,
+      "y2_rpe_cur_L16k_me": 3
+    },
+    "4": {
+      "lora_base_me": 0,
+      "y2_base_me": 1,
+      "y2_rpe_cur_L16k_me": 2
+    },
+    "7": {
+      "lora_base_me": 2,
+      "y2_base_me": 1,
+      "y2_rpe_cur_L16k_me": 3
+    },
+    "8": {
+      "lora_base_me": 1,
+      "y2_base_me": 2,
+      "y2_rpe_cur_L16k_me": 2
+    },
+    "9": {
+      "lora_base_me": 2,
+      "y2_base_me": 1,
+      "y2_rpe_cur_L16k_me": 3
+    },
+    "13": {
+      "lora_base_me": 3,
+      "y2_base_me": 1,
+      "y2_rpe_cur_L16k_me": 2
+    },
+    "14": {
+      "lora_base_me": 3,
+      "y2_base_me": 0,
+      "y2_rpe_cur_L16k_me": 1
+    },
+    "15": {
+      "lora_base_me": 2,
+      "y2_base_me": 1,
+      "y2_rpe_cur_L16k_me": 3
+    },
+    "21": {
+      "lora_base_me": 1,
+      "y2_base_me": 3,
+      "y2_rpe_cur_L16k_me": 3
+    },
+    "23": {
+      "lora_base_me": 2,
+      "y2_base_me": 1,
+      "y2_rpe_cur_L16k_me": 3
+    },
+    "41": {
+      "lora_base_me": 3,
+      "y2_base_me": 3,
+      "y2_rpe_cur_L16k_me": 3
+    },
+    "50": {
+      "lora_base_me": 2,
+      "y2_base_me": 1,
+      "y2_rpe_cur_L16k_me": 2
+    },
+    "61": {
+      "lora_base_me": 0,
+      "y2_base_me": 2,
+      "y2_rpe_cur_L16k_me": 1
+    },
+    "63": {
+      "lora_base_me": 2,
+      "y2_base_me": 1,
+      "y2_rpe_cur_L16k_me": 3
+    },
+    "68": {
+      "lora_base_me": 1,
+      "y2_base_me": 1,
+      "y2_rpe_cur_L16k_me": 3
+    },
+    "70": {
+      "lora_base_me": 1,
+      "y2_base_me": 1,
+      "y2_rpe_cur_L16k_me": 3
+    },
+    "74": {
+      "lora_base_me": 0,
+      "y2_base_me": 3,
+      "y2_rpe_cur_L16k_me": 0
+    },
+    "81": {
+      "lora_base_me": 3,
+      "y2_base_me": 0,
+      "y2_rpe_cur_L16k_me": 2
+    },
+    "84": {
+      "lora_base_me": 1,
+      "y2_base_me": 2,
+      "y2_rpe_cur_L16k_me": 1
+    },
+    "85": {
+      "lora_base_me": 1,
+      "y2_base_me": 0,
+      "y2_rpe_cur_L16k_me": 0
+    },
+    "87": {
+      "lora_base_me": 1,
+      "y2_base_me": 2,
+      "y2_rpe_cur_L16k_me": 3
+    },
+    "102": {
+      "lora_base_me": 3,
+      "y2_base_me": 3,
+      "y2_rpe_cur_L16k_me": 3
+    },
+    "107": {
+      "lora_base_me": 0,
+      "y2_base_me": 1,
+      "y2_rpe_cur_L16k_me": 3
+    },
+    "112": {
+      "lora_base_me": 1,
+      "y2_base_me": 2,
+      "y2_rpe_cur_L16k_me": 3
+    },
+    "120": {
+      "lora_base_me": 1,
+      "y2_base_me": 1,
+      "y2_rpe_cur_L16k_me": 2
+    },
+    "125": {
+      "lora_base_me": 3,
+      "y2_base_me": 1,
+      "y2_rpe_cur_L16k_me": 1
+    },
+    "130": {
+      "lora_base_me": 3,
+      "y2_base_me": 0,
+      "y2_rpe_cur_L16k_me": 1
+    },
+    "136": {
+      "lora_base_me": 0,
+      "y2_base_me": 3,
+      "y2_rpe_cur_L16k_me": 2
+    },
+    "137": {
+      "lora_base_me": 0,
+      "y2_base_me": 0,
+      "y2_rpe_cur_L16k_me": 2
+    },
+    "138": {
+      "lora_base_me": 1,
+      "y2_base_me": 2,
+      "y2_rpe_cur_L16k_me": 3
+    },
+    "139": {
+      "lora_base_me": 1,
+      "y2_base_me": 3,
+      "y2_rpe_cur_L16k_me": 2
+    },
+    "143": {
+      "lora_base_me": 1,
+      "y2_base_me": 3,
+      "y2_rpe_cur_L16k_me": 3
+    },
+    "152": {
+      "lora_base_me": 0,
+      "y2_base_me": 2,
+      "y2_rpe_cur_L16k_me": 3
+    },
+    "160": {
+      "lora_base_me": 2,
+      "y2_base_me": 1,
+      "y2_rpe_cur_L16k_me": 3
+    },
+    "162": {
+      "lora_base_me": 0,
+      "y2_base_me": 3,
+      "y2_rpe_cur_L16k_me": 3
+    },
+    "167": {
+      "lora_base_me": 1,
+      "y2_base_me": 3,
+      "y2_rpe_cur_L16k_me": 2
+    },
+    "171": {
+      "lora_base_me": 3,
+      "y2_base_me": 1,
+      "y2_rpe_cur_L16k_me": 2
+    },
+    "172": {
+      "lora_base_me": 1,
+      "y2_base_me": 2,
+      "y2_rpe_cur_L16k_me": 1
+    },
+    "173": {
+      "lora_base_me": 0,
+      "y2_base_me": 0,
+      "y2_rpe_cur_L16k_me": 2
+    },
+    "180": {
+      "lora_base_me": 3,
+      "y2_base_me": 3,
+      "y2_rpe_cur_L16k_me": 3
+    },
+    "185": {
+      "lora_base_me": 2,
+      "y2_base_me": 1,
+      "y2_rpe_cur_L16k_me": 3
+    },
+    "186": {
+      "lora_base_me": 0,
+      "y2_base_me": 2,
+      "y2_rpe_cur_L16k_me": 2
+    },
+    "187": {
+      "lora_base_me": 0,
+      "y2_base_me": 1,
+      "y2_rpe_cur_L16k_me": 3
+    },
+    "190": {
+      "lora_base_me": 0,
+      "y2_base_me": 0,
+      "y2_rpe_cur_L16k_me": 1
+    },
+    "193": {
+      "lora_base_me": 3,
+      "y2_base_me": 1,
+      "y2_rpe_cur_L16k_me": 1
+    },
+    "199": {
+      "lora_base_me": 2,
+      "y2_base_me": 0,
+      "y2_rpe_cur_L16k_me": 1
+    },
+    "207": {
+      "lora_base_me": 0,
+      "y2_base_me": 0,
+      "y2_rpe_cur_L16k_me": 2
+    },
+    "210": {
+      "lora_base_me": 3,
+      "y2_base_me": 0,
+      "y2_rpe_cur_L16k_me": 2
+    },
+    "220": {
+      "lora_base_me": 1,
+      "y2_base_me": 1,
+      "y2_rpe_cur_L16k_me": 3
+    },
+    "221": {
+      "lora_base_me": 1,
+      "y2_base_me": 0,
+      "y2_rpe_cur_L16k_me": 2
+    },
+    "222": {
+      "lora_base_me": 3,
+      "y2_base_me": 2,
+      "y2_rpe_cur_L16k_me": 1
+    },
+    "225": {
+      "lora_base_me": 3,
+      "y2_base_me": 3,
+      "y2_rpe_cur_L16k_me": 3
+    },
+    "234": {
+      "lora_base_me": 1,
+      "y2_base_me": 3,
+      "y2_rpe_cur_L16k_me": 3
+    },
+    "244": {
+      "lora_base_me": 3,
+      "y2_base_me": 1,
+      "y2_rpe_cur_L16k_me": 3
+    },
+    "259": {
+      "lora_base_me": 0,
+      "y2_base_me": 0,
+      "y2_rpe_cur_L16k_me": 1
+    },
+    "260": {
+      "lora_base_me": 1,
+      "y2_base_me": 2,
+      "y2_rpe_cur_L16k_me": 3
+    },
+    "267": {
+      "lora_base_me": 1,
+      "y2_base_me": 1,
+      "y2_rpe_cur_L16k_me": 2
+    },
+    "268": {
+      "lora_base_me": 2,
+      "y2_base_me": 1,
+      "y2_rpe_cur_L16k_me": 0
+    },
+    "269": {
+      "lora_base_me": 3,
+      "y2_base_me": 2,
+      "y2_rpe_cur_L16k_me": 0
+    },
+    "295": {
+      "lora_base_me": 1,
+      "y2_base_me": 2,
+      "y2_rpe_cur_L16k_me": 2
+    }
+  }
+}
