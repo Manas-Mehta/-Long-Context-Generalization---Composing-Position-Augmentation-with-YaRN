@@ -145,10 +145,18 @@ class BABILongRetriever(FullHeadRetriever):
         # identical between real and null queries (docs are the same, QA3_INSTRUCTION
         # is constant) so the calibration assertion in score_per_token_attention_to_query
         # holds.
+        # Robust span finder: anchor on '</context>\n\n' (unique to our prompt
+        # structure — PG19 prose won't contain it) and search for "Question:"
+        # only AFTER that point, in case PG19 itself happens to contain
+        # "Question:" earlier in the haystack.
+        anchor = "</context>\n\n"
+        anchor_end = llm_prompt.index(anchor) + len(anchor)
         query_content = f"Question: {query}"
-        q_start, q_end = self.get_content_span(
-            llm_prompt, char_offset_to_token_idx, query_content
-        )
+        rel_pos = llm_prompt[anchor_end:].index(query_content)
+        q_char_start = anchor_end + rel_pos
+        q_char_end = q_char_start + len(query_content) - 1
+        q_start = char_offset_to_token_idx[q_char_start]
+        q_end = char_offset_to_token_idx[q_char_end]
         query_span = (q_start, q_end)
 
         return llm_prompt, prompt_token_ids, query_span, document_span_intervals
