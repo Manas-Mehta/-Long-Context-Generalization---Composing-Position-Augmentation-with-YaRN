@@ -79,9 +79,13 @@ merge_one() {
         "${extra_args[@]}"
 }
 
-# 1. lora_base — none/none, no YaRN
+# 1. lora_base — LoRA-only at train; YaRN factor 4 at eval.
+#    NOTE: matches the multi-entry eval config (eval_lora_base_me.slurm uses
+#    --enable-yarn --yarn-factor 4.0). Our correctness labels come from that
+#    eval, so we must replicate the same config here.
 merge_one "lora_base" \
-    "${CKPT_DIR}/lora_base_1k/checkpoint-2000"
+    "${CKPT_DIR}/lora_base_1k/checkpoint-2000" \
+    --yarn-factor 4.0 --verify-yarn
 
 # 2. y2_base — YaRN/YaRN, factor 4 at eval
 merge_one "y2_base" \
