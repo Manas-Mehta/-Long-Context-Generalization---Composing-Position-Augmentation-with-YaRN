@@ -65,6 +65,16 @@ merge_one() {
         exit 1
     fi
 
+    # Skip-if-exists: if the merged checkpoint already has model weights, skip.
+    # Lets you rerun this slurm to fix only the missing/wiped condition without
+    # redoing the others.
+    if [ -f "${MERGED_DIR}/${cond}/model.safetensors.index.json" ]; then
+        echo ""
+        echo "SKIP ${cond} — already merged at ${MERGED_DIR}/${cond}"
+        echo "  (delete that dir to force re-merge)"
+        return 0
+    fi
+
     echo ""
     echo "================================================================"
     echo "MERGING: ${cond}"
