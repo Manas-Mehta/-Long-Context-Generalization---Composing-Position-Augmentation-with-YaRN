@@ -25,6 +25,13 @@ source /scratch/mm14444/conda_envs/qrhead/etc/profile.d/conda.sh 2>/dev/null \
 which python
 python --version
 
+# Match the existing eval slurm scripts' HF cache config so transformers
+# resolves Qwen2.5-7B-Instruct from the local cache (hub/ subdir layout).
+export HF_HOME="${SCRATCH:-/scratch/mm14444}/hf_cache"
+export HF_HUB_OFFLINE=1
+export TRANSFORMERS_OFFLINE=1
+echo "HF_HOME=$HF_HOME"
+
 cd /scratch/mm14444/RPE
 python composable_cot/retrieval_head_analysis/scripts/phase0_smoketest.py
 
