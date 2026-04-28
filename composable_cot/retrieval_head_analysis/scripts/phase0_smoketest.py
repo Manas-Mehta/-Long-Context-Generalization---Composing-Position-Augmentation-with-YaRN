@@ -19,12 +19,14 @@ os.environ.setdefault("HF_HOME", "/scratch/mm14444/hf_cache")
 os.environ.setdefault("HF_HUB_OFFLINE", "1")
 os.environ.setdefault("TRANSFORMERS_OFFLINE", "1")
 
-from qrretriever.attn_retriever import QRRetriever  # noqa: E402
+from qrretriever.attn_retriever import FullHeadRetriever  # noqa: E402
 
 MODEL = "Qwen/Qwen2.5-7B-Instruct"
 
-print(f"Loading {MODEL} via QRRetriever (this takes ~60s on H200)...")
-retriever = QRRetriever(model_name_or_path=MODEL)
+# FullHeadRetriever scores using all heads (not a pre-selected top-K).
+# That's what the detection script uses, so it's the right thing to smoke-test.
+print(f"Loading {MODEL} via FullHeadRetriever (this takes ~60s)...")
+retriever = FullHeadRetriever(model_name_or_path=MODEL)
 print("Model loaded.\n")
 
 query = "Which town in Nizhnyaya has the largest population?"
