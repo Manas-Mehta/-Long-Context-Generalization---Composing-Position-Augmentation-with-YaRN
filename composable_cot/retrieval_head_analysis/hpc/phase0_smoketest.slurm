@@ -1,39 +1,49 @@
 #!/bin/bash
 #SBATCH --job-name=qrhead_phase0
-#SBATCH --output=/scratch/mm14444/RPE/composable_cot/retrieval_head_analysis/slurm_logs/phase0_smoketest_%j.out
-#SBATCH --error=/scratch/mm14444/RPE/composable_cot/retrieval_head_analysis/slurm_logs/phase0_smoketest_%j.err
-#SBATCH --partition=h200_courant
 #SBATCH --account=torch_pr_219_courant
-#SBATCH --gres=gpu:1
+#SBATCH --partition=h200_courant
+#SBATCH --nodes=1
+#SBATCH --ntasks-per-node=1
+#SBATCH --cpus-per-task=8
 #SBATCH --mem=64G
+#SBATCH --gres=gpu:1
 #SBATCH --time=00:20:00
+#SBATCH --output=composable_cot/retrieval_head_analysis/slurm_logs/phase0_smoketest_%j.out
+#SBATCH --error=composable_cot/retrieval_head_analysis/slurm_logs/phase0_smoketest_%j.err
 
-set -euo pipefail
+# ============================================================================
+# RHA Phase 0 — verify qrhead env works on vanilla Qwen2.5-7B-Instruct.
+# Submit from PROJECT_DIR: cd /scratch/mm14444/RPE && sbatch composable_cot/...
+# ============================================================================
 
-mkdir -p /scratch/mm14444/RPE/composable_cot/retrieval_head_analysis/slurm_logs
+set -eo pipefail
 
-echo "=== Phase 0 smoke test ==="
-echo "Job:  $SLURM_JOB_ID"
-echo "Node: $(hostname)"
-echo "Time: $(date)"
-nvidia-smi | head -10
-echo
+NETID="mm14444"
+SCRATCH="/scratch/${NETID}"
+PROJECT_DIR="${SCRATCH}/RPE"
+RHA_DIR="composable_cot/retrieval_head_analysis"
 
-# Activate the dedicated qrhead env (NOT the rpe env).
-source /scratch/mm14444/conda_envs/qrhead/etc/profile.d/conda.sh 2>/dev/null \
-    || conda activate /scratch/mm14444/conda_envs/qrhead
-which python
-python --version
+eval "$(conda shell.bash hook)"
+conda activate "${SCRATCH}/conda_envs/qrhead"
 
-# Match the existing eval slurm scripts' HF cache config so transformers
-# resolves Qwen2.5-7B-Instruct from the local cache (hub/ subdir layout).
-export HF_HOME="${SCRATCH:-/scratch/mm14444}/hf_cache"
+export PYTHONPATH="${PROJECT_DIR}:${PYTHONPATH:-}"
+export HF_HOME="${SCRATCH}/hf_cache"
 export HF_HUB_OFFLINE=1
 export TRANSFORMERS_OFFLINE=1
-echo "HF_HOME=$HF_HOME"
 
-cd /scratch/mm14444/RPE
-python composable_cot/retrieval_head_analysis/scripts/phase0_smoketest.py
+mkdir -p "${PROJECT_DIR}/${RHA_DIR}/slurm_logs"
+cd "${PROJECT_DIR}"
 
-echo
-echo "=== DONE ==="
+echo "=== RHA Phase 0 — smoke test ==="
+echo "  Job ID:    ${SLURM_JOB_ID}"
+echo "  Node:      $(hostname)"
+echo "  GPU:       $(nvidia-smi --query-gpu=name,memory.total --format=csv,noheader 2>/dev/null || echo 'N/A')"
+echo "  Python:    $(which python) $(python --version)"
+echo "  HF_HOME:   ${HF_HOME}"
+echo "  Timestamp: $(date)"
+echo ""
+
+python ${RHA_DIR}/scripts/phase0_smoketest.py
+
+echo ""
+echo "=== Phase 0 smoke test complete: $(date) ==="
