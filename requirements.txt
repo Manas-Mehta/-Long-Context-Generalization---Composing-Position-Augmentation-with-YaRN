@@ -1,5 +1,22 @@
-torch
-transformers
+# Core ML
+torch>=2.0
+transformers>=4.52
 accelerate
+peft
 datasets
+
+# Numerics + scientific
+numpy
+pandas
+scipy
+
+# Plotting
+matplotlib
+
+# Misc
+pyyaml
+nltk
+typing_extensions
+
+# Dev / test
 pytest

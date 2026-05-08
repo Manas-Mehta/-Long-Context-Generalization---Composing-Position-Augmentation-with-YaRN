@@ -5,6 +5,8 @@ __pycache__/
 .venv/
 venv/
 *.egg
+build/
+dist/
 
 # Environment
 .env
@@ -21,31 +23,29 @@ venv/
 htmlcov/
 .coverage
 
-# Model checkpoints (large, regeneratable on Lightning AI)
-composable_cot/model_ckpt/
-composable_cot/outputs/
+# Data, checkpoints, runtime outputs (regenerate via prepare_data.py + training)
+experiments/babilong/data/
+experiments/babilong/checkpoints/
+experiments/babilong/results/
+experiments/babilong/slurm_logs/
 
-# Older outputs
-outputs/
+experiments/mrcr/data/
+experiments/mrcr/checkpoints/
+experiments/mrcr/outputs/
+experiments/mrcr/results/
+experiments/mrcr/slurm_logs/
 
-# Notes — local only, never push
-Notes/
+experiments/retrieval_heads/data/
+experiments/retrieval_heads/results/
+experiments/retrieval_heads/slurm_logs/
 
-# Data — scp to HPC, not git
-composable_cot/mrcr_context_extension/data/
-composable_cot/mrcr_context_extension/outputs/
-composable_cot/BABIlong/data/
-composable_cot/BABIlong/slurm_logs/
-composable_cot/BABIlong/checkpoints/
-composable_cot/BABIlong/results/
+# Per-sample prediction dumps (large) — only summary.json is committed under results/
+**/predictions_*.json
 
 # Downloaded model weights
 qwen2.5-7b-instruct/
+*.safetensors
+*.bin
 
-# Claude Code
+# Anthropic / Claude Code
 .claude/
-
-# LLaMA-Factory build artifacts
-composable_cot/LLaMA-Factory/*.egg-info/
-composable_cot/LLaMA-Factory/build/
-composable_cot/LLaMA-Factory/dist/
