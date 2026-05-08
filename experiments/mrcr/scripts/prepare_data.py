@@ -72,7 +72,7 @@ def main():
     parser = argparse.ArgumentParser(description="Prepare MRCR data with Qwen tokenizer binning")
     parser.add_argument("--tokenizer", type=str, default="Qwen/Qwen2.5-7B-Instruct",
                         help="Tokenizer to use for binning")
-    parser.add_argument("--output-dir", type=str, default="composable_cot/data/mrcr",
+    parser.add_argument("--output-dir", type=str, default="experiments/mrcr/data",
                         help="Output directory for processed data")
     parser.add_argument("--train-ratio", type=float, default=0.7,
                         help="Fraction of data to use for training (rest is test)")

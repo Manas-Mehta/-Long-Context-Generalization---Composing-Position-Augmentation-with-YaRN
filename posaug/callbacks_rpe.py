@@ -1,20 +1,22 @@
-"""RPE integration for LLaMA-Factory training.
+"""RPE TrainerCallback for HuggingFace Trainer.
 
-Provides functions to apply/remove RPE patching on a model loaded by
-LLaMA-Factory's `load_model()`.  Designed to be called from a
-TrainerCallback or directly in a workflow file.
+Provides a TrainerCallback that owns an RPEPatcher and applies/removes
+randomized position_ids during training. The companion module
+``posaug.callbacks_pose`` provides the equivalent for PoSE.
 
 Usage (standalone):
-    from rpe_llamafactory_patch import apply_rpe_patch, remove_rpe_patch, load_rpe_config
+    from posaug.callbacks_rpe import apply_rpe_patch, remove_rpe_patch, load_rpe_config
 
-    rpe_config = load_rpe_config("composable_cot/scripts/rpe_config.yaml")
+    rpe_config = load_rpe_config(
+        "experiments/babilong/configs/rpe_config_babilong_curriculum_L16k.yaml")
     patcher = apply_rpe_patch(model, rpe_config)
     # ... training ...
     remove_rpe_patch(patcher)
 
 Usage (as TrainerCallback):
-    from rpe_llamafactory_patch import RPETrainerCallback
-    callbacks.append(RPETrainerCallback("composable_cot/scripts/rpe_config.yaml"))
+    from posaug.callbacks_rpe import RPETrainerCallback
+    callbacks.append(RPETrainerCallback(
+        "experiments/babilong/configs/rpe_config_babilong_curriculum_L16k.yaml"))
 """
 
 import os
