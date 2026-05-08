@@ -2,8 +2,8 @@
 """Parse SLURM training logs to estimate epoch-1 completion time and assess training health.
 
 Usage:
-    python composable_cot/BABIlong/scripts/analyze_training_progress.py \
-        --log-dir composable_cot/BABIlong/slurm_logs/
+    python experiments/babilong/scripts/analyze_training_progress.py \
+        --log-dir experiments/babilong/slurm_logs/
 
 Reads all train_*.out files, parses step/loss/epoch/elapsed, and prints:
   1. Time to epoch 1 (step 5000) per condition
@@ -288,7 +288,7 @@ def print_mid_evals(mid_evals: list):
 
 def main():
     p = argparse.ArgumentParser()
-    p.add_argument("--log-dir", default="composable_cot/BABIlong/slurm_logs/")
+    p.add_argument("--log-dir", default="experiments/babilong/slurm_logs/")
     args = p.parse_args()
 
     pattern = os.path.join(args.log_dir, "train_*.out")

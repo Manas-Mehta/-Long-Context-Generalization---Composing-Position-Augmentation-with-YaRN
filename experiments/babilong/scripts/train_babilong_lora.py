@@ -25,25 +25,25 @@ Key differences from MRCR training:
 Usage:
     # LoRA baseline
     python train_babilong_lora.py \
-        --train-file composable_cot/BABIlong/data/train/all_train.json \
-        --output-dir composable_cot/BABIlong/checkpoints/lora_base
+        --train-file experiments/babilong/data/train/all_train.json \
+        --output-dir experiments/babilong/checkpoints/lora_base
 
     # YaRN + LoRA
     python train_babilong_lora.py \
         --enable-yarn --yarn-factor 2.0 \
-        --train-file composable_cot/BABIlong/data/train/all_train.json \
-        --output-dir composable_cot/BABIlong/checkpoints/y2_base
+        --train-file experiments/babilong/data/train/all_train.json \
+        --output-dir experiments/babilong/checkpoints/y2_base
 
     # YaRN + RPE curriculum
     python train_babilong_lora.py \
         --enable-yarn --yarn-factor 2.0 \
-        --rpe-config composable_cot/BABIlong/configs/rpe_config_babilong_curriculum_L16k.yaml \
-        --train-file composable_cot/BABIlong/data/train/all_train.json \
-        --output-dir composable_cot/BABIlong/checkpoints/y2_rpe_cur_L16k
+        --rpe-config experiments/babilong/configs/rpe_config_babilong_curriculum_L16k.yaml \
+        --train-file experiments/babilong/data/train/all_train.json \
+        --output-dir experiments/babilong/checkpoints/y2_rpe_cur_L16k
 
     # Smoke test (local, no GPU, 3 steps):
     python train_babilong_lora.py \
-        --train-file composable_cot/BABIlong/data/train/0k.json \
+        --train-file experiments/babilong/data/train/0k.json \
         --output-dir /tmp/babilong_smoke \
         --max-steps 3 --no-cuda --no-bf16
 """
@@ -68,7 +68,7 @@ from transformers import (
     TrainingArguments,
 )
 
-# Project root on sys.path (script is at RPE/composable_cot/BABIlong/scripts/)
+# Project root on sys.path (script is at RPE/experiments/babilong/scripts/)
 _SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
 _PROJECT_ROOT = os.path.dirname(os.path.dirname(os.path.dirname(_SCRIPT_DIR)))
 if _PROJECT_ROOT not in sys.path:

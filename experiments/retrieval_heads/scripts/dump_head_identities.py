@@ -25,7 +25,7 @@ PUBLISHED_TOP16 = [
     "16-1", "19-18", "19-19", "18-16", "16-17", "19-25", "19-17", "20-21",
 ]
 
-ROOT = Path("composable_cot/retrieval_head_analysis")
+ROOT = Path("experiments/retrieval_heads")
 OUT = ROOT / "analysis"
 
 

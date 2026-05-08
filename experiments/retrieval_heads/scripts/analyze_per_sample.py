@@ -117,13 +117,13 @@ def compute_sample_qr_signature(doc_scores: dict, detection_sample: dict,
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--results-dir",
-                    default="composable_cot/retrieval_head_analysis/results")
+                    default="experiments/retrieval_heads/results")
     ap.add_argument("--data-dir",
-                    default="composable_cot/retrieval_head_analysis/data")
+                    default="experiments/retrieval_heads/data")
     ap.add_argument("--predictions-dir",
-                    default="composable_cot/BABIlong/results")
+                    default="experiments/babilong/results")
     ap.add_argument("--output-dir",
-                    default="composable_cot/retrieval_head_analysis/analysis")
+                    default="experiments/retrieval_heads/analysis")
     ap.add_argument("--top-k", type=int, default=16,
                     help="K = number of top heads (from lora_base reference) "
                          "to aggregate into the per-sample signature")

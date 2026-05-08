@@ -32,8 +32,8 @@ import matplotlib
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 
-ROOT = Path("composable_cot/retrieval_head_analysis")
-PRED = Path("composable_cot/BABIlong/results")
+ROOT = Path("experiments/retrieval_heads")
+PRED = Path("experiments/babilong/results")
 OUT = ROOT / "analysis"
 FIG = OUT / "figures"
 

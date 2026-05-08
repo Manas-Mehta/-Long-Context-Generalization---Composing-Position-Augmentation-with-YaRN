@@ -5,7 +5,7 @@ Categorizes each prediction into error types and generates summary tables
 across conditions and bins.
 
 Usage:
-    python composable_cot/mrcr_context_extension/scripts/analyze_errors.py
+    python experiments/mrcr/scripts/analyze_errors.py
 """
 
 import json
@@ -15,7 +15,7 @@ from pathlib import Path
 
 # ── Configuration ──────────────────────────────────────────────────────
 
-OUTPUTS_DIR = Path("composable_cot/mrcr_context_extension/outputs")
+OUTPUTS_DIR = Path("experiments/mrcr/outputs")
 
 # Conditions to analyze (directory prefix -> display name)
 CONDITIONS = {

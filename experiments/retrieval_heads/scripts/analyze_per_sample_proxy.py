@@ -29,8 +29,8 @@ CONDITIONS = ["lora_base", "y2_base", "y2_rpe_cur_L16k"]
 REFERENCE = "lora_base"
 TOP_K = 16
 
-ROOT = Path("composable_cot/retrieval_head_analysis")
-PRED_DIR = Path("composable_cot/BABIlong/results")
+ROOT = Path("experiments/retrieval_heads")
+PRED_DIR = Path("experiments/babilong/results")
 OUT_DIR = ROOT / "analysis"
 
 

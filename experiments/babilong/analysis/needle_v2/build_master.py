@@ -10,7 +10,7 @@ import json
 from pathlib import Path
 import pandas as pd
 
-ROOT = Path("/Users/reach/CodingRepositories/02 TAUR Labs/RPE/composable_cot/BABIlong")
+ROOT = Path("/Users/reach/CodingRepositories/02 TAUR Labs/RPE/experiments/babilong")
 DATA_DIR = ROOT / "data" / "eval_needle_v2"
 RESULTS_DIR = ROOT / "results"
 OUT_DIR = ROOT / "analysis" / "needle_v2"

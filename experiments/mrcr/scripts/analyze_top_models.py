@@ -14,7 +14,7 @@ from difflib import SequenceMatcher
 import matplotlib.pyplot as plt
 import numpy as np
 
-BASE_DIR = Path("composable_cot/mrcr_context_extension")
+BASE_DIR = Path("experiments/mrcr")
 DATA_DIR = BASE_DIR / "data"
 
 MODELS = {

@@ -24,16 +24,16 @@ Output layout:
 
 Usage:
   python eval_babilong.py \\
-      --checkpoint-dir composable_cot/BABIlong/checkpoints/lora_base \\
-      --eval-dir       composable_cot/BABIlong/data/eval \\
-      --output-dir     composable_cot/BABIlong/results/lora_base \\
+      --checkpoint-dir experiments/babilong/checkpoints/lora_base \\
+      --eval-dir       experiments/babilong/data/eval \\
+      --output-dir     experiments/babilong/results/lora_base \\
       --condition      lora_base
 
   # Zero-shot baseline (no LoRA):
   python eval_babilong.py \\
       --no-lora \\
-      --eval-dir   composable_cot/BABIlong/data/eval \\
-      --output-dir composable_cot/BABIlong/results/zero_shot \\
+      --eval-dir   experiments/babilong/data/eval \\
+      --output-dir experiments/babilong/results/zero_shot \\
       --condition  zero_shot
 """
 

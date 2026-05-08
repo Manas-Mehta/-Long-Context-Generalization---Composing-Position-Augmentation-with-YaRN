@@ -8,10 +8,10 @@ Uses pre-computed sample_difficulty_tags.json (indices are consistent across bin
 since the underlying bAbI stories are identical — only PG19 noise changes).
 
 Run this on HPC before eval:
-    python composable_cot/BABIlong/scripts/create_multi_entry_eval.py
+    python experiments/babilong/scripts/create_multi_entry_eval.py
 
-Input:  composable_cot/BABIlong/data/eval/*.json (full 999 samples per bin)
-Output: composable_cot/BABIlong/data/eval_multi_entry/*.json (305 samples per bin)
+Input:  experiments/babilong/data/eval/*.json (full 999 samples per bin)
+Output: experiments/babilong/data/eval_multi_entry/*.json (305 samples per bin)
 """
 
 import json

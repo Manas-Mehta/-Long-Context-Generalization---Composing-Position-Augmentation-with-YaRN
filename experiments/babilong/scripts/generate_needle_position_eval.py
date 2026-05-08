@@ -17,13 +17,13 @@ Decisions (locked 2026-04-13; see Notes/BABILong/Needle_Position_Experiment.md):
   - Noise: PG19 test split (per official BABILong spec)
 
 Dependencies:
-  - Uses vendored babilong/ package (copy source files to composable_cot/BABIlong/babilong_src/)
+  - Uses vendored babilong/ package (copy source files to experiments/babilong/babilong_src/)
   - OR pip install git+https://github.com/booydar/babilong
 
 Usage:
   python generate_needle_position_eval.py \\
-      --selected-indices composable_cot/BABIlong/data/eval_needle/selected_100_indices.json \\
-      --output-dir composable_cot/BABIlong/data/eval_needle \\
+      --selected-indices experiments/babilong/data/eval_needle/selected_100_indices.json \\
+      --output-dir experiments/babilong/data/eval_needle \\
       --bins 0k,1k,2k,4k,8k,16k,32k,64k,128k \\
       --noise-dataset pg19
 
@@ -336,15 +336,15 @@ def generate(
 
 def main():
     p = argparse.ArgumentParser()
-    p.add_argument("--selected-indices", default="composable_cot/BABIlong/data/eval_needle/selected_100_indices.json")
-    p.add_argument("--output-dir",       default="composable_cot/BABIlong/data/eval_needle")
+    p.add_argument("--selected-indices", default="experiments/babilong/data/eval_needle/selected_100_indices.json")
+    p.add_argument("--output-dir",       default="experiments/babilong/data/eval_needle")
     p.add_argument("--bins",             default="1k,2k,4k,8k,16k,32k,64k,128k")
     p.add_argument("--zones",            default="beg,mid,end")
     p.add_argument("--noise-dataset",    default="pg19", choices=list(NOISE_CONFIGS.keys()))
     p.add_argument("--max-samples",      type=int, default=0, help="Cap samples per cell for testing (0=all)")
     p.add_argument("--random-seed",      type=int, default=42)
     p.add_argument("--babilong-src-dir", default=None,
-                   help="Path to vendored babilong source if not pip-installed (e.g. composable_cot/BABIlong/babilong_src)")
+                   help="Path to vendored babilong source if not pip-installed (e.g. experiments/babilong/babilong_src)")
     args = p.parse_args()
 
     generate(

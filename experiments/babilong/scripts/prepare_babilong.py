@@ -30,8 +30,8 @@ Output format per sample (saved as JSON):
 }
 
 Usage:
-    python prepare_babilong.py --output-dir composable_cot/BABIlong/data
-    python prepare_babilong.py --output-dir composable_cot/BABIlong/data --inspect-only
+    python prepare_babilong.py --output-dir experiments/babilong/data
+    python prepare_babilong.py --output-dir experiments/babilong/data --inspect-only
 """
 
 import argparse
@@ -308,7 +308,7 @@ def prepare(output_dir: str, tokenizer_name: str):
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument("--output-dir",    type=str, default="composable_cot/BABIlong/data")
+    parser.add_argument("--output-dir",    type=str, default="experiments/babilong/data")
     parser.add_argument("--tokenizer",     type=str, default="Qwen/Qwen2.5-7B-Instruct")
     parser.add_argument("--inspect-only",  action="store_true",
                         help="Print dataset structure only, do not save files")

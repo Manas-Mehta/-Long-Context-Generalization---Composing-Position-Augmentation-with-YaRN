@@ -455,12 +455,12 @@ def write_summary(out_dir: Path, results: dict):
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--results-dir",
-                    default="composable_cot/retrieval_head_analysis/results")
+                    default="experiments/retrieval_heads/results")
     ap.add_argument("--predictions-dir",
-                    default="composable_cot/BABIlong/results",
+                    default="experiments/babilong/results",
                     help="dir containing {condition}_me/predictions_*.json")
     ap.add_argument("--output-dir",
-                    default="composable_cot/retrieval_head_analysis/analysis")
+                    default="experiments/retrieval_heads/analysis")
     args = ap.parse_args()
 
     results_dir = Path(args.results_dir)

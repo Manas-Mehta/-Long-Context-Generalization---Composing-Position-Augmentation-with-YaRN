@@ -24,7 +24,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import matplotlib as mpl
 
-ROOT = Path("/Users/reach/CodingRepositories/02 TAUR Labs/RPE/composable_cot/BABIlong")
+ROOT = Path("/Users/reach/CodingRepositories/02 TAUR Labs/RPE/experiments/babilong")
 ANA = ROOT / "analysis" / "needle_v2"
 TABLES = ANA / "tables"
 FIGS = ANA / "figures"

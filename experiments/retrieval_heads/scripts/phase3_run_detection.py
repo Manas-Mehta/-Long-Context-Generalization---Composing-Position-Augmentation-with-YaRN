@@ -122,9 +122,9 @@ def main():
     ap.add_argument("--model-path", required=True,
                     help="HF model id OR absolute path to a merged checkpoint dir")
     ap.add_argument("--data-dir",
-                    default="composable_cot/retrieval_head_analysis/data")
+                    default="experiments/retrieval_heads/data")
     ap.add_argument("--output-dir",
-                    default="composable_cot/retrieval_head_analysis/results")
+                    default="experiments/retrieval_heads/results")
     ap.add_argument("--bins", default=",".join(BINS),
                     help="comma-separated bins to run (default: all 9)")
     args = ap.parse_args()

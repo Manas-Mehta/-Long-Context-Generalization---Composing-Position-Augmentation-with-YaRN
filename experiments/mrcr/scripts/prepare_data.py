@@ -13,9 +13,9 @@ We re-bin using Qwen2.5's tokenizer (not OpenAI's o200k_base) since token
 counts differ across tokenizers.
 
 Usage:
-    python composable_cot/mrcr_context_extension/scripts/prepare_data.py \
+    python experiments/mrcr/scripts/prepare_data.py \
         --tokenizer Qwen/Qwen2.5-7B-Instruct \
-        --output-dir composable_cot/mrcr_context_extension/data \
+        --output-dir experiments/mrcr/data \
         --train-ratio 0.7
 """
 

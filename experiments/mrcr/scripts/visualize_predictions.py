@@ -5,9 +5,9 @@ Generates 7 publication-quality plots analyzing failure patterns,
 position effects, and context extension behavior.
 
 Usage:
-    python composable_cot/mrcr_context_extension/scripts/visualize_predictions.py
+    python experiments/mrcr/scripts/visualize_predictions.py
 
-Outputs saved to: composable_cot/mrcr_context_extension/analysis/
+Outputs saved to: experiments/mrcr/analysis/
 """
 
 import json
@@ -33,7 +33,7 @@ except ImportError:
 
 # ── Configuration ─────────────────────────────────────────────────────
 
-BASE_DIR = Path("composable_cot/mrcr_context_extension")
+BASE_DIR = Path("experiments/mrcr")
 OUTPUTS_DIR = BASE_DIR / "outputs"
 DATA_DIR = BASE_DIR / "data"
 ANALYSIS_DIR = BASE_DIR / "analysis"

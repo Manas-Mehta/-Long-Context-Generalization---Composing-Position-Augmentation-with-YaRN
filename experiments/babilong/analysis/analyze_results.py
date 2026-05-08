@@ -3,9 +3,9 @@ BABILong Results Analysis — Phase 1 + 2
 Generates all plots and error analysis from eval prediction files.
 
 Usage:
-    python composable_cot/BABIlong/analysis/analyze_results.py
+    python experiments/babilong/analysis/analyze_results.py
 
-Outputs to: composable_cot/BABIlong/analysis/figures/
+Outputs to: experiments/babilong/analysis/figures/
 """
 
 import json

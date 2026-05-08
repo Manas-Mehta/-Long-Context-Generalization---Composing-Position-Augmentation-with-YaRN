@@ -12,24 +12,24 @@ the expected answer.
 
 Usage:
     # Vanilla baseline
-    python composable_cot/mrcr_context_extension/scripts/eval_mrcr.py \
+    python experiments/mrcr/scripts/eval_mrcr.py \
         --base-model Qwen/Qwen2.5-7B-Instruct \
-        --test-file composable_cot/mrcr_context_extension/data/bin0_4K-8K/test.json \
-        --output-dir composable_cot/mrcr_context_extension/outputs/vanilla_4K-8K
+        --test-file experiments/mrcr/data/bin0_4K-8K/test.json \
+        --output-dir experiments/mrcr/outputs/vanilla_4K-8K
 
     # YaRN baseline
-    python composable_cot/mrcr_context_extension/scripts/eval_mrcr.py \
+    python experiments/mrcr/scripts/eval_mrcr.py \
         --base-model Qwen/Qwen2.5-7B-Instruct \
         --enable-yarn --yarn-factor 4.0 \
-        --test-file composable_cot/mrcr_context_extension/data/bin0_4K-8K/test.json \
-        --output-dir composable_cot/mrcr_context_extension/outputs/yarn_4K-8K
+        --test-file experiments/mrcr/data/bin0_4K-8K/test.json \
+        --output-dir experiments/mrcr/outputs/yarn_4K-8K
 
     # RPE+LoRA
-    python composable_cot/mrcr_context_extension/scripts/eval_mrcr.py \
+    python experiments/mrcr/scripts/eval_mrcr.py \
         --base-model Qwen/Qwen2.5-7B-Instruct \
-        --lora-ckpt composable_cot/mrcr_context_extension/checkpoints/rpe_rank16 \
-        --test-file composable_cot/mrcr_context_extension/data/bin1_8K-16K/test.json \
-        --output-dir composable_cot/mrcr_context_extension/outputs/rpe_rank16_8K-16K
+        --lora-ckpt experiments/mrcr/checkpoints/rpe_rank16 \
+        --test-file experiments/mrcr/data/bin1_8K-16K/test.json \
+        --output-dir experiments/mrcr/outputs/rpe_rank16_8K-16K
 """
 
 import argparse

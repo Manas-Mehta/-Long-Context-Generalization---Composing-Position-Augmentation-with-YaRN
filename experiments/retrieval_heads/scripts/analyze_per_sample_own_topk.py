@@ -41,9 +41,9 @@ BINS = ["0k", "1k", "2k", "4k", "8k", "16k", "32k", "64k", "128k"]
 CONDITIONS = ["lora_base", "y2_base", "y2_rpe_cur_L16k"]
 K_VALUES = [8, 16, 32]
 
-ROOT = Path("composable_cot/retrieval_head_analysis")
+ROOT = Path("experiments/retrieval_heads")
 DATA = ROOT / "data"
-PRED = Path("composable_cot/BABIlong/results")
+PRED = Path("experiments/babilong/results")
 OUT = ROOT / "analysis"
 
 

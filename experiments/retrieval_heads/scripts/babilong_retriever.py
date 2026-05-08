@@ -5,7 +5,7 @@ deployed prompt format (instead of QRHead's standard "Here are some paragraphs:
 
 Per prof guidance:
   1. Use BABILong's own prompt format. The exact constants come from
-     `composable_cot/BABIlong/scripts/eval_babilong.py:62-105`.
+     `experiments/babilong/scripts/eval_babilong.py:62-105`.
   2. Each sentence (not 512-token paragraph) is one "document" for QR scoring.
      The build_detection_set.py script emits the JSON in this shape already;
      this class just consumes it correctly.
@@ -26,7 +26,7 @@ from qrretriever.attn_retriever import FullHeadRetriever
 
 
 # Exact BABILong QA3 prompt strings — copied verbatim from
-# composable_cot/BABIlong/scripts/eval_babilong.py:62-76. Keep these in sync.
+# experiments/babilong/scripts/eval_babilong.py:62-76. Keep these in sync.
 QA3_INSTRUCTION = (
     "I give you context with the facts about locations and actions of different persons "
     "hidden in some random text and a question. "

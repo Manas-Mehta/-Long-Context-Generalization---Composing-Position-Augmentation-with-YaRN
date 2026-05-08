@@ -2,8 +2,8 @@
 """Aggregate eval results across all conditions into a single table.
 
 Usage:
-    python composable_cot/BABIlong/scripts/aggregate_results.py \
-        --results-dir composable_cot/BABIlong/results/
+    python experiments/babilong/scripts/aggregate_results.py \
+        --results-dir experiments/babilong/results/
 
 Reads summary.json from each condition subdirectory and prints:
   1. Accuracy table (conditions x bins)
@@ -53,7 +53,7 @@ def retention(accs: dict, ref_bin: str = "0k") -> float | None:
 
 def main():
     p = argparse.ArgumentParser()
-    p.add_argument("--results-dir", default="composable_cot/BABIlong/results/")
+    p.add_argument("--results-dir", default="experiments/babilong/results/")
     args = p.parse_args()
 
     # Load all summaries

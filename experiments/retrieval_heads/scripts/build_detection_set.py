@@ -2,13 +2,13 @@
 Phase 1 — build the BABILong-derived detection set for QR-head detection.
 
 Inputs:
-  - composable_cot/BABIlong/analysis/multi_entry_eval/qr_selection/selected_60_stories.json
+  - experiments/babilong/analysis/multi_entry_eval/qr_selection/selected_60_stories.json
       The 60 story indices we locked.
-  - composable_cot/BABIlong/data/eval_multi_entry/{bin}.json
+  - experiments/babilong/data/eval_multi_entry/{bin}.json
       The 305-sample multi-entry eval data, one file per bin (HPC-only path).
 
 Outputs:
-  - composable_cot/retrieval_head_analysis/data/detection_set_{bin}.json
+  - experiments/retrieval_heads/data/detection_set_{bin}.json
       One file per bin, each containing 60 entries in QRHead's LME-style format:
       {idx, question, paragraphs: [{idx, paragraph_text, title}, ...], gt_docs: [...]}.
 
@@ -126,12 +126,12 @@ def main():
     ap.add_argument("--project-dir", default=".",
                     help="repo root (use current dir by default)")
     ap.add_argument("--selection-file",
-                    default="composable_cot/BABIlong/analysis/multi_entry_eval/qr_selection/selected_60_stories.json")
+                    default="experiments/babilong/analysis/multi_entry_eval/qr_selection/selected_60_stories.json")
     ap.add_argument("--multi-entry-dir",
-                    default="composable_cot/BABIlong/data/eval_multi_entry",
+                    default="experiments/babilong/data/eval_multi_entry",
                     help="directory containing the 305-sample multi-entry per-bin JSONs")
     ap.add_argument("--output-dir",
-                    default="composable_cot/retrieval_head_analysis/data")
+                    default="experiments/retrieval_heads/data")
     args = ap.parse_args()
 
     proj = Path(args.project_dir).resolve()

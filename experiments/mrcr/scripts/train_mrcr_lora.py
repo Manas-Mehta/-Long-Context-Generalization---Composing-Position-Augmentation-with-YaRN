@@ -59,9 +59,9 @@ from transformers import (
     TrainingArguments,
 )
 
-# Ensure project root is importable (for rpe/ and composable_cot/)
-# Script is at: RPE/composable_cot/mrcr_context_extension/scripts/train_mrcr_lora.py
-# Project root:  RPE/  (3 levels up from scripts/)
+# Ensure project root is importable (for posaug/)
+# Script is at: experiments/mrcr/scripts/train_mrcr_lora.py
+# Project root:  3 levels up from scripts/
 _SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
 _PROJECT_ROOT = os.path.dirname(os.path.dirname(os.path.dirname(_SCRIPT_DIR)))
 if _PROJECT_ROOT not in sys.path:

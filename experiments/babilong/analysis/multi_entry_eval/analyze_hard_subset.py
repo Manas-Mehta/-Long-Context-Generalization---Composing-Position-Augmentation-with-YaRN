@@ -23,7 +23,7 @@ from pathlib import Path
 BINS = ["0k","1k","2k","4k","8k","16k","32k","64k","128k"]
 LONG_BINS = ["32k","64k","128k"]
 
-BABILONG_DIR = Path(__file__).resolve().parent.parent.parent   # composable_cot/BABIlong
+BABILONG_DIR = Path(__file__).resolve().parent.parent.parent   # experiments/babilong
 EVAL_DIR     = BABILONG_DIR / "data/eval_multi_entry"
 RES_DIR      = BABILONG_DIR / "results"
 OUT_DIR      = BABILONG_DIR / "analysis/multi_entry_eval"
