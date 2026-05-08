@@ -575,14 +575,14 @@ def main():
 
     # RPE callback (reuses existing RPETrainerCallback)
     if args.rpe_config:
-        from composable_cot.scripts.rpe_llamafactory_patch import RPETrainerCallback
+        from posaug.callbacks_rpe import RPETrainerCallback
         rpe_callback = RPETrainerCallback(args.rpe_config)
         callbacks.append(rpe_callback)
         print(f"\n  RPE callback loaded from config: {args.rpe_config}", flush=True)
 
     # PoSE callback
     if args.pose_config:
-        from composable_cot.scripts.pose_patch import PoSETrainerCallback
+        from posaug.callbacks_pose import PoSETrainerCallback
         pose_callback = PoSETrainerCallback(args.pose_config)
         callbacks.append(pose_callback)
         print(f"\n  PoSE callback loaded from config: {args.pose_config}", flush=True)

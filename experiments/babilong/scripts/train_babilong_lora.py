@@ -849,12 +849,12 @@ def main():
         print(f"\n  Mid-training eval: every {args.eval_every} steps on 0K/8K/32K subsets", flush=True)
 
     if args.rpe_config:
-        from composable_cot.scripts.rpe_llamafactory_patch import RPETrainerCallback
+        from posaug.callbacks_rpe import RPETrainerCallback
         callbacks.append(RPETrainerCallback(args.rpe_config))
         print(f"\n  RPE callback: {args.rpe_config}", flush=True)
 
     if args.pose_config:
-        from composable_cot.scripts.pose_patch import PoSETrainerCallback
+        from posaug.callbacks_pose import PoSETrainerCallback
         callbacks.append(PoSETrainerCallback(args.pose_config))
         print(f"\n  PoSE callback: {args.pose_config}", flush=True)
 

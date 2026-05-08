@@ -31,7 +31,7 @@ if _PROJECT_ROOT not in sys.path:
 from transformers import PreTrainedModel, TrainerCallback
 from typing_extensions import override
 
-from rpe.patching import RPEPatcher
+from posaug.patching import RPEPatcher
 
 
 # ---------------------------------------------------------------------------

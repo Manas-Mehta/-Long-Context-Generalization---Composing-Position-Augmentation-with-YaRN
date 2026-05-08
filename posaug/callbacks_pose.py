@@ -22,7 +22,7 @@ if _PROJECT_ROOT not in sys.path:
 from transformers import TrainerCallback
 from typing_extensions import override
 
-from rpe.pose_patching import PoSEPatcher
+from posaug.pose_patching import PoSEPatcher
 
 
 def load_pose_config(config_path: str) -> dict:

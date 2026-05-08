@@ -1,15 +1,15 @@
-"""Comprehensive sanity checks for the RPE module.
+"""Comprehensive sanity checks for the posaug RPE module.
 
-Run all tests:       pytest rpe/tests/test_rpe.py -v
-Skip slow tests:     pytest rpe/tests/test_rpe.py -v -m "not slow"
-Only slow tests:     pytest rpe/tests/test_rpe.py -v -m slow
+Run all tests:       pytest posaug/tests/test_rpe.py -v
+Skip slow tests:     pytest posaug/tests/test_rpe.py -v -m "not slow"
+Only slow tests:     pytest posaug/tests/test_rpe.py -v -m slow
 """
 
 import pytest
 import torch
 
-from rpe.core import RandomizedPositionalEncoding, transform_position_ids
-from rpe.patching import RPEPatcher
+from posaug.core import RandomizedPositionalEncoding, transform_position_ids
+from posaug.patching import RPEPatcher
 
 
 # ---------------------------------------------------------------------------
