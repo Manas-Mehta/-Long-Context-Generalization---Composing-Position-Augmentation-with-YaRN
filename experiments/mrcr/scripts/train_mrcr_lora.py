@@ -308,10 +308,9 @@ def _verify_yarn(model, config):
         if n_changed == 0:
             print("  WARNING: YaRN NOT APPLIED! inv_freq identical to vanilla.", flush=True)
             print("  Attempting manual YaRN patch...", flush=True)
-            # Import fallback from eval script
-            # Both train_mrcr_lora.py and eval_mrcr.py live in the same scripts/ dir;
-            # _SCRIPT_DIR was added to sys.path at the top of this file.
-            from eval_mrcr import _apply_yarn_manual
+            # Import fallback from eval script. _PROJECT_ROOT is on sys.path
+            # (set above), so the dotted path resolves from the repo root.
+            from experiments.mrcr.scripts.eval_mrcr import _apply_yarn_manual
             _apply_yarn_manual(model, 4.0, config)
     else:
         print("  inv_freq: not found as buffer (computed dynamically)", flush=True)
