@@ -1,0 +1,35 @@
+MRCR Prediction Analysis — Summary Statistics
+============================================================
+
+Mean Score per Condition × Bin:
+Condition                   4K-8K     8K-16K    16K-32K    32K-64K   64K-128K
+--------------------------------------------------------------------------
+LoRA baseline               0.998      0.966      0.746      0.545      0.317
+RPE cur L=16K               0.924      0.939      0.874      0.688      0.330
+RPE fixed+YaRN              0.531      0.499      0.641      0.590      0.551
+PoSE fixed                  0.961      0.876      0.937      0.602      0.274
+YaRN+LoRA                   0.891      0.692      0.619      0.619      0.441
+
+% Perfect (score ≥ 0.95) per Condition × Bin:
+Condition                   4K-8K     8K-16K    16K-32K    32K-64K   64K-128K
+--------------------------------------------------------------------------
+LoRA baseline               96.2%      93.3%      73.3%      46.7%      26.7%
+RPE cur L=16K               88.5%      93.3%      86.7%      66.7%      23.3%
+RPE fixed+YaRN              50.0%      40.0%      56.7%      53.3%      50.0%
+PoSE fixed                  92.3%      83.3%      93.3%      56.7%      20.0%
+YaRN+LoRA                   84.6%      60.0%      60.0%      53.3%      40.0%
+
+
+Needle Position Analysis:
+------------------------------------------------------------
+Samples with target BEFORE distractor: 400
+Samples with target AFTER distractor:  330
+Avg score (target earlier): 0.582
+Avg score (target later):   0.792
+
+Per condition:
+  LoRA baseline          earlier: avg=0.613 %perf=55%  later: avg=0.820 %perf=80%  gap=+0.206
+  RPE cur L=16K          earlier: avg=0.704 %perf=66%  later: avg=0.798 %perf=77%  gap=+0.094
+  RPE fixed+YaRN         earlier: avg=0.396 %perf=32%  later: avg=0.765 %perf=71%  gap=+0.369
+  PoSE fixed             earlier: avg=0.625 %perf=58%  later: avg=0.843 %perf=82%  gap=+0.218
+  YaRN+LoRA              earlier: avg=0.572 %perf=51%  later: avg=0.736 %perf=68%  gap=+0.164

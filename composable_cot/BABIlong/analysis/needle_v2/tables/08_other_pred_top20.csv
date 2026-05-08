@@ -1,0 +1,20 @@
+model,pred,count
+lora_base,"k
+user
+where was the milk before",1
+lora_base,"note: the sentence ""john left the",1
+lora_base,kamp,1
+y2_base,hall,19
+y2_base,"k
+user
+office",1
+y2_base,station,1
+y2_base,kuntry,1
+y2_base,uncle lyman's,1
+y2_base,sayes court,1
+y2_rpe_cur_L16k,hall,2
+y2_rpe_cur_L16k,"k
+
+itchen",1
+y2_rpe_cur_L16k,hut,1
+y2_rpe_cur_L16k,koffice,1

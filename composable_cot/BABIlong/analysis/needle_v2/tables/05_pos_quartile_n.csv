@@ -1,0 +1,13 @@
+model,mean_pos_q,beg,mid,end
+lora_base,Q1,1257.0,,
+lora_base,Q2,423.0,831.0,
+lora_base,Q3,1.0,834.0,420.0
+lora_base,Q4,,3.0,1252.0
+y2_base,Q1,1257.0,,
+y2_base,Q2,423.0,831.0,
+y2_base,Q3,1.0,834.0,420.0
+y2_base,Q4,,3.0,1252.0
+y2_rpe_cur_L16k,Q1,1257.0,,
+y2_rpe_cur_L16k,Q2,423.0,831.0,
+y2_rpe_cur_L16k,Q3,1.0,834.0,420.0
+y2_rpe_cur_L16k,Q4,,3.0,1252.0

@@ -1,0 +1,4 @@
+model,OTHER,bathroom,bedroom,garden,hallway,kitchen,office,TOTAL
+lora_base,9,160,218,151,186,274,149,1147
+y2_base,35,74,137,213,363,182,369,1373
+y2_rpe_cur_L16k,5,109,140,136,222,158,238,1008
