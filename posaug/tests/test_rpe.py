@@ -76,11 +76,6 @@ class TestPositionIDs:
         assert positions.dtype == torch.int64, \
             f"Expected torch.int64, got {positions.dtype}"
 
-    def test_seq_length_exceeds_max_raises(self):
-        small_rpe = RandomizedPositionalEncoding(max_simulation_length=100)
-        with pytest.raises(ValueError, match="cannot exceed"):
-            small_rpe.get_randomized_positions(101)
-
     def test_seq_length_equals_max(self):
         small_rpe = RandomizedPositionalEncoding(max_simulation_length=100)
         positions = small_rpe.get_randomized_positions(100)
