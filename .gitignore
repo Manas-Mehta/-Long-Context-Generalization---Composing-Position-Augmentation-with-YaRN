@@ -49,3 +49,6 @@ qwen2.5-7b-instruct/
 
 # Anthropic / Claude Code
 .claude/
+
+# Internal working docs (not for public repo)
+HANDOFF.md
