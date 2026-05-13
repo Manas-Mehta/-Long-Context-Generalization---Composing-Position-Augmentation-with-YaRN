@@ -21,7 +21,7 @@ set -eo pipefail
 
 NETID="mm14444"
 SCRATCH="/scratch/${NETID}"
-PROJECT_DIR="${SCRATCH}/RPE"
+PROJECT_DIR="${SCRATCH}/positionaug-YaRN"
 EXPT_DIR="experiments/babilong"
 
 eval "$(conda shell.bash hook)"
