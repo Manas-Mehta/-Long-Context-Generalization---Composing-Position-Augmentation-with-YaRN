@@ -27,7 +27,7 @@ These are the "before" numbers from the original 100-sample sweep. Use these to 
 - `sample_difficulty_tags.json` — per-sample tags for ALL 999 samples in original eval: `{idx, obj, target_entries, multi}`. This is what filtered the 305 indices.
 - `sample_excerpts.json` — first sample from each bin (0k through 128k), with long context fields truncated. Shows what the data actually looks like.
 
-Full filtered dataset (not included here — too large): `composable_cot/BABIlong/data/eval_multi_entry/*.json` (~310 MB total)
+Full filtered dataset (not included here — too large): `experiments/babilong/data/eval_multi_entry/*.json` (~310 MB total). On HPC, the canonical copy lives under the legacy archive at `/scratch/mm14444/RPE/composable_cot/BABIlong/data/eval_multi_entry/`; the new repo's `experiments/babilong/data/eval_multi_entry/` is wired to it via per-bin symlinks (see top-level HANDOFF.md §2).
 
 ### `scripts/` — reproducibility
 - `create_multi_entry_eval.py` — filters full eval → multi-entry subset using tags
