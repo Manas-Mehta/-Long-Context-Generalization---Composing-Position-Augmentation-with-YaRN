@@ -494,6 +494,8 @@ def parse_args():
     parser.add_argument("--output-dir", type=str, required=True)
     parser.add_argument("--lr", type=float, default=2e-4)
     parser.add_argument("--epochs", type=int, default=5)
+    parser.add_argument("--max-steps", type=int, default=-1,
+                        help="Override epochs (for smoke testing)")
     parser.add_argument("--batch-size", type=int, default=1)
     parser.add_argument("--grad-accum", type=int, default=4)
     parser.add_argument("--warmup-ratio", type=float, default=0.1)
@@ -601,6 +603,7 @@ def main():
     training_args = TrainingArguments(
         output_dir=args.output_dir,
         num_train_epochs=args.epochs,
+        max_steps=args.max_steps,
         per_device_train_batch_size=args.batch_size,
         gradient_accumulation_steps=args.grad_accum,
         learning_rate=args.lr,
