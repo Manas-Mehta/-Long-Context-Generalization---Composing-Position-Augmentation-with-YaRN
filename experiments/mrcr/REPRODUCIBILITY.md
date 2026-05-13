@@ -75,12 +75,11 @@ YaRN factor 4.
 `eval_mrcr.py` auto-detects transformers 4 vs 5 for the YaRN config injection
 — no manual fork needed. See `_apply_yarn_manual` in the script.
 
-## Phase-6 / seed-test / expt3 directories
+## Legacy ablations
 
-`phase6/`, `seed_test/`, `expt3_compositional/` are ablation/follow-up runs
-from earlier experiment phases. Their SLURM scripts have not been migrated to
-the new path layout and are gated behind their own READMEs. Treat them as
-provenance; they are not part of the §4.3 reproduction.
+Phase-6 L-sweep, seed-variance, and rank-128 compositional ablations now live
+under `_archive/`. See `_archive/README.md` for the hyperparameter grid each
+one swept. None of them are part of the §4.3 reproduction.
 
 ## Legacy SLURM templates
 
