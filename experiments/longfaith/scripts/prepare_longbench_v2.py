@@ -47,16 +47,24 @@ def load_v2(local_path: str | None) -> list[dict]:
     if local_path:
         with open(local_path) as f:
             return json.load(f)
-    # Pull from HF
+    # Pull from HF using hf_hub_download (raw file, no Arrow conversion).
+    # The datasets library load_dataset() builds an in-memory Arrow table
+    # which OOMs login nodes on the 465MB v2 file. Direct download avoids
+    # this and is faster.
     try:
-        from datasets import load_dataset
+        from huggingface_hub import hf_hub_download
     except ImportError:
-        print("ERROR: datasets not installed. pip install datasets",
-              file=sys.stderr)
+        print("ERROR: huggingface_hub not installed.", file=sys.stderr)
         sys.exit(1)
-    print("  Loading THUDM/LongBench-v2 from HF...")
-    ds = load_dataset("THUDM/LongBench-v2", split="train")
-    return [dict(ex) for ex in ds]
+    print("  Downloading THUDM/LongBench-v2/data.json via hf_hub_download...")
+    path = hf_hub_download(
+        repo_id="THUDM/LongBench-v2",
+        filename="data.json",
+        repo_type="dataset",
+    )
+    print(f"  Downloaded -> {path}")
+    with open(path) as f:
+        return json.load(f)
 
 
 def filter_to_qa(examples: list[dict]) -> list[dict]:
