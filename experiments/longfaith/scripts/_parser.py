@@ -18,7 +18,10 @@ Three-stage parser:
 
 import re
 
-_ANS_PRIMARY  = re.compile(r"[Tt]he answer is\s*[:\-]?\s*\(?\s*([ABCD])\b")
+# Accepts both our LongFaith-style phrasing ("The answer is X") and the THUDM
+# LongBench v2 official phrasing ("The correct answer is (X)" / "The correct
+# answer is X"). The optional "correct " span lets one regex cover both.
+_ANS_PRIMARY  = re.compile(r"[Tt]he\s+(?:correct\s+)?answer is\s*[:\-]?\s*\(?\s*([ABCD])\b")
 _ANS_FALLBACK = re.compile(r"\b([ABCD])\b")
 _ANS_EXPLICIT = re.compile(r"\b(?:answer|choice|option)\b\D{0,10}\b([ABCD])\b", re.IGNORECASE)
 

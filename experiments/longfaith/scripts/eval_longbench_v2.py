@@ -94,6 +94,39 @@ MCQ_PROMPT = (
 )
 
 
+# THUDM/LongBench prompts/0shot_cot.txt — verbatim copy (curly apostrophe
+# preserved). Used as pass-1 of the official two-pass CoT protocol when
+# --two-pass is set. See notes/longbench_v2_protocol_match.md.
+OFFICIAL_COT_PROMPT = (
+    "Please read the following text and answer the questions below.\n\n"
+    "<text>\n{context}\n</text>\n\n"
+    "What is the correct answer to this question: {question}\n"
+    "Choices:\n"
+    "(A) {choice_A}\n"
+    "(B) {choice_B}\n"
+    "(C) {choice_C}\n"
+    "(D) {choice_D}\n\n"
+    "Let’s think step by step:"
+)
+
+# THUDM/LongBench prompts/0shot_cot_ans.txt — verbatim. Pass-2 of the
+# two-pass protocol: context is replaced with a stub, the pass-1 CoT is
+# injected, and the model is asked to emit "The correct answer is (X)".
+OFFICIAL_COT_ANS_PROMPT = (
+    "Please read the following text and answer the questions below.\n\n"
+    "The text is too long and omitted here.\n\n"
+    "What is the correct answer to this question: {question}\n"
+    "Choices:\n"
+    "(A) {choice_A}\n"
+    "(B) {choice_B}\n"
+    "(C) {choice_C}\n"
+    "(D) {choice_D}\n\n"
+    "Let’s think step by step: {cot}\n\n"
+    "Based on the above, what is the single, most likely answer choice? "
+    "Format your response as follows: \"The correct answer is (insert answer here)\"."
+)
+
+
 def _chunk_into_20(context: str) -> str:
     """Slice context into 20 equal character-based chunks labeled [1]..[20].
 
@@ -109,23 +142,43 @@ def _chunk_into_20(context: str) -> str:
     )
 
 
-def build_prompt(sample: dict, chunk: bool = True) -> str:
-    """Build the MCQ prompt for one v2 example.
+def build_prompt(sample: dict, chunk: bool = True, official: bool = False) -> str:
+    """Build the MCQ pass-1 prompt for one v2 example.
 
     chunk=True  (default): slice the context into 20 char-equal chunks
                            labeled [1]..[20] — matches LongFaith training shape.
     chunk=False: pass the raw context verbatim — diagnostic for mismatch #2
-                 in notes/longfaith_diagnosis_2026-05-15.md (chunking-into-20
-                 may fight v2's continuous documents).
+                 in notes/longfaith_diagnosis_2026-05-15.md.
+    official=True: use the THUDM/LongBench 0shot_cot.txt template verbatim
+                   (pass-1 of the official two-pass protocol). Chunking still
+                   applies to the $DOC$ slot if chunk=True.
     """
     context = _chunk_into_20(sample["context"]) if chunk else sample["context"]
-    return MCQ_PROMPT.format(
+    template = OFFICIAL_COT_PROMPT if official else MCQ_PROMPT
+    return template.format(
         context=context,
         question=sample["question"],
         choice_A=sample["choice_A"],
         choice_B=sample["choice_B"],
         choice_C=sample["choice_C"],
         choice_D=sample["choice_D"],
+    )
+
+
+def build_official_answer_extraction_prompt(sample: dict, cot: str) -> str:
+    """Pass-2 prompt of the THUDM two-pass protocol.
+
+    Drops the long context (replaced with a stub), injects the pass-1 CoT,
+    and instructs the model to emit "The correct answer is (X)". The model
+    therefore only needs short-context attention for pass 2.
+    """
+    return OFFICIAL_COT_ANS_PROMPT.format(
+        question=sample["question"],
+        choice_A=sample["choice_A"],
+        choice_B=sample["choice_B"],
+        choice_C=sample["choice_C"],
+        choice_D=sample["choice_D"],
+        cot=cot,
     )
 
 
@@ -239,6 +292,7 @@ def eval_bin(
     no_cuda: bool,
     chunk: bool = True,
     letter_forced: bool = False,
+    two_pass: bool = False,
 ) -> tuple[list[dict], dict]:
     if max_samples > 0:
         indices = indices[:max_samples]
@@ -262,7 +316,7 @@ def eval_bin(
 
         sample = qa_data[qa_idx]
         target = sample["answer"].strip().upper()
-        user_content = build_prompt(sample, chunk=chunk)
+        user_content = build_prompt(sample, chunk=chunk, official=two_pass)
 
         prompt_text = tokenizer.apply_chat_template(
             [{"role": "user", "content": user_content}],
@@ -285,12 +339,52 @@ def eval_bin(
             input_ids = input_ids.to(device)
 
         letter_logits = None
+        cot_response   = None
+        n_tokens_pass2 = None
         try:
             if letter_forced:
                 letter, letter_logits = _letter_logit_bias_decode(
                     model, tokenizer, input_ids, device
                 )
                 raw_output = letter
+            elif two_pass:
+                # Pass 1: CoT generation with the full long-context prompt.
+                # 1024-token cap mirrors THUDM/LongBench pred.py CoT setting.
+                with torch.no_grad():
+                    out_p1 = model.generate(
+                        input_ids,
+                        max_new_tokens=max(max_new_tokens, 1024),
+                        do_sample=False,
+                        pad_token_id=tokenizer.eos_token_id,
+                    )
+                cot_response = tokenizer.decode(
+                    out_p1[0][input_ids.shape[1]:], skip_special_tokens=True
+                ).strip()
+                # Pass 2: drop the long context, inject the CoT, force the
+                # final letter. Pass-2 prompts are short (~few hundred tokens)
+                # so no max_seq_len clipping is needed.
+                user_content_p2 = build_official_answer_extraction_prompt(
+                    sample, cot_response
+                )
+                prompt_text_p2 = tokenizer.apply_chat_template(
+                    [{"role": "user", "content": user_content_p2}],
+                    tokenize=False,
+                    add_generation_prompt=True,
+                )
+                input_ids_p2  = tokenizer.encode(prompt_text_p2, return_tensors="pt")
+                n_tokens_pass2 = input_ids_p2.shape[1]
+                if not no_cuda:
+                    input_ids_p2 = input_ids_p2.to(device)
+                with torch.no_grad():
+                    out_p2 = model.generate(
+                        input_ids_p2,
+                        max_new_tokens=128,
+                        do_sample=False,
+                        pad_token_id=tokenizer.eos_token_id,
+                    )
+                raw_output = tokenizer.decode(
+                    out_p2[0][input_ids_p2.shape[1]:], skip_special_tokens=True
+                ).strip()
             else:
                 with torch.no_grad():
                     out = model.generate(
@@ -332,6 +426,9 @@ def eval_bin(
         }
         if letter_logits is not None:
             rec["letter_logits"] = {L: round(l, 4) for L, l in zip("ABCD", letter_logits)}
+        if cot_response is not None:
+            rec["cot_response"]   = cot_response
+            rec["n_tokens_pass2"] = n_tokens_pass2
         results.append(rec)
 
     n_correct  = sum(r["correct"] for r in results)
@@ -396,8 +493,22 @@ def parse_args():
                         "letter (A/B/C/D) via logit masking. Skips CoT entirely. "
                         "Tests whether verbose-CoT overthinking is the bottleneck "
                         "(mismatch #1).")
+    p.add_argument("--two-pass", action="store_true",
+                   help="Use the THUDM/LongBench v2 two-pass CoT protocol. "
+                        "Pass 1 reasons with the official 0shot_cot.txt prompt "
+                        "(1024 tokens). Pass 2 drops the context, injects the "
+                        "pass-1 CoT, and forces 'The correct answer is (X)' "
+                        "(128 tokens). Only pass-2 output is parsed. Borrowed "
+                        "(not full match) from THUDM's protocol — we keep YaRN "
+                        "and our long-context filtering. See "
+                        "notes/longbench_v2_protocol_match.md.")
 
-    return p.parse_args()
+    args = p.parse_args()
+    if args.two_pass and args.letter_forced:
+        print("ERROR: --two-pass and --letter-forced are mutually exclusive.",
+              file=sys.stderr)
+        sys.exit(2)
+    return args
 
 
 def main():
@@ -429,6 +540,7 @@ def main():
     print(f"  Max new toks: {args.max_new_tokens}")
     print(f"  Chunk into 20:{not args.no_chunk}")
     print(f"  Letter-forced:{args.letter_forced}")
+    print(f"  Two-pass CoT: {args.two_pass}")
     print(f"  Timestamp:    {datetime.now().isoformat()}")
     print(f"  QA examples:  {len(qa_data)}")
     for b in args.bins:
@@ -470,6 +582,7 @@ def main():
             no_cuda       = args.no_cuda,
             chunk         = not args.no_chunk,
             letter_forced = args.letter_forced,
+            two_pass      = args.two_pass,
         )
 
         pred_path = os.path.join(args.output_dir, f"predictions_{bin_label}.json")
@@ -493,6 +606,7 @@ def _save_summary(args, all_stats: dict, t_total: float):
         "yarn_factor":   args.yarn_factor,
         "no_chunk":      args.no_chunk,
         "letter_forced": args.letter_forced,
+        "two_pass":      args.two_pass,
         "timestamp":     datetime.now().isoformat(),
         "elapsed_s":     round(time.time() - t_total, 1),
         "bins":          all_stats,
