@@ -1,0 +1,24 @@
+# RPE Configuration for LongFaith — Curriculum to L=16384
+#
+# Mirrors BABILong's RPE config exactly (same L=16K target, same 2-epoch
+# curriculum). LongFaith training contexts are shorter than BABILong's
+# (LongFaith p50 ~3.6K / max ~5.7K Qwen tokens vs BABILong's 0K–8K bins),
+# so L/train_len ratio is ~2.7x vs BABILong's ~2x. Defensible to keep
+# L=16K for apples-to-apples comparison with BABILong; sweep L=10K/24K
+# later if results warrant.
+#
+# Epoch 1: L=8192  — warm-up, near-sequential positions.
+# Epoch 2: L=16384 — full target.
+#
+# L=16K is inside YaRN f=2 extended window (~64K) so all sampled position
+# IDs stay in the valid frequency range.
+
+rpe:
+  enabled: true
+  max_simulation_length: 16384
+  seed: null
+  training_mode: true
+  inference_mode: false
+  curriculum:
+    1: 8192
+    2: 16384

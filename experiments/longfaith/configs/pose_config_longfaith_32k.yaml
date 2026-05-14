@@ -1,0 +1,18 @@
+# PoSE Configuration for LongFaith — Fixed target_length=32768
+#
+# Mirrors BABILong's PoSE config. LongFaith max_seq_len=9216 (same as
+# BABILong); target_length=32768 simulates context up to 32K via random
+# position-ID gaps between the two chunks.
+#
+# With max_seq_len=9216 and target_length=32768:
+#   Chunk 1: positions [0, ..., ~4608]
+#   Gap:     random offset up to ~23000
+#   Chunk 2: positions [offset, ..., offset + ~4608]
+#
+# target=32K (not 16K): MRCR sweep confirmed P32 > P16 on long-context
+# generalisation.
+
+pose:
+  enabled: true
+  target_length: 32768
+  seed: null
