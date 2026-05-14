@@ -209,8 +209,11 @@ def main():
             sys.exit(1)
         import shutil
         raw_path = os.path.join(args.output_dir, TARGET_FILENAME)
-        shutil.copy(args.local_path, raw_path)
-        print(f"  Copied {args.local_path} -> {raw_path}")
+        if os.path.abspath(args.local_path) == os.path.abspath(raw_path):
+            print(f"  --local-path is already at the target location, no copy needed")
+        else:
+            shutil.copy(args.local_path, raw_path)
+            print(f"  Copied {args.local_path} -> {raw_path}")
 
     filtered_path = os.path.join(args.output_dir, "faith_sft_2k_filtered.json")
     print(f"\n  Filtering malformed examples (bracket count != 20)...")
