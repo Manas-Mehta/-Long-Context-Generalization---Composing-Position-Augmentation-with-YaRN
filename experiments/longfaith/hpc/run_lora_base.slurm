@@ -7,9 +7,10 @@
 #SBATCH --cpus-per-task=8
 #SBATCH --mem=96G
 #SBATCH --gres=gpu:1
-#SBATCH --time=08:00:00
+#SBATCH --time=12:00:00
 #SBATCH --output=slurm_logs/lf_lora_base_%j.out
 #SBATCH --error=slurm_logs/lf_lora_base_%j.err
+#SBATCH --requeue
 
 # ============================================================================
 # Condition 1: lora_base (none / none)

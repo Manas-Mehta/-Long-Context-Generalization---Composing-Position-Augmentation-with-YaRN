@@ -7,9 +7,10 @@
 #SBATCH --cpus-per-task=8
 #SBATCH --mem=96G
 #SBATCH --gres=gpu:1
-#SBATCH --time=03:00:00
+#SBATCH --time=06:00:00
 #SBATCH --output=slurm_logs/lf_rpe_yarn4_%j.out
 #SBATCH --error=slurm_logs/lf_rpe_yarn4_%j.err
+#SBATCH --requeue
 
 # ============================================================================
 # Eval-only Row 6: rpe_only_yarn4 (RPE / YaRN)
