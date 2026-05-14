@@ -109,15 +109,18 @@ def _chunk_into_20(context: str) -> str:
     )
 
 
-def build_prompt(sample: dict) -> str:
-    # Slice the v2 context into 20 character-equal chunks labeled [1]..[20],
-    # exactly mirroring LongFaith authors' published eval code for single-doc
-    # benchmarks (qasper / multifieldqa_en in their data_manager.py). This
-    # gives the trained model the same [N]-labeled multi-doc structure it saw
-    # during training, even though v2 contexts have no natural boundaries.
-    # See notes/longfaith_experiment.md "Eval prompt: Option A vs B vs D".
+def build_prompt(sample: dict, chunk: bool = True) -> str:
+    """Build the MCQ prompt for one v2 example.
+
+    chunk=True  (default): slice the context into 20 char-equal chunks
+                           labeled [1]..[20] — matches LongFaith training shape.
+    chunk=False: pass the raw context verbatim — diagnostic for mismatch #2
+                 in notes/longfaith_diagnosis_2026-05-15.md (chunking-into-20
+                 may fight v2's continuous documents).
+    """
+    context = _chunk_into_20(sample["context"]) if chunk else sample["context"]
     return MCQ_PROMPT.format(
-        context=_chunk_into_20(sample["context"]),
+        context=context,
         question=sample["question"],
         choice_A=sample["choice_A"],
         choice_B=sample["choice_B"],
@@ -126,24 +129,9 @@ def build_prompt(sample: dict) -> str:
     )
 
 
-# Parser: first try the primary "The answer is X" pattern.
-# Fallback: look for a final standalone A/B/C/D within the last ~200 chars
-# (in case the model uses minor phrasing variants).
-_ANS_PRIMARY  = re.compile(r"[Tt]he answer is\s*[:\-]?\s*\(?\s*([ABCD])\b")
-_ANS_FALLBACK = re.compile(r"\b([ABCD])\b")
-
-
-def parse_answer(raw_output: str) -> tuple[str | None, bool]:
-    """Return (parsed_letter, used_primary). parsed_letter is None on miss."""
-    m = _ANS_PRIMARY.search(raw_output)
-    if m:
-        return m.group(1), True
-    # Fallback: last standalone letter in the trailing portion of the output
-    tail = raw_output[-300:]
-    matches = _ANS_FALLBACK.findall(tail)
-    if matches:
-        return matches[-1], False
-    return None, False
+# Three-stage parser lives in _parser.py so rescore.py can import it without
+# pulling in torch. See _parser.py and notes/longfaith_diagnosis_2026-05-15.md.
+from _parser import parse_answer  # noqa: E402
 
 
 # ---------------------------------------------------------------------------
@@ -218,6 +206,27 @@ def load_model(
 # Eval one bin
 # ---------------------------------------------------------------------------
 
+def _letter_logit_bias_decode(model, tokenizer, input_ids, device):
+    """Decode a single token with logits masked to {A, B, C, D}.
+
+    Used by the --letter-forced diagnostic to skip CoT entirely. Returns the
+    chosen letter as a raw string (one of "A"/"B"/"C"/"D") plus the top-4
+    logit gap for inspection.
+    """
+    letter_ids = []
+    for L in "ABCD":
+        ids = tokenizer.encode(L, add_special_tokens=False)
+        if len(ids) != 1:
+            ids = tokenizer.encode(" " + L, add_special_tokens=False)
+        letter_ids.append(ids[0])
+    with torch.no_grad():
+        out = model(input_ids)
+        logits = out.logits[0, -1]  # last-position logits
+    sub = logits[letter_ids]
+    pick = int(sub.argmax().item())
+    return "ABCD"[pick], sub.tolist()
+
+
 def eval_bin(
     model,
     tokenizer,
@@ -228,6 +237,8 @@ def eval_bin(
     max_seq_len: int,
     max_new_tokens: int,
     no_cuda: bool,
+    chunk: bool = True,
+    letter_forced: bool = False,
 ) -> tuple[list[dict], dict]:
     if max_samples > 0:
         indices = indices[:max_samples]
@@ -251,13 +262,18 @@ def eval_bin(
 
         sample = qa_data[qa_idx]
         target = sample["answer"].strip().upper()
-        user_content = build_prompt(sample)
+        user_content = build_prompt(sample, chunk=chunk)
 
         prompt_text = tokenizer.apply_chat_template(
             [{"role": "user", "content": user_content}],
             tokenize=False,
             add_generation_prompt=True,
         )
+        # In letter-forced mode, append "The answer is " so the very next token
+        # is the model's letter pick. Skips CoT entirely.
+        if letter_forced:
+            prompt_text = prompt_text + "The answer is "
+
         input_ids = tokenizer.encode(prompt_text, return_tensors="pt")
         n_tokens  = input_ids.shape[1]
 
@@ -268,17 +284,24 @@ def eval_bin(
         if not no_cuda:
             input_ids = input_ids.to(device)
 
+        letter_logits = None
         try:
-            with torch.no_grad():
-                out = model.generate(
-                    input_ids,
-                    max_new_tokens=max_new_tokens,
-                    do_sample=False,
-                    pad_token_id=tokenizer.eos_token_id,
+            if letter_forced:
+                letter, letter_logits = _letter_logit_bias_decode(
+                    model, tokenizer, input_ids, device
                 )
-            raw_output = tokenizer.decode(
-                out[0][input_ids.shape[1]:], skip_special_tokens=True
-            ).strip()
+                raw_output = letter
+            else:
+                with torch.no_grad():
+                    out = model.generate(
+                        input_ids,
+                        max_new_tokens=max_new_tokens,
+                        do_sample=False,
+                        pad_token_id=tokenizer.eos_token_id,
+                    )
+                raw_output = tokenizer.decode(
+                    out[0][input_ids.shape[1]:], skip_special_tokens=True
+                ).strip()
         except torch.cuda.OutOfMemoryError:
             torch.cuda.empty_cache()
             raw_output = "__OOM__"
@@ -287,38 +310,49 @@ def eval_bin(
             raw_output = f"__ERROR__: {e}"
             n_skip += 1
 
-        parsed, used_primary = parse_answer(raw_output)
-        if parsed is None:
-            n_parser_miss += 1
+        choices = {L: sample[f"choice_{L}"] for L in "ABCD"}
+        if letter_forced and raw_output in "ABCD":
+            parsed, parser_stage = raw_output, "letter_forced"
+        else:
+            parsed, parser_stage = parse_answer(raw_output, choices)
+            if parser_stage == "miss":
+                n_parser_miss += 1
         correct = parsed == target
 
-        results.append({
+        rec = {
             "id":           sample.get("_id"),
             "sub_domain":   sample.get("sub_domain"),
             "question":     sample["question"],
             "target":       target,
             "parsed":       parsed,
             "correct":      correct,
-            "parser":       "primary" if used_primary else ("fallback" if parsed else "miss"),
+            "parser":       parser_stage,
             "raw_output":   raw_output,
             "n_tokens":     n_tokens,
-        })
+        }
+        if letter_logits is not None:
+            rec["letter_logits"] = {L: round(l, 4) for L, l in zip("ABCD", letter_logits)}
+        results.append(rec)
 
-    n_correct = sum(r["correct"] for r in results)
-    accuracy  = n_correct / len(results) if results else 0.0
+    n_correct  = sum(r["correct"] for r in results)
+    n_recovery = sum(1 for r in results if r["parser"] == "recovery")
+    n_fallback = sum(1 for r in results if r["parser"] == "fallback")
+    accuracy   = n_correct / len(results) if results else 0.0
 
     stats = {
         "n":             len(results),
         "n_correct":     n_correct,
         "accuracy":      round(accuracy, 4),
         "n_parser_miss": n_parser_miss,
+        "n_recovery":    n_recovery,
+        "n_fallback":    n_fallback,
         "n_skipped":     n_skip,
         "elapsed_s":     round(time.time() - t_bin, 1),
     }
     print(
         f"    [{bin_label}] DONE: {n_correct}/{len(results)} correct "
-        f"({accuracy:.1%}) | parser_miss={n_parser_miss} | "
-        f"{stats['elapsed_s']:.0f}s",
+        f"({accuracy:.1%}) | parser miss={n_parser_miss} fallback={n_fallback} "
+        f"recovery={n_recovery} | {stats['elapsed_s']:.0f}s",
         flush=True,
     )
     return results, stats
@@ -351,6 +385,18 @@ def parse_args():
     p.add_argument("--max-seq-len",    type=int, default=131072)
     p.add_argument("--max-new-tokens", type=int, default=512)
 
+    # Diagnostic prompt / decoding variants — see
+    # notes/longfaith_diagnosis_2026-05-15.md Tier 2.
+    p.add_argument("--no-chunk", action="store_true",
+                   help="Skip _chunk_into_20: feed the raw context verbatim. "
+                        "Tests whether the [1]..[20] char-equal chunking fights "
+                        "v2's continuous documents (mismatch #2).")
+    p.add_argument("--letter-forced", action="store_true",
+                   help="Append 'The answer is ' to prompt and decode a single "
+                        "letter (A/B/C/D) via logit masking. Skips CoT entirely. "
+                        "Tests whether verbose-CoT overthinking is the bottleneck "
+                        "(mismatch #1).")
+
     return p.parse_args()
 
 
@@ -381,6 +427,8 @@ def main():
     print(f"  Max samples:  {args.max_samples or 'all'}")
     print(f"  Max seq len:  {args.max_seq_len}")
     print(f"  Max new toks: {args.max_new_tokens}")
+    print(f"  Chunk into 20:{not args.no_chunk}")
+    print(f"  Letter-forced:{args.letter_forced}")
     print(f"  Timestamp:    {datetime.now().isoformat()}")
     print(f"  QA examples:  {len(qa_data)}")
     for b in args.bins:
@@ -420,6 +468,8 @@ def main():
             max_seq_len   = args.max_seq_len,
             max_new_tokens= args.max_new_tokens,
             no_cuda       = args.no_cuda,
+            chunk         = not args.no_chunk,
+            letter_forced = args.letter_forced,
         )
 
         pred_path = os.path.join(args.output_dir, f"predictions_{bin_label}.json")
@@ -437,13 +487,15 @@ def _save_summary(args, all_stats: dict, t_total: float):
     total_n       = sum(s["n"]         for s in all_stats.values())
     total_correct = sum(s["n_correct"] for s in all_stats.values())
     summary = {
-        "condition":   args.condition,
-        "checkpoint":  args.checkpoint_dir,
-        "enable_yarn": args.enable_yarn,
-        "yarn_factor": args.yarn_factor,
-        "timestamp":   datetime.now().isoformat(),
-        "elapsed_s":   round(time.time() - t_total, 1),
-        "bins":        all_stats,
+        "condition":     args.condition,
+        "checkpoint":    args.checkpoint_dir,
+        "enable_yarn":   args.enable_yarn,
+        "yarn_factor":   args.yarn_factor,
+        "no_chunk":      args.no_chunk,
+        "letter_forced": args.letter_forced,
+        "timestamp":     datetime.now().isoformat(),
+        "elapsed_s":     round(time.time() - t_total, 1),
+        "bins":          all_stats,
         "overall": {
             "n":         total_n,
             "n_correct": total_correct,
