@@ -46,6 +46,16 @@ def _check_gdown():
         return False
 
 
+def _looks_like_valid_json(path: str) -> bool:
+    """Cheap pre-check: try to parse JSON, return True iff successful."""
+    try:
+        with open(path) as f:
+            json.load(f)
+        return True
+    except (json.JSONDecodeError, OSError):
+        return False
+
+
 def download_via_folder(output_dir: str, force: bool = False) -> str:
     """Download the entire LongFaith folder; return path to target SFT file.
 
@@ -59,8 +69,12 @@ def download_via_folder(output_dir: str, force: bool = False) -> str:
 
     target_path = os.path.join(output_dir, TARGET_FILENAME)
     if os.path.exists(target_path) and not force:
-        print(f"  [skip] Already present: {target_path}")
-        return target_path
+        if _looks_like_valid_json(target_path):
+            print(f"  [skip] Already present and valid: {target_path}")
+            return target_path
+        print(f"  [warn] {target_path} exists but is not valid JSON "
+              f"(likely a partial download). Re-downloading.")
+        os.remove(target_path)
 
     print(f"  Downloading LongFaith folder to {cache_dir} ...")
     print(f"  (this may take a few minutes — the full folder is ~few hundred MB)")
