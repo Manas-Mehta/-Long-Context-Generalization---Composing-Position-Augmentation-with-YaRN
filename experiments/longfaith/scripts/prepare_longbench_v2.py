@@ -43,28 +43,40 @@ BIN_BOUNDS = [
 ]
 
 
-def load_v2(local_path: str | None) -> list[dict]:
+def load_v2_streaming_filter_qa(local_path: str | None) -> list[dict]:
+    """Load v2 and filter to QA examples in a single streaming pass.
+
+    Critical for login nodes: v2's data.json is 465MB. json.load() and
+    datasets.load_dataset() (non-streaming) both build the full thing in
+    memory and OOM on a login node with ~4GB cap. Streaming yields one
+    example at a time; we filter to the 300 QA examples (~50MB) as we go.
+
+    Mirrors BABILong's prepare_babilong.py use of load_dataset(), with
+    streaming=True added because v2 is a single large file rather than
+    BABILong's per-bin small configs.
+    """
     if local_path:
+        # If user already has the full json on disk, json.load is fine —
+        # caller is presumably on a compute node or accepts the memory hit.
         with open(local_path) as f:
-            return json.load(f)
-    # Pull from HF using hf_hub_download (raw file, no Arrow conversion).
-    # The datasets library load_dataset() builds an in-memory Arrow table
-    # which OOMs login nodes on the 465MB v2 file. Direct download avoids
-    # this and is faster.
+            raw = json.load(f)
+        return [ex for ex in raw if ex.get("domain") in QA_DOMAINS]
+
     try:
-        from huggingface_hub import hf_hub_download
+        from datasets import load_dataset
     except ImportError:
-        print("ERROR: huggingface_hub not installed.", file=sys.stderr)
+        print("ERROR: datasets not installed. pip install datasets", file=sys.stderr)
         sys.exit(1)
-    print("  Downloading THUDM/LongBench-v2/data.json via hf_hub_download...")
-    path = hf_hub_download(
-        repo_id="THUDM/LongBench-v2",
-        filename="data.json",
-        repo_type="dataset",
-    )
-    print(f"  Downloaded -> {path}")
-    with open(path) as f:
-        return json.load(f)
+    print("  Streaming THUDM/LongBench-v2 from HF (login-node-safe)...")
+    ds = load_dataset("THUDM/LongBench-v2", split="train", streaming=True)
+    qa = []
+    for i, ex in enumerate(ds):
+        if (i + 1) % 100 == 0:
+            print(f"    streamed {i + 1}, kept {len(qa)}...", flush=True)
+        if ex.get("domain") in QA_DOMAINS:
+            qa.append(dict(ex))
+    print(f"  Streamed {i + 1} examples, kept {len(qa)} QA")
+    return qa
 
 
 def filter_to_qa(examples: list[dict]) -> list[dict]:
@@ -122,11 +134,8 @@ def main():
     print(f"  Loading tokenizer: {args.tokenizer}")
     tok = AutoTokenizer.from_pretrained(args.tokenizer)
 
-    raw = load_v2(args.local_path)
-    print(f"  Total v2 examples: {len(raw)}")
-
-    qa = filter_to_qa(raw)
-    print(f"  After QA filter (Single-Doc + Multi-Doc): {len(qa)}")
+    qa = load_v2_streaming_filter_qa(args.local_path)
+    print(f"  QA examples after filter (Single-Doc + Multi-Doc): {len(qa)}")
 
     qa = compute_token_counts(qa, tok)
 
